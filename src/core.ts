@@ -86,7 +86,7 @@ function addLangName (plugin: CodeBlockCopyPlugin, cbMeta: CodeBlockMeta) {
 function addCopyButton (plugin: CodeBlockCopyPlugin, cbMeta: CodeBlockMeta) {
   const { code, pre } = cbMeta
   const copyButton = createEle('button', COPY_TEXT, 'code-block-copy-button')
-  copyButton.addEventListener('click', function () {
+  const copyHandler = () => {
     const cpBtClassList = copyButton.classList
     const doneClassName = 'code-block-copy-button__copied'
     navigator.clipboard.writeText(code.textContent).then(function () {
@@ -99,7 +99,11 @@ function addCopyButton (plugin: CodeBlockCopyPlugin, cbMeta: CodeBlockMeta) {
     }, function (error: Error) {
       copyButton.innerText = 'Error';
     });
-  });
+  }
+  copyButton.addEventListener('click', copyHandler)
+  /*   //Use obsidian api instead of `document.addEventListener`,event will remove on unload.
+    //when toggle plugin swtich don't invoke load ,so it will cause active page copy button can't click
+    plugin.registerDomEvent(copyButton, 'click', copyHandler) */
   pre.appendChild(copyButton);
 
 }
