@@ -12,6 +12,8 @@ Enhancer the markdown code block in preview mode.
 * Exclude some langua
 
 ## Screen 
+![code_block_enhancer](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/code_block_enhancer.png)
+![code_block_settings](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/code_block_settings.png)
 
 
 
