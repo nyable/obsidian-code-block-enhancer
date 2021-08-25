@@ -13,10 +13,16 @@ Enhancer the markdown code block in preview mode.
 * Custom exclusion language
 
 ## Screenshot
-
+### Default theme
 ![Obsidian_Default_Dark_Theme](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/Obsidian_Default_Dark_Theme.png)
+
+### Gruvbox theme
 ![Obsidian_Gruvbox_Dark_Theme](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/Obsidian_Gruvbox_Dark_Theme.png)
+
+### Nord theme
 ![Obsidian_Nord_Dark_Theme](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/Obsidian_Nord_Dark_Theme.png)
+
+### Plugin setting
 ![plugin_settings](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/plugin_settings.png)
 
 
