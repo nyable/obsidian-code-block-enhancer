@@ -28,6 +28,9 @@ interface CodeBlockMeta {
 export function enhancerCodeBlock (el: HTMLElement, ctx: MarkdownPostProcessorContext, plugin: CodeBlockCopyPlugin) {
   let lang = DEFAULT_LANG
   const code = el.querySelector('pre > code')
+  if (!code) {
+    return
+  }
   const pre = code.parentElement
   const temp = document.createElement('div')
   temp.innerHTML = el.innerHTML
