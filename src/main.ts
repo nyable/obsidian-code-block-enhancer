@@ -8,7 +8,7 @@ interface CbEnhancerSettings {
 }
 
 const DEFAULT_SETTINGS: CbEnhancerSettings = {
-	excludeLangs: [],
+	excludeLangs: ['todoist'],
 	showLangName: true,
 	showLineNumber: true
 }
@@ -49,7 +49,7 @@ class CbEnhancerSettingsTab extends PluginSettingTab {
 		let { containerEl } = this
 		const pluginSetting = this.plugin.settings
 		containerEl.empty()
-		containerEl.createEl('h2', { text: 'Code Block Copy Setting' })
+		containerEl.createEl('h2', { text: 'Code Block Enhancer Settings' })
 		new Setting(containerEl)
 			.setName('Exclude language list')
 			.setDesc("Copy button does't display for excluded options")
