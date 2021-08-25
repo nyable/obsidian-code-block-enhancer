@@ -33,7 +33,7 @@ Enhancer the markdown code block in preview mode.
 ## Install With Obsidian
 Waiting for merge...
 
-## Install With Realease
+## Install With Releases
 - Download `main.js`, `styles.css`, `manifest.json` in the [latest release](https://github.com/nyable/obsidian-code-block-enhancer/releases/latest)
 - Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/obsidian-code-block-enhancer/`.
 - Enable plugin in Obsidian setting.
