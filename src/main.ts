@@ -1,56 +1,20 @@
 import { App, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import './styles/index.scss'
-interface MyPluginSettings {
-	mySetting: string;
+interface CbEnhancerSettings {
+	excludeLangList: string[];
+	displayLangName: boolean;
 }
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default'
+const DEFAULT_SETTINGS: CbEnhancerSettings = {
+	excludeLangList: [],
+	displayLangName: true
 }
-
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+export default class CodeBlockEnhancer extends Plugin {
+	settings: CbEnhancerSettings;
 
 	async onload () {
-		console.log('loading plugin');
-
-		await this.loadSettings();
-
-		this.addRibbonIcon('dice', 'Sample Plugin', () => {
-			new Notice('This is a notice!');
-		});
-
-		this.addStatusBarItem().setText('Status Bar Text');
-
-		this.addCommand({
-			id: 'open-sample-modal',
-			name: 'Open Sample Modal',
-			// callback: () => {
-			// 	console.log('Simple Callback');
-			// },
-			checkCallback: (checking: boolean) => {
-				let leaf = this.app.workspace.activeLeaf;
-				if (leaf) {
-					if (!checking) {
-						new SampleModal(this.app).open();
-					}
-					return true;
-				}
-				return false;
-			}
-		});
-
-		this.addSettingTab(new SampleSettingTab(this.app, this));
-
-		this.registerCodeMirror((cm: CodeMirror.Editor) => {
-			console.log('codemirror', cm);
-		});
-
-		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-			console.log('click', evt);
-		});
-
-		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
+		await this.loadSettings()
+		await this.addSettingTab(new CbEnhancerSettingsTab(this.app, this))
 	}
 
 	onunload () {
@@ -66,26 +30,11 @@ export default class MyPlugin extends Plugin {
 	}
 }
 
-class SampleModal extends Modal {
-	constructor(app: App) {
-		super(app);
-	}
 
-	onOpen () {
-		let { contentEl } = this;
-		contentEl.setText('Woah!');
-	}
+class CbEnhancerSettingsTab extends PluginSettingTab {
+	plugin: CodeBlockEnhancer;
 
-	onClose () {
-		let { contentEl } = this;
-		contentEl.empty();
-	}
-}
-
-class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
-
-	constructor(app: App, plugin: MyPlugin) {
+	constructor(app: App, plugin: CodeBlockEnhancer) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
@@ -93,20 +42,5 @@ class SampleSettingTab extends PluginSettingTab {
 	display (): void {
 		let { containerEl } = this;
 
-		containerEl.empty();
-
-		containerEl.createEl('h2', { text: 'Settings for my awesome plugin.' });
-
-		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
-			.addText(text => text
-				.setPlaceholder('Enter your secret')
-				.setValue('')
-				.onChange(async (value) => {
-					console.log('Secret: ' + value);
-					this.plugin.settings.mySetting = value;
-					await this.plugin.saveSettings();
-				}));
 	}
 }
