@@ -13,7 +13,9 @@ Enhancer the markdown code block in preview mode.
 * Custom exclusion language
 
 ## Screen 
-Show with [Editor Syntax Highlight Obsidian Plugin](https://github.com/deathau/cm-editor-syntax-highlight-obsidian)
+Show with [Editor Syntax Highlight Obsidian Plugin](https://github.com/deathau/cm-editor-syntax-highlight-obsidian)   
+
+
 ![code_block_enhancer](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/code_block_enhancer.png)
 ![code_block_settings](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/code_block_settings.png)
 
