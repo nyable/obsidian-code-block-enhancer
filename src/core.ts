@@ -115,9 +115,14 @@ function addCopyButton (plugin: CodeBlockCopyPlugin, cbMeta: CodeBlockMeta) {
 function addLineNumber (plugin: CodeBlockCopyPlugin, cbMeta: CodeBlockMeta) {
   const { lineSize, pre } = cbMeta
   if (plugin.settings.showLineNumber) {
+    // const { fontSize, lineHeight } = window.getComputedStyle(cbMeta.code)
+
     const lineNumber = createEle('span', null, 'code-block-linenum-wrap')
     Array.from({ length: lineSize }, (v, k) => k).forEach(i => {
-      lineNumber.appendChild(createEle('span', null, 'code-block-linenum'))
+      const singleLine = createEle('span', null, 'code-block-linenum')
+      // singleLine.style.fontSize = fontSize
+      // singleLine.style.lineHeight = lineHeight
+      lineNumber.appendChild(singleLine)
     })
     pre.appendChild(lineNumber)
     pre.classList.add('code-block-wrap__has-linenum')

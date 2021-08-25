@@ -45,8 +45,8 @@ pre[class*="language-"].code-block-wrap {
   top: 20px;
   left: 0px;
   min-width: 4em;
-  font-size: 0.9em !important;
-  line-height: 1.4em !important;
+  font-size: var(--editor-font-size);
+  line-height: 1.5em;
   counter-reset: line-num;
   text-align: center;
   border-right: #999 1px solid;
