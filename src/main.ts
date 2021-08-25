@@ -1,22 +1,26 @@
-import { App, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { App, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { enhancerCodeBlock } from './core';
 import './styles/index.scss'
 interface CbEnhancerSettings {
 	excludeLangs: string[];
-	displayLangName: boolean;
+	showLangName: boolean;
+	showLineNumber: boolean;
 }
 
 const DEFAULT_SETTINGS: CbEnhancerSettings = {
 	excludeLangs: [],
-	displayLangName: true
+	showLangName: true,
+	showLineNumber: true
 }
 export default class CodeBlockEnhancer extends Plugin {
 	settings: CbEnhancerSettings;
 
 	async onload () {
-		console.log('loading Code Block Enhancer Plugin');
-
-		await this.loadSettings()
+		await this.loadSettings();
 		await this.addSettingTab(new CbEnhancerSettingsTab(this.app, this))
+		this.registerMarkdownPostProcessor(async (el, ctx) => {
+			await enhancerCodeBlock(el, ctx, this)
+		})
 	}
 
 	onunload () {
@@ -47,7 +51,7 @@ class CbEnhancerSettingsTab extends PluginSettingTab {
 		containerEl.empty()
 		containerEl.createEl('h2', { text: 'Code Block Copy Setting' })
 		new Setting(containerEl)
-			.setName('Exclude Language List')
+			.setName('Exclude language list')
 			.setDesc("Copy button does't display for excluded options")
 			.addTextArea(text => text
 				.setPlaceholder('Enter exclude language list,separated by ",": todoist,mindmap,...')
@@ -57,13 +61,24 @@ class CbEnhancerSettingsTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				}))
 		new Setting(containerEl)
-			.setName('Display Language Name')
+			.setName('Show language name')
 			.setDesc('Enable this options will display language name in left')
 			.addToggle(cb => {
 				cb
-					.setValue(pluginSetting.displayLangName)
+					.setValue(pluginSetting.showLangName)
 					.onChange(async (isEnable) => {
-						pluginSetting.displayLangName = isEnable
+						pluginSetting.showLangName = isEnable
+						await this.plugin.saveSettings()
+					})
+			})
+		new Setting(containerEl)
+			.setName('Show line number')
+			.setDesc('Enable this options will display line number')
+			.addToggle(cb => {
+				cb
+					.setValue(pluginSetting.showLineNumber)
+					.onChange(async (isEnable) => {
+						pluginSetting.showLineNumber = isEnable
 						await this.plugin.saveSettings()
 					})
 			})
