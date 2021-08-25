@@ -9,7 +9,7 @@ Enhancer the markdown code block in preview mode.
 * Provide `Copy Button` on the right in preview.
 * Provide `Line Number` on the left in preview.
 * Show `Language Name`.
-* Exclude some langua
+* Custom exclusion language
 
 ## Screen 
 ![code_block_enhancer](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/code_block_enhancer.png)
