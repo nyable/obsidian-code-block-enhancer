@@ -18,20 +18,25 @@ interface CodeBlockMeta {
   /**
    * Code block 'pre' HTMLElement
    */
-  pre: Element;
+  pre: HTMLElement;
   /**
    * Code block 'code' HTMLElement
    */
-  code: Element;
+  code: HTMLElement;
+  /**
+   * Code block wrap div
+   */
+  div: HTMLElement;
 }
 
 export function enhancerCodeBlock (el: HTMLElement, ctx: MarkdownPostProcessorContext, plugin: CodeBlockCopyPlugin) {
   let lang = DEFAULT_LANG
-  const code = el.querySelector('pre > code')
+  const code: HTMLElement = el.querySelector('pre > code')
   if (!code) {
     return
   }
   const pre = code.parentElement
+  const div = pre.parentElement
   const temp = document.createElement('div')
   temp.innerHTML = el.innerHTML
   const tpCode = temp.querySelector('pre > code')
@@ -53,10 +58,10 @@ export function enhancerCodeBlock (el: HTMLElement, ctx: MarkdownPostProcessorCo
   if (pre.querySelector('button.code-block-copy-button')) {
     return;
   }
-  // let pre be position: relative;
-  pre.classList.add('code-block-wrap')
+  // let div position: relative;
+  div.classList.add('code-block-wrap')
   const lineSize = code.textContent.split(LINE_SPLIT_MARK).length - 1
-  const cbMeta: CodeBlockMeta = { langName: lang, lineSize, pre, code }
+  const cbMeta: CodeBlockMeta = { langName: lang, lineSize, pre, code, div }
   // create copy button in right
   addCopyButton(plugin, cbMeta)
   // create lang name tip in left
@@ -103,10 +108,7 @@ function addCopyButton (plugin: CodeBlockCopyPlugin, cbMeta: CodeBlockMeta) {
       copyButton.innerText = 'Error';
     });
   }
-  copyButton.addEventListener('click', copyHandler)
-  /*   //Use obsidian api instead of `document.addEventListener`,event will remove on unload.
-    //when toggle plugin swtich don't invoke load ,so it will cause active page copy button can't click
-    plugin.registerDomEvent(copyButton, 'click', copyHandler) */
+  plugin.registerDomEvent(copyButton, 'click', copyHandler)
   pre.appendChild(copyButton);
 
 }
@@ -125,6 +127,6 @@ function addLineNumber (plugin: CodeBlockCopyPlugin, cbMeta: CodeBlockMeta) {
       lineNumber.appendChild(singleLine)
     })
     pre.appendChild(lineNumber)
-    pre.classList.add('code-block-wrap__has-linenum')
+    pre.classList.add('code-block-pre__has-linenum')
   }
 }

@@ -32,8 +32,10 @@ $cb-line-height: 1.5em;
   margin-left: 4px;
   user-select: none;
 }
-pre[class*="language-"].code-block-wrap {
+.code-block-wrap {
   position: relative;
+}
+pre[class*="language-"] {
   font-size: var(--editor-font-size);
   line-height: $cb-line-height;
   & > code[class*="language-"] {
@@ -42,7 +44,7 @@ pre[class*="language-"].code-block-wrap {
     line-height: $cb-line-height !important;
   }
 }
-.code-block-wrap {
+.code-block-pre {
   &__has-linenum {
     padding-left: 4.5em !important;
   }
@@ -59,7 +61,8 @@ pre[class*="language-"].code-block-wrap {
   border-right: #999 1px solid;
   user-select: none;
   pointer-events: none;
-  opacity: 0.8;
+  opacity: 0.95;
+  background-color: var(--background-primary-alt);
   .code-block-linenum {
     display: block;
     counter-increment: line-num;
