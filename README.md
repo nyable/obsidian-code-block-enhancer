@@ -1,6 +1,7 @@
 # Obsidian Code Block Enhancer
 
-This is a plugin for Obsidian (https://obsidian.md).Inspired by [obsidian-code-block-copy](https://github.com/jdbrice/obsidian-code-block-copy).   
+This is a plugin for Obsidian (https://obsidian.md).   
+Inspired by [obsidian-code-block-copy](https://github.com/jdbrice/obsidian-code-block-copy).   
 
 **Note:** The Obsidian API is still in early alpha and is subject to change at any time!
 
