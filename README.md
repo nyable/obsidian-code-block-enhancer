@@ -20,13 +20,23 @@ Show with [Editor Syntax Highlight Obsidian Plugin](https://github.com/deathau/c
 
 
 
-## How to use
+# How to use
+## Install With Obsidian
+Waiting for merge...
+
+## Install With Realease
+- Download `main.js`, `styles.css`, `manifest.json` in the [latest release](https://github.com/nyable/obsidian-code-block-enhancer/releases/latest)
+- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/obsidian-code-block-enhancer/`.
+- Enable plugin in Obsidian setting.
+
+## Build By Source Code
 - Clone this repo.
 - `npm i` or `yarn` to install dependencies
-- `npm run dev` to start compilation in watch mode.
+- `npm run build` to build file in `./dist`.
+- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/obsidian-code-block-enhancer/`.
+- Enable plugin in Obsidian setting.
 
-## Manually installing the plugin
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
+
 
 
