@@ -12,12 +12,12 @@ Enhancer the markdown code block in preview mode.
 * Show `Language Name`.
 * Custom exclusion language
 
-## Screen 
-Show with [Editor Syntax Highlight Obsidian Plugin](https://github.com/deathau/cm-editor-syntax-highlight-obsidian)   
+## Screenshot
 
-
-![code_block_enhancer](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/code_block_enhancer.png)
-![code_block_settings](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/code_block_settings.png)
+![Obsidian_Default_Dark_Theme](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/Obsidian_Default_Dark_Theme.png)
+![Obsidian_Gruvbox_Dark_Theme](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/Obsidian_Gruvbox_Dark_Theme.png)
+![Obsidian_Nord_Dark_Theme](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/Obsidian_Nord_Dark_Theme.png)
+![plugin_settings](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/plugin_settings.png)
 
 
 ## TODO
