@@ -1,6 +1,7 @@
 # Obsidian Code Block Enhancer
 
-This is a plugin for Obsidian (https://obsidian.md).Inspired by [obsidian-code-block-copy](https://github.com/jdbrice/obsidian-code-block-copy).   
+This is a plugin for Obsidian (https://obsidian.md).   
+Inspired by [obsidian-code-block-copy](https://github.com/jdbrice/obsidian-code-block-copy).   
 
 **Note:** The Obsidian API is still in early alpha and is subject to change at any time!
 
@@ -12,19 +13,32 @@ Enhancer the markdown code block in preview mode.
 * Custom exclusion language
 
 ## Screen 
+Show with [Editor Syntax Highlight Obsidian Plugin](https://github.com/deathau/cm-editor-syntax-highlight-obsidian)   
+
+
 ![code_block_enhancer](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/code_block_enhancer.png)
 ![code_block_settings](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/code_block_settings.png)
 
 
 
 
-## How to use
+# How to use
+## Install With Obsidian
+Waiting for merge...
+
+## Install With Realease
+- Download `main.js`, `styles.css`, `manifest.json` in the [latest release](https://github.com/nyable/obsidian-code-block-enhancer/releases/latest)
+- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/obsidian-code-block-enhancer/`.
+- Enable plugin in Obsidian setting.
+
+## Build By Source Code
 - Clone this repo.
 - `npm i` or `yarn` to install dependencies
-- `npm run dev` to start compilation in watch mode.
+- `npm run build` to build file in `./dist`.
+- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/obsidian-code-block-enhancer/`.
+- Enable plugin in Obsidian setting.
 
-## Manually installing the plugin
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
+
 
 
