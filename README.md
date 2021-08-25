@@ -20,7 +20,8 @@ Show with [Editor Syntax Highlight Obsidian Plugin](https://github.com/deathau/c
 ![code_block_settings](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/code_block_settings.png)
 
 
-
+## TODO
+- [ ] Line number auto fit theme
 
 # How to use
 ## Install With Obsidian
