@@ -14,6 +14,7 @@ Enhancer the markdown code block in preview mode.
 * Enhance contextmenu in code block.
 
 ## Screenshot
+![Gif](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/GIF.gif)
 
 ### Default theme
 ![Obsidian_Default_Dark_Theme](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/Obsidian_Default_Dark_Theme.png)
@@ -28,11 +29,10 @@ Enhancer the markdown code block in preview mode.
 ![plugin_settings](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/plugin_settings.png)
 
 
-## TODO
-- [ ] Line number auto fit theme
 
 # How to use
 ## Obsidian
+
 -
 
 ## Releases
