@@ -10,9 +10,11 @@ Enhancer the markdown code block in preview mode.
 * Provide `Copy Button` on the right in preview.
 * Provide `Line Number` on the left in preview.
 * Show `Language Name`.
-* Custom exclusion language
+* Custom exclusion language.
+* Enhance contextmenu in code block.
 
 ## Screenshot
+
 ### Default theme
 ![Obsidian_Default_Dark_Theme](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/Obsidian_Default_Dark_Theme.png)
 
