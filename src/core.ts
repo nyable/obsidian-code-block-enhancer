@@ -35,21 +35,18 @@ export function enhancerCodeBlock (el: HTMLElement, ctx: MarkdownPostProcessorCo
   if (!code) {
     return
   }
-  const pre = code.parentElement
-  const div = pre.parentElement
-  const temp = document.createElement('div')
-  temp.innerHTML = el.innerHTML
-  const tpCode = temp.querySelector('pre > code')
   // return when lang is in exclude list
-  if (plugin.settings.excludeLangs.some(eLangName => tpCode.classList.contains(`language-${eLangName}`))) {
+  if (plugin.settings.excludeLangs.some(eLangName => code.classList.contains(`language-${eLangName}`))) {
     return
   }
-  tpCode.classList.forEach((value, key, parent) => {
+  code.classList.forEach((value, key, parent) => {
     if (LANG_REG.test(value)) {
       lang = value.replace('language-', '')
       return
     }
   })
+  const pre = code.parentElement
+  const div = pre.parentElement
   // Add default language style when lang is empty
   if (!code.classList.toString().contains('language-')) {
     pre.classList.add(DEFAULT_LANG_ATTR)

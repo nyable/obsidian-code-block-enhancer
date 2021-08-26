@@ -52,9 +52,9 @@ class CbEnhancerSettingsTab extends PluginSettingTab {
 		containerEl.createEl('h2', { text: 'Code Block Enhancer Settings' })
 		new Setting(containerEl)
 			.setName('Exclude language list')
-			.setDesc("Copy button does't display for excluded options")
+			.setDesc("Will not be enhanced in these languages")
 			.addTextArea(text => text
-				.setPlaceholder('Enter exclude language list,separated by ",": todoist,mindmap,...')
+				.setPlaceholder('Separate by `,` (like `todoist,other,...`)')
 				.setValue(pluginSetting.excludeLangs.join(','))
 				.onChange(async (value) => {
 					pluginSetting.excludeLangs = value.split(',');
