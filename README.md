@@ -32,8 +32,10 @@ Enhancer the markdown code block in preview mode.
 
 # How to use
 ## Obsidian
-
--
+- Open Obsidian
+- Settings -> Community plugins -> Turn off Safe Mode
+- Browes community plugins and search `Code Block Enhancer`
+- Install and enable
 
 ## Releases
 - Download `main.js`, `styles.css`, `manifest.json` in the [latest release](https://github.com/nyable/obsidian-code-block-enhancer/releases/latest)
