@@ -30,15 +30,15 @@ Enhancer the markdown code block in preview mode.
 - [ ] Line number auto fit theme
 
 # How to use
-## Install With Obsidian
-Waiting for merge...
+## Obsidian
+-
 
-## Install With Releases
+## Releases
 - Download `main.js`, `styles.css`, `manifest.json` in the [latest release](https://github.com/nyable/obsidian-code-block-enhancer/releases/latest)
 - Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/obsidian-code-block-enhancer/`.
 - Enable plugin in Obsidian setting.
 
-## Build By Source Code
+## Source Code
 - Clone this repo.
 - `npm i` or `yarn` to install dependencies
 - `npm run build` to build file in `./dist`.
