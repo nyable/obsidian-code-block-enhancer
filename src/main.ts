@@ -1,17 +1,20 @@
 import { App, Plugin, PluginSettingTab, Setting } from 'obsidian';
-import { enhancerCodeBlock } from './core';
+import { enhanceCodeBlock } from './core';
 import './styles/index.scss'
 interface CbEnhancerSettings {
 	excludeLangs: string[];
 	showLangName: boolean;
 	showLineNumber: boolean;
+	useContextMenu: boolean;
 }
 
 const DEFAULT_SETTINGS: CbEnhancerSettings = {
 	excludeLangs: ['todoist'],
 	showLangName: true,
-	showLineNumber: true
+	showLineNumber: true,
+	useContextMenu: true
 }
+
 export default class CodeBlockEnhancer extends Plugin {
 	settings: CbEnhancerSettings;
 
@@ -19,8 +22,9 @@ export default class CodeBlockEnhancer extends Plugin {
 		await this.loadSettings();
 		await this.addSettingTab(new CbEnhancerSettingsTab(this.app, this))
 		this.registerMarkdownPostProcessor(async (el, ctx) => {
-			await enhancerCodeBlock(el, ctx, this)
+			await enhanceCodeBlock(el, ctx, this)
 		})
+
 	}
 
 	onunload () {
@@ -49,7 +53,7 @@ class CbEnhancerSettingsTab extends PluginSettingTab {
 		let { containerEl } = this
 		const pluginSetting = this.plugin.settings
 		containerEl.empty()
-		containerEl.createEl('h2', { text: 'Code Block Enhancer Settings' })
+		containerEl.createEl('h2', { text: `Code Block Enhancer Settings ${this.plugin.manifest.version}` })
 		new Setting(containerEl)
 			.setName('Exclude language list')
 			.setDesc("Will not be enhanced in these languages")
@@ -62,7 +66,7 @@ class CbEnhancerSettingsTab extends PluginSettingTab {
 				}))
 		new Setting(containerEl)
 			.setName('Show language name')
-			.setDesc('Enable this options will display language name in left')
+			.setDesc('Enable this options will show language name')
 			.addToggle(cb => {
 				cb
 					.setValue(pluginSetting.showLangName)
@@ -73,12 +77,23 @@ class CbEnhancerSettingsTab extends PluginSettingTab {
 			})
 		new Setting(containerEl)
 			.setName('Show line number')
-			.setDesc('Enable this options will display line number')
+			.setDesc('Enable this options will show line number')
 			.addToggle(cb => {
 				cb
 					.setValue(pluginSetting.showLineNumber)
 					.onChange(async (isEnable) => {
 						pluginSetting.showLineNumber = isEnable
+						await this.plugin.saveSettings()
+					})
+			})
+		new Setting(containerEl)
+			.setName('Use ContextMenu')
+			.setDesc('Replace default contextmenu when right-click in code block')
+			.addToggle(cb => {
+				cb
+					.setValue(pluginSetting.useContextMenu)
+					.onChange(async (isEnable) => {
+						pluginSetting.useContextMenu = isEnable
 						await this.plugin.saveSettings()
 					})
 			})
