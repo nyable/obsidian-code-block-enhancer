@@ -14,8 +14,8 @@ $cb-line-height: 1.5em;
   background-color: var(--text-faint);
   border-radius: 0px 4px 0px 0px;
   &__copied {
-    background-color: #11b64b !important;
-    color: white !important;
+    background-color: #11b64b;
+    color: white;
     transition: background-color 0.5s;
   }
   &:hover {
@@ -44,10 +44,8 @@ pre[class*="language-"] {
     line-height: $cb-line-height !important;
   }
 }
-.code-block-pre {
-  &__has-linenum {
-    padding-left: 4.5em !important;
-  }
+pre[class*="language-"].code-block-pre__has-linenum {
+  padding-left: 4.5em;
 }
 .code-block-linenum-wrap {
   position: absolute;
@@ -62,7 +60,6 @@ pre[class*="language-"] {
   user-select: none;
   pointer-events: none;
   opacity: 0.9;
-  background-color: var(--background-primary-alt);
   .code-block-linenum {
     display: block;
     counter-increment: line-num;
