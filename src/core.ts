@@ -86,7 +86,6 @@ export function enhanceCodeBlock (el: HTMLElement, ctx: MarkdownPostProcessorCon
 
 
 function createEle (tagName: string, text: string, defaultClassName?: string) {
-
   const element = document.createElement(tagName)
   if (defaultClassName) {
     element.className = defaultClassName
@@ -96,15 +95,14 @@ function createEle (tagName: string, text: string, defaultClassName?: string) {
   }
   return element
 }
+
 function enhanceContextMenu (plugin: CodeBlockCopyPlugin, cbMeta: CodeBlockMeta) {
   const { pre, code, lineSize } = cbMeta
   plugin.registerDomEvent(pre, 'contextmenu', (event) => {
     event.preventDefault()
     const target = <HTMLElement>event.target
-    const activeView = plugin.app.workspace.activeLeaf.view as MarkdownView
-    if (target.tagName !== 'BUTTON' && activeView.getMode() === 'preview') {
+    if (target.tagName !== 'BUTTON') {
       const contextMenu = new Menu(plugin.app)
-      // console.log(activeView.editor.getSelection().toString());
       const selection = window.getSelection().toString()
       const editView = document.querySelector('.markdown-preview-view')
       const blockHeight = parseFloat(window.getComputedStyle(pre).height)
@@ -112,15 +110,13 @@ function enhanceContextMenu (plugin: CodeBlockCopyPlugin, cbMeta: CodeBlockMeta)
       const { offsetY, pageY } = event
       const toBottom = blockHeight - ((viewHeight - pageY) + offsetY)
       const toTop = offsetY - pageY + 100
-
+      const eventScrollTop = editView.scrollTop
       let eRowNum = Math.ceil((offsetY - 16) / 24)
       if (eRowNum < 1) {
         eRowNum = 1
       } else if (eRowNum > lineSize) {
         eRowNum = lineSize
       }
-      // console.log(viewHeight, blockHeight, pageY, offsetY, toBottom, toTop,eRowNum);
-
       if (selection) {
         contextMenu.addItem((item) => {
           item
@@ -154,7 +150,9 @@ function enhanceContextMenu (plugin: CodeBlockCopyPlugin, cbMeta: CodeBlockMeta)
             item
               .setTitle('To Top')
               .onClick((e) => {
-                editView.scrollTop -= toTop
+                console.log(viewHeight, blockHeight, pageY, offsetY, toBottom, toTop, eRowNum);
+                console.log(e.pageY, e.offsetY);
+                editView.scrollTop = eventScrollTop - toTop
               })
           })
         }
@@ -163,8 +161,7 @@ function enhanceContextMenu (plugin: CodeBlockCopyPlugin, cbMeta: CodeBlockMeta)
             item
               .setTitle('To Bottom')
               .onClick((e) => {
-                // activeView.currentMode.applyScroll(activeView.currentMode.getScroll() + result / 24)
-                editView.scrollTop += toBottom
+                editView.scrollTop = eventScrollTop + toBottom
               })
           })
         }

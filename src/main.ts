@@ -20,7 +20,7 @@ export default class CodeBlockEnhancer extends Plugin {
 
 	async onload () {
 		await this.loadSettings();
-		await this.addSettingTab(new CbEnhancerSettingsTab(this.app, this))
+		this.addSettingTab(new CbEnhancerSettingsTab(this.app, this))
 		this.registerMarkdownPostProcessor(async (el, ctx) => {
 			await enhanceCodeBlock(el, ctx, this)
 		})
