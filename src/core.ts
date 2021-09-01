@@ -1,12 +1,13 @@
-import { MarkdownPostProcessorContext, MarkdownView, Menu } from "obsidian";
+import { MarkdownPostProcessorContext, Menu } from "obsidian";
 import CodeBlockCopyPlugin from "./main";
-const COPY_TEXT = 'Copy'
-const COPY_OVER_TEXT = 'Done'
+
 const DEFAULT_LANG_ATTR = 'language-text'
 const DEFAULT_LANG = ''
 const LANG_REG = /^language-/
 const LINE_SPLIT_MARK = '\n'
 
+const SVG_COPY = '<svg height="16" width="16" viewBox="0 0 16 16" version="1.1" data-view-component="true" class="copy"><path fill-rule="evenodd" d="M5.75 1a.75.75 0 00-.75.75v3c0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75v-3a.75.75 0 00-.75-.75h-4.5zm.75 3V2.5h3V4h-3zm-2.874-.467a.75.75 0 00-.752-1.298A1.75 1.75 0 002 3.75v9.5c0 .966.784 1.75 1.75 1.75h8.5A1.75 1.75 0 0014 13.25v-9.5a1.75 1.75 0 00-.874-1.515.75.75 0 10-.752 1.298.25.25 0 01.126.217v9.5a.25.25 0 01-.25.25h-8.5a.25.25 0 01-.25-.25v-9.5a.25.25 0 01.126-.217z"></path></svg>'
+const SVG_SUCCESS = '<svg height="16" width="16" viewBox="0 0 16 16" version="1.1" data-view-component="true" class="copy-success"><path fill-rule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"></path></svg>'
 
 interface CodeBlockMeta {
   /**
@@ -56,7 +57,7 @@ export function enhanceCodeBlock (el: HTMLElement, ctx: MarkdownPostProcessorCon
     pre.classList.add(DEFAULT_LANG_ATTR)
   }
   // Ignore already has copy button 
-  if (pre.querySelector('button.code-block-copy-button')) {
+  if (pre.querySelector('div.code-block-copy-button')) {
     return;
   }
   // let div position: relative;
@@ -85,13 +86,10 @@ export function enhanceCodeBlock (el: HTMLElement, ctx: MarkdownPostProcessorCon
 
 
 
-function createEle (tagName: string, text: string, defaultClassName?: string) {
+function createElement(tagName: string, defaultClassName?: string) {
   const element = document.createElement(tagName)
   if (defaultClassName) {
     element.className = defaultClassName
-  }
-  if (text) {
-    element.innerText = text
   }
   return element
 }
@@ -173,39 +171,39 @@ function enhanceContextMenu (plugin: CodeBlockCopyPlugin, cbMeta: CodeBlockMeta)
 }
 function addLangName (plugin: CodeBlockCopyPlugin, cbMeta: CodeBlockMeta) {
   const { langName, pre } = cbMeta
-  const langNameTip = createEle('span', langName, 'code-block-lang-name')
+  const langNameTip = createElement('span', 'code-block-lang-name')
+  langNameTip.innerText = langName
   pre.appendChild(langNameTip)
 }
 
 function addCopyButton (plugin: CodeBlockCopyPlugin, cbMeta: CodeBlockMeta) {
   const { code, pre } = cbMeta
-  const copyButton = createEle('button', COPY_TEXT, 'code-block-copy-button')
+  const copyButton = createElement('div', 'code-block-copy-button')
+  copyButton.setAttribute('aria-label', 'Copy')
+  copyButton.innerHTML = SVG_COPY;
+
   const copyHandler = () => {
-    const cpBtClassList = copyButton.classList
-    const doneClassName = 'code-block-copy-button__copied'
-    navigator.clipboard.writeText(code.textContent).then(function () {
-      copyButton.innerText = COPY_OVER_TEXT;
-      cpBtClassList.add(doneClassName)
-      setTimeout(function () {
-        copyButton.innerText = COPY_TEXT;
-        cpBtClassList.remove(doneClassName)
-      }, 1000);
-    }, function (error: Error) {
+    navigator.clipboard.writeText(code.textContent).then(() => {
+      copyButton.innerHTML = SVG_SUCCESS
+      setTimeout(() => {
+        copyButton.innerHTML = SVG_COPY
+      }, 1500);
+    }, () => {
       copyButton.innerText = 'Error';
     });
   }
   plugin.registerDomEvent(copyButton, 'click', copyHandler)
   pre.appendChild(copyButton);
-
+  pre.classList.add('code-block-pre__has-copy-button')
 }
 
 
 function addLineNumber (plugin: CodeBlockCopyPlugin, cbMeta: CodeBlockMeta) {
   const { lineSize, pre } = cbMeta
   // const { fontSize, lineHeight } = window.getComputedStyle(cbMeta.code)
-  const lineNumber = createEle('span', null, 'code-block-linenum-wrap')
+  const lineNumber = createElement('span', 'code-block-linenum-wrap')
   Array.from({ length: lineSize }, (v, k) => k).forEach(i => {
-    const singleLine = createEle('span', null, 'code-block-linenum')
+    const singleLine = createElement('span', 'code-block-linenum')
     // singleLine.style.fontSize = fontSize
     // singleLine.style.lineHeight = lineHeight
     lineNumber.appendChild(singleLine)
