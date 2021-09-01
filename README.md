@@ -14,19 +14,19 @@ Enhancer the markdown code block in preview mode.
 * Enhance contextmenu in code block.
 
 ## Screenshot
-![Gif](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/GIF.gif)
+![Gif](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/GIF.gif?raw=true)
 
 ### Use with Default theme
-![Obsidian_Default_Dark_Theme](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/Obsidian_Default_Dark_Theme.png)
+![Obsidian_Default_Dark_Theme](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/Obsidian_Default_Dark_Theme.png?raw=true)
 
 ### Gruvbox theme
-![Obsidian_Gruvbox_Dark_Theme](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/Obsidian_Gruvbox_Dark_Theme.png)
+![Obsidian_Gruvbox_Dark_Theme](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/Obsidian_Gruvbox_Dark_Theme.png?raw=true)
 
 ### Nord theme
-![Obsidian_Nord_Dark_Theme](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/Obsidian_Nord_Dark_Theme.png)
+![Obsidian_Nord_Dark_Theme](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/Obsidian_Nord_Dark_Theme.png?raw=true)
 
 ### Plugin setting
-![plugin_settings](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/plugin_settings.png)
+![plugin_settings](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/plugin_settings.png?raw=true)
 
 
 
