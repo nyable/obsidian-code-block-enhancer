@@ -1,6 +1,6 @@
 {
   "name": "obsidian-code-block-enhancer",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Enhance obsidian markdown code block,provides copy button,linenumber,language name tip and so on. (https://github.com/nyable/obsidian-code-block-enhancer)",
   "main": "main.js",
   "scripts": {
