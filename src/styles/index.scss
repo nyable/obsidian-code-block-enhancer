@@ -1,26 +1,32 @@
 $cb-font-size: 0.8rem;
 $cb-line-height: 1.5em;
 .code-block-copy-button {
+  display: none;
+  margin: 0 0 0 auto;
+  padding: 4px;
   position: absolute;
-  top: 0px;
-  right: 0px;
-  margin-right: 0;
-  padding: 0;
-  text-align: center;
-  width: 3rem;
-  height: 1.25rem;
-  font-size: $cb-font-size;
-  color: var(--background-primary);
-  background-color: var(--text-faint);
-  border-radius: 0px 4px 0px 0px;
-  &__copied {
-    background-color: #11b64b;
-    color: white;
-    transition: background-color 0.5s;
+  top: 0;
+  right: 0;
+
+  svg.copy path {
+    fill: var(--interactive-normal);
   }
-  &:hover {
+
+  &:hover,
+  &:active {
     cursor: pointer;
-    background-color: var(--text-normal);
+    svg path {
+      fill: var(--interactive-accent-hover);
+      transition: all ease 0.3s;
+    }
+  }
+
+  svg.copy-success path {
+    fill: var(--interactive-success);
+  }
+
+  &:focus {
+    outline: 0;
   }
 }
 .code-block-lang-name {
@@ -44,8 +50,17 @@ pre[class*="language-"] {
     line-height: $cb-line-height !important;
   }
 }
-pre[class*="language-"].code-block-pre__has-linenum {
-  padding-left: 4.5em;
+.code-block-pre {
+  position: relative;
+
+  &__has-copy-button:hover {
+    .code-block-copy-button {
+      display: block;
+    }
+  }
+  &__has-linenum {
+    padding-left: 4.5em !important;
+  }
 }
 .code-block-linenum-wrap {
   position: absolute;
@@ -60,6 +75,7 @@ pre[class*="language-"].code-block-pre__has-linenum {
   user-select: none;
   pointer-events: none;
   opacity: 0.9;
+  background-color: var(--background-primary-alt);
   .code-block-linenum {
     display: block;
     counter-increment: line-num;
