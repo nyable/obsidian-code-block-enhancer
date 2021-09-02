@@ -9,14 +9,14 @@ $cb-line-height: 1.5em;
   right: 0;
 
   svg.copy path {
-    fill: var(--interactive-normal);
+    fill: var(--text-accent);
   }
 
   &:hover,
   &:active {
     cursor: pointer;
     svg path {
-      fill: var(--interactive-accent-hover);
+      filter: brightness(1.4);
       transition: all ease 0.3s;
     }
   }
@@ -49,17 +49,15 @@ pre[class*="language-"] {
     font-size: var(--editor-font-size) !important;
     line-height: $cb-line-height !important;
   }
+  &.code-block-pre__has-linenum {
+    padding-left: 4.5em;
+  }
 }
 .code-block-pre {
-  position: relative;
-
   &__has-copy-button:hover {
     .code-block-copy-button {
       display: block;
     }
-  }
-  &__has-linenum {
-    padding-left: 4.5em !important;
   }
 }
 .code-block-linenum-wrap {
@@ -75,7 +73,6 @@ pre[class*="language-"] {
   user-select: none;
   pointer-events: none;
   opacity: 0.9;
-  background-color: var(--background-primary-alt);
   .code-block-linenum {
     display: block;
     counter-increment: line-num;
