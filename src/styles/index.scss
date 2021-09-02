@@ -72,7 +72,7 @@ pre[class*="language-"] {
   border-right: #999 1px solid;
   user-select: none;
   pointer-events: none;
-  opacity: 0.9;
+  background-color: inherit;
   .code-block-linenum {
     display: block;
     counter-increment: line-num;
