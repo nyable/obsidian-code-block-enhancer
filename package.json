@@ -1,6 +1,6 @@
 {
   "name": "obsidian-code-block-enhancer",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Enhance obsidian markdown code block,provides copy button,linenumber,language name tip and so on. (https://github.com/nyable/obsidian-code-block-enhancer)",
   "main": "main.js",
   "scripts": {
@@ -22,6 +22,6 @@
     "rollup-plugin-scss": "^3.0.0",
     "sass": "^1.38.1",
     "tslib": "^2.2.0",
-    "typescript": "^4.2.4"
+    "typescript": "~4.2.4"
   }
 }
