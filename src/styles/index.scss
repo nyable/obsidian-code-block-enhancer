@@ -9,20 +9,20 @@ $cb-line-height: 1.5em;
   right: 0;
 
   svg.copy path {
-    fill: var(--interactive-accent);
+    fill: var(--text-faint);
+  }
+
+  svg.copy-success path {
+    fill: var(--interactive-success);
   }
 
   &:hover,
   &:active {
     cursor: pointer;
     svg path {
-      filter: brightness(1.4);
+      fill: var(--text-accent-hover);
       transition: all ease 0.3s;
     }
-  }
-
-  svg.copy-success path {
-    fill: var(--interactive-success);
   }
 
   &:focus {
@@ -41,21 +41,21 @@ $cb-line-height: 1.5em;
 .code-block-wrap {
   position: relative;
 }
-pre[class*="language-"] {
-  font-size: var(--editor-font-size);
-  line-height: $cb-line-height;
-  & > code[class*="language-"] {
-    padding-top: 0 !important;
-    font-size: var(--editor-font-size) !important;
-    line-height: $cb-line-height !important;
+pre {
+  &[class*="language-"] {
+    font-size: var(--editor-font-size);
+    line-height: $cb-line-height;
+    & > code[class*="language-"] {
+      padding-top: 0 !important;
+      font-size: var(--editor-font-size) !important;
+      line-height: $cb-line-height !important;
+    }
+    &.code-block-pre__has-linenum {
+      padding-left: 4.5em;
+    }
   }
-  &.code-block-pre__has-linenum {
-    padding-left: 4.5em;
-  }
-}
-.code-block-pre {
-  &__has-copy-button:hover {
-    .code-block-copy-button {
+  &.code-block-pre__has-copy-button {
+    &:hover .code-block-copy-button {
       display: block;
     }
   }
