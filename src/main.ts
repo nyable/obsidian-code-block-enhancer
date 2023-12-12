@@ -66,7 +66,7 @@ class CbEnhancerSettingsTab extends PluginSettingTab {
 				}))
 		new Setting(containerEl)
 			.setName('Show language name')
-			.setDesc('Enable this options will show language name')
+			.setDesc('Enabling this option will show language name')
 			.addToggle(cb => {
 				cb
 					.setValue(pluginSetting.showLangName)
@@ -77,7 +77,7 @@ class CbEnhancerSettingsTab extends PluginSettingTab {
 			})
 		new Setting(containerEl)
 			.setName('Show line number')
-			.setDesc('Enable this options will show line number')
+			.setDesc('Enabling this option will show line number')
 			.addToggle(cb => {
 				cb
 					.setValue(pluginSetting.showLineNumber)
