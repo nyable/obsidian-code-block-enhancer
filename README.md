@@ -7,7 +7,7 @@ Inspired by [obsidian-code-block-copy](https://github.com/jdbrice/obsidian-code-
 
 ## Feature
 Enhancer the markdown code block in preview mode.
-* Provide `Copy Button`.
+
 * Provide `Line Number`.
 * Show `Language Name`.
 * Custom exclusion language.
