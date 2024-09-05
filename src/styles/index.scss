@@ -1,5 +1,6 @@
 $cb-font-size: 0.8rem;
 $cb-line-height: 1.5em;
+$cb-top-height: 24px;
 .code-block-copy-button {
   display: none;
   margin: 0 0 0 auto;
@@ -45,11 +46,14 @@ pre {
   &[class*="language-"] {
     font-size: var(--editor-font-size);
     line-height: $cb-line-height;
+    padding-top: $cb-top-height;
+
     & > code[class*="language-"] {
       padding-top: 0 !important;
       font-size: var(--editor-font-size) !important;
       line-height: $cb-line-height !important;
     }
+    
     &.code-block-pre__has-linenum {
       padding-left: 4.5em;
     }
@@ -62,7 +66,7 @@ pre {
 }
 .code-block-linenum-wrap {
   position: absolute;
-  top: 1em;
+  top: $cb-top-height;
   left: 0px;
   min-width: 4em;
   font-size: var(--editor-font-size);
