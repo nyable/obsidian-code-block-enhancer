@@ -1,10 +1,24 @@
-import { App, Plugin, PluginSettingTab, Setting } from 'obsidian';
-import { disconnectObserver, enhanceCodeBlock } from './core';
+import { App, debounce, MarkdownView, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { disconnectObserver, enhanceCodeBlock, updateLineInfo } from './core';
+
+// import { CODE_CACHE, disconnectObserver, enhanceCodeBlock, updateLineInfo } from './TestProcessor';
 import './styles/index.scss';
 interface CbEnhancerSettings {
+  /**
+   * 排除的语言
+   */
   excludeLangs: string[];
+  /**
+   * 是否展示语言名称
+   */
   showLangName: boolean;
+  /**
+   * 是否展示行号
+   */
   showLineNumber: boolean;
+  /**
+   * 是否增强右键菜单栏
+   */
   useContextMenu: boolean;
 }
 
@@ -24,6 +38,14 @@ export default class CodeBlockEnhancer extends Plugin {
     this.registerMarkdownPostProcessor((el, ctx) => {
       enhanceCodeBlock(el, ctx, this);
     });
+
+    this.app.workspace.on(
+      'resize',
+      debounce(() => {
+        updateLineInfo();
+      }, 350)
+    );
+
     console.log('Load Code Block Enhancer Plugin');
   }
 

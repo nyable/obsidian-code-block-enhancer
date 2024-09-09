@@ -15,7 +15,8 @@
     "@rollup/plugin-node-resolve": "^11.2.1",
     "@rollup/plugin-typescript": "^8.2.1",
     "@types/node": "^14.14.37",
-    "obsidian": "latest",
+    "@types/uuid": "^10.0.0",
+    "obsidian": "^0.12.0",
     "rollup": "^2.32.1",
     "rollup-plugin-copy": "^3.4.0",
     "rollup-plugin-delete": "^2.0.0",
@@ -23,5 +24,8 @@
     "sass": "^1.38.1",
     "tslib": "^2.2.0",
     "typescript": "~4.2.4"
+  },
+  "dependencies": {
+    "uuid": "^10.0.0"
   }
 }
