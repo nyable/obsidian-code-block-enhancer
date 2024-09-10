@@ -1,6 +1,10 @@
-// 必须设置一个计算出来精度比较高的字号,不然误差会越来越大
-$cb-font-size: 16px;
-$cb-top-height: 24px;
+body {
+  --cb-font-size: 16px;
+  --cb-top-height: 36px;
+  --cb-linenum-bg: inherit;
+  --cb-linenum-border: #999 1px solid;
+  --cb-linenum-color: var(--code-normal);
+}
 .cbe {
   position: relative;
   .cbe-language-name {
@@ -11,21 +15,24 @@ $cb-top-height: 24px;
     margin-left: 4px;
     user-select: none;
     width: 100%;
-    height: 24px;
+    height: calc(var(--cb-top-height) - 4px);
+    line-height: calc(var(--cb-top-height) - 4px);
+    padding-left: 4px;
     font-size: 12px;
   }
   .cbe-linenum-wrap {
     position: absolute;
-    top: $cb-top-height;
+    top: var(--cb-top-height);
     left: 0px;
     min-width: 4em;
-    font-size: $cb-font-size;
+    font-size: var(--cb-font-size);
     counter-reset: line-num;
     text-align: center;
-    border-right: #999 1px solid;
+    border-right: var(--cb-linenum-border);
     user-select: none;
     pointer-events: none;
-    background-color: inherit;
+    background-color: var(--cb-linenum-bg);
+    color: var(--cb-linenum-color);
     .cbe-linenum {
       display: block;
       counter-increment: line-num;
@@ -37,14 +44,16 @@ $cb-top-height: 24px;
   }
 
   pre[class*="language-"] {
-    padding-top: $cb-top-height;
-    code {
-      font-size: $cb-font-size !important;
-      word-break: break-all !important;
-      width: 100%;
-    }
+    padding-top: var(--cb-top-height) !important;
     &.cbe-has-linenumber {
-      padding-left: 4.5em;
+      padding-left: 4.5em !important;
+      code {
+        padding: 0 !important;
+        font-size: var(--cb-font-size) !important;
+        word-break: break-all !important;
+        white-space: pre-wrap !important;
+        width: 100%;
+      }
     }
   }
 }
