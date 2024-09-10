@@ -301,15 +301,15 @@ export class CodeBlockPlus {
 
     let h = lineHeight;
     if (length > perLineMinSize) {
-      let width = 1;
+      let currentWidth = 0;
       let size = 1;
       for (let i = 0; i < length; i++) {
         const char = text.charCodeAt(i);
-        width += isMonoSpaceUnicode(char) ? minWidth : maxWidth;
-
-        if (width >= codeWidth - minWidth) {
+        const charWidth = isMonoSpaceUnicode(char) ? minWidth : maxWidth;
+        currentWidth += charWidth;
+        if (currentWidth > codeWidth) {
           size++;
-          width = 0;
+          currentWidth = charWidth;
         }
       }
       h = size * lineHeight;
