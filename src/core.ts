@@ -232,26 +232,34 @@ function resetLineNumberStyle(line: HTMLElement, cbMeta: CodeBlockMeta, i: numbe
   let h = lineHeight;
 
   if (length > oneSize) {
-
     let width = 0;
+    let size = 1;
+    for (let i = 0; i < length; i++) {
+      const char = text.charCodeAt(i);
+      width += isMonoSpaceUnicode(char) ? minWidth : maxWidth;
+      if (width >= codeWidth) {
+        size++;
+        width = 0;
+      }
+    }
+    h = size * lineHeight;
+    /*     // 有误差 不适合
     for (let i = 0; i < length; i++) {
       const char = text.charCodeAt(i);
       width += isMonoSpaceUnicode(char) ? minWidth : maxWidth;
     }
     let size = Math.ceil(width / codeWidth);
-    size = Math.ceil((width + size - 1) / codeWidth);
-    h = size * lineHeight;
-    // if (/^\s+/.test(text) && length > 4 * oneSize) {
-    //   const tempSpan = document.createElement('span');
-    //   tempSpan.style.display = 'block';
-    //   tempSpan.innerText = text || 'A';
-    //   cbMeta.code.append(tempSpan);
-    //   const rect = tempSpan.getBoundingClientRect();
-    //   h = rect.height;
-    //   tempSpan.remove();
-    // } else {
-
-    // }
+    h = size * lineHeight; */
+    /*     // 行数很多有性能问题 千行以上
+         if (/^\s+/.test(text) && length > 4 * oneSize) {
+      const tempSpan = document.createElement('span');
+      tempSpan.style.display = 'block';
+      tempSpan.innerText = text || 'A';
+      cbMeta.code.append(tempSpan);
+      const rect = tempSpan.getBoundingClientRect();
+      h = rect.height;
+      tempSpan.remove();
+    }   */
   }
   line.style.height = h + 'px';
 }
@@ -276,7 +284,7 @@ function addLineNumber(
   pre.setAttribute(ATTR.CBE_ID, uuid);
   code.setAttribute(ATTR.CBE_ID, uuid);
 
-  const ob = new MutationObserver(
+  const mutationOb = new MutationObserver(
     debounce((mutations) => {
       Array.from({ length: cbMeta.lineSize }, (v, k) => k).forEach((i) => {
         const line = createEl('span', { cls: CLS.LN_LINE });
@@ -300,11 +308,10 @@ function addLineNumber(
       });
       observer.observe(cbMeta.code);
       FILE_OBSERVER_CACHE.push(observer);
+      mutationOb.disconnect();
     }, 1000)
   );
-  ob.observe(pre, { attributes: false, childList: true });
-
-  setTimeout(() => {}, 350);
+  mutationOb.observe(pre, { attributes: false, childList: true });
 }
 
 export function clearObserverCache() {
@@ -351,22 +358,6 @@ export function updateLineInfo() {
         });
     }
   });
-
-  /*   const targets = document.querySelectorAll('pre>code.is-loaded');
-  Array.from(targets).forEach((code: HTMLElement, index) => {
-    if (index == 0) {
-      updateBaseLineInfo(code);
-    }
-    const uuid = code.getAttribute(ATTR.CBE_ID);
-    const cbMeta = META_CACHE.get(uuid);
-    if (cbMeta) {
-      code.parentElement
-        .querySelectorAll(`.${CLS.LN_LINE}`)
-        .forEach((line: HTMLElement, i: number) => {
-          resetLineNumberStyle(line, cbMeta, i);
-        });
-    }
-  }); */
 }
 
 function updateBaseLineInfo(target: Element) {
@@ -390,7 +381,7 @@ function updateBaseLineInfo(target: Element) {
       BASE_LINE_INFO.updated = true;
     }
 
-    console.debug(BASE_LINE_INFO, 'over!');
+    console.log(BASE_LINE_INFO, 'over!');
   }
 }
 
