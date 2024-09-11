@@ -258,7 +258,7 @@ export class CodeBlockPlus {
       if (BASE_LINE_INFO.lineHeight != 0) {
         BASE_LINE_INFO.updated = true;
       }
-      console.log(BASE_LINE_INFO, 'over!');
+      console.debug(BASE_LINE_INFO, 'over!');
     }
   }
   private setLineNumStyle(line: HTMLElement, cbMeta: CodeBlockMeta, i: number) {
@@ -279,15 +279,11 @@ export class CodeBlockPlus {
     const text = cbMeta.contentList[i];
     tempSpan.innerText = text || 'A';
     const h = tempSpan.getBoundingClientRect().height;
-    const w = tempSpan.getBoundingClientRect().width;
     line.style.height = h + 'px';
-    console.log(text, h, w);
-
     tempSpan.remove();
   }
-
   /**
-   * 按字的宽度来计算行的高度，会有一定的误差，但是大多数情况还是比较准的
+   * 按字的宽度来计算行的高度,应该会有一定的误差,会被字号影响,但是大多数情况还是比较准的
    * @param line 行号对应的element
    * @param cbMeta 元数据
    * @param i 行号索引

@@ -45,17 +45,22 @@ body {
 
   pre[class*="language-"] {
     padding-top: var(--cb-top-height) !important;
-    &.cbe-has-linenumber {
-      overflow: hidden !important;
-      padding-left: 4.5em !important;
-    }
-    code.cbe-has-linenumber {
-      overflow: hidden !important;
-      padding: 0 !important;
-      font-size: var(--cb-font-size) !important;
-      word-break: break-all !important;
-      white-space: pre-wrap !important;
-      width: 100%;
-    }
+  }
+
+  pre[class*="language-"].cbe-has-linenumber {
+    overflow: hidden !important;
+    padding-left: 4.5em !important;
+    word-break: break-all !important;
+    white-space: pre-wrap !important;
+    word-wrap: unset !important;
+  }
+  code[class*="language-"].cbe-has-linenumber {
+    overflow: hidden !important;
+    padding: 0 !important;
+    font-size: var(--cb-font-size) !important;
+    word-break: break-all !important;
+    white-space: pre-wrap !important;
+    word-wrap: unset !important;
+    width: 100%;
   }
 }
