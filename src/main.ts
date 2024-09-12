@@ -1,4 +1,4 @@
-import { App, debounce, MarkdownView, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { App, debounce, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import './styles/index.scss';
 import { CodeBlockPlus } from './core';
 interface CbEnhancerSettings {
@@ -79,7 +79,6 @@ class CbEnhancerSettingsTab extends PluginSettingTab {
     containerEl.createEl('h2', {
       text: `Code Block Enhancer Settings ${this.plugin.manifest.version}`
     });
-    document.body.style.setProperty('--cb-linenum-color', '')
     new Setting(containerEl).setName('General').setHeading();
     new Setting(containerEl)
       .setName('Exclude language list')

@@ -363,7 +363,6 @@ export class CodeBlockPlus {
     this.observerCache.forEach((ob) => {
       if (ob) {
         ob.disconnect();
-        ob = null;
       }
     });
     this.observerCache = [];
