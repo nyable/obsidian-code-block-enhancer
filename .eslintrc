@@ -30,6 +30,7 @@
             "error",
             4
         ],
-        "no-tabs": "error"
+        "no-tabs": "error",
+        "@typescript-eslint/no-explicit-any": "off"
     }
 }

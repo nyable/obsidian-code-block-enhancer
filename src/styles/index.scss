@@ -15,6 +15,11 @@ body {
 }
 .cbe {
     position: relative;
+    &:hover {
+        .cbe-toolbar {
+            visibility: visible;
+        }
+    }
     .cbe-header {
         position: absolute;
         top: 0px;
@@ -26,6 +31,7 @@ body {
         line-height: var(--cb-header-height);
         font-size: 12px;
         display: flex;
+        background-color: var(--code-background);
     }
     .cbe-language-name {
         min-width: 4rem;
@@ -34,7 +40,13 @@ body {
     }
     .cbe-toolbar {
         flex: 1;
+        display: flex;
+        flex-direction: row;
+        justify-content: start;
+        align-items: center;
         visibility: hidden;
+        padding-left: 16px;
+        padding-right: 48px;
     }
     .cbe-linenum-wrap {
         position: absolute;
@@ -42,7 +54,6 @@ body {
         left: 0px;
         width: 100%;
         font-size: var(--cb-font-size);
-        counter-reset: line-num;
         text-align: center;
         user-select: none;
         pointer-events: none;
@@ -51,12 +62,11 @@ body {
         .cbe-linenum {
             width: 4em;
             display: block;
-            counter-increment: line-num;
             pointer-events: auto;
             height: 100%;
             border-right: var(--cb-linenum-border);
             &::before {
-                content: counter(line-num);
+                content: attr(linenum);
             }
         }
         .cbe-line-highlight {
@@ -78,5 +88,24 @@ body {
         padding: 0 !important;
         font-size: var(--cb-font-size) !important;
         background: var(--cb-code-bg) !important;
+    }
+
+    .cbe-toolbar-btn {
+        margin: 0px 4px;
+    }
+}
+
+.cbe.cbe-collapsed {
+    border-top: 4px #39c5bb solid;
+    margin: 20px 0;
+    height: var(--cb-header-height);
+    pre {
+        height: 0px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    .cbe-linenum-wrap,
+    code {
+        visibility: hidden;
     }
 }

@@ -1,15 +1,18 @@
-import { debounce, MarkdownPostProcessorContext, MarkdownView } from 'obsidian';
+import { debounce, getIcon, MarkdownPostProcessorContext, MarkdownView } from 'obsidian';
 import CodeBlockEnhancer from './main';
 
 import { v4 as uuidv4 } from 'uuid';
-import { isMonoSpaceUnicode, queryVisibleElement } from './util';
-
+import { parseLineRange, isMonoSpaceUnicode, queryVisibleElement } from './util';
 const DEFAULT_LANG_ATTR = 'language-text';
 const DEFAULT_LANG = '';
 const LANG_REG = /^language-/;
 const LINE_SPLIT_MARK = '\n';
 
 interface CodeBlockMeta {
+    /**
+     * 自己生成的代码块唯一ID
+     */
+    cbeId: string;
     /**
      * 代码块语言
      */
@@ -114,38 +117,6 @@ const BASE_LINE_INFO: BaseLineInfo = {
     codeWidth: 0
 };
 
-function extraLine(input: string) {
-    const result: number[] = [];
-    if (!input) {
-        return result;
-    }
-    const match = input.match(/\{([^}]+)\}/);
-
-    if (!match) {
-        return result;
-    }
-
-    const rangeString = match[1]; // 提取花括号内的内容
-    const parts = rangeString.split(','); // 按逗号分割
-
-    parts.forEach((part) => {
-        const range = part.split('-'); // 检查是否有范围
-        if (range.length === 1) {
-            // 单个数字，直接转为整数并添加到结果中
-            result.push(parseInt(range[0], 10));
-        } else if (range.length === 2) {
-            // 范围，展开并添加到结果中
-            const start = parseInt(range[0], 10);
-            const end = parseInt(range[1], 10);
-            for (let i = start; i <= end; i++) {
-                result.push(i);
-            }
-        }
-    });
-
-    return result;
-}
-
 export class CodeBlockPlus {
     private plugin: CodeBlockEnhancer;
     private observerCache: IntersectionObserver[] = [];
@@ -191,7 +162,7 @@ export class CodeBlockPlus {
 
         // 增加一个顶部的元素
         const header = createEl('div', { cls: CLS.HEADER });
-        pre.append(header);
+        el.append(header);
 
         const textContent = code.textContent as string;
 
@@ -200,6 +171,7 @@ export class CodeBlockPlus {
         const textSize = textContent.length;
 
         const cbMeta: CodeBlockMeta = {
+            cbeId: uuidv4(),
             langName: lang,
             lineSize,
             pre,
@@ -211,12 +183,10 @@ export class CodeBlockPlus {
             highlightLines: []
         };
 
-        const { showLangName, showLineNumber } = plugin.settings;
+        const { showLineNumber } = plugin.settings;
 
         // create lang name tip in left
-        if (showLangName) {
-            this.addLanguageName(ctx, cbMeta);
-        }
+        this.addHeader(ctx, cbMeta);
         // add line number
         if (showLineNumber) {
             this.addLineNumber(ctx, cbMeta);
@@ -224,14 +194,36 @@ export class CodeBlockPlus {
     }
 
     private getTabSize() {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return (this.plugin.app.vault as any)?.config.tabSize || 4;
     }
 
-    private addLanguageName(ctx: MarkdownPostProcessorContext, cbMeta: CodeBlockMeta): void {
+    private addHeader(ctx: MarkdownPostProcessorContext, cbMeta: CodeBlockMeta): void {
+        const { showLangName, showCollapseBtn } = this.plugin.settings;
         const { langName, header } = cbMeta;
-        header.append(createEl('div', { cls: CLS.H_LANG_NAME, text: langName }));
-        header.append(createEl('div', { cls: CLS.H_TOOLBAR }));
+        if (showLangName) {
+            header.append(createEl('div', { cls: CLS.H_LANG_NAME, text: langName }));
+        }
+
+        const btCls = ['clickable-icon', 'cbe-toolbar-btn'];
+
+        const toolbar = createEl('div', { cls: CLS.H_TOOLBAR });
+        header.append(toolbar);
+        if (showCollapseBtn) {
+            const collapseBtn = createSpan({ cls: btCls }, (el) => {
+                el.append(getIcon('chevron-down') as Node);
+            });
+            this.plugin.registerDomEvent(collapseBtn, 'click', (e) => {
+                const clsName = 'cbe-collapsed';
+                const classList = cbMeta.el.classList;
+                classList.toggle(clsName);
+            });
+            toolbar.append(collapseBtn);
+        }
+
+        // const snapBtn = createSpan({ cls: btCls }, (el) => {
+        //     el.append(getIcon('camera') as Node);
+        // });
+        // toolbar.append(snapBtn);
     }
 
     /**
@@ -349,7 +341,7 @@ export class CodeBlockPlus {
      * @param cbMeta 代码块数据
      */
     private addLineNumber(ctx: MarkdownPostProcessorContext, cbMeta: CodeBlockMeta) {
-        const { pre, code, lineSize } = cbMeta;
+        const { pre, code, lineSize, cbeId } = cbMeta;
 
         const wrap = createEl('div', { cls: CLS.LN_WRAP });
         pre.append(wrap);
@@ -357,22 +349,21 @@ export class CodeBlockPlus {
         pre.classList.add(CLS.HAS_LINENUMBER);
         code.classList.add(CLS.HAS_LINENUMBER);
 
-        const uuid = uuidv4();
-        pre.setAttribute(ATTR.CBE_ID, uuid);
-        code.setAttribute(ATTR.CBE_ID, uuid);
+        pre.setAttribute(ATTR.CBE_ID, cbeId);
+        code.setAttribute(ATTR.CBE_ID, cbeId);
 
-        this.metaCache.set(uuid, cbMeta);
+        this.metaCache.set(cbeId, cbMeta);
 
         const mutationOb = new MutationObserver(
             debounce((mutations) => {
                 Array.from({ length: lineSize }, (v, k) => k).forEach((i) => {
                     const line = createEl('div', {
                         cls: [CLS.LN_LINE],
-                        attr: { idx: i }
+                        attr: { linenum: i + 1 }
                     });
                     const linunum = createEl('div', {
                         cls: [CLS.LN_NUM],
-                        attr: { idx: i }
+                        attr: { linenum: i + 1 }
                     });
 
                     line.append(linunum);
@@ -393,7 +384,7 @@ export class CodeBlockPlus {
                                     ?.editor.getLine(
                                         ctx.getSectionInfo(cbMeta.el)?.lineStart || 0
                                     ) || '';
-                            const highlightLines = extraLine(firstLine);
+                            const highlightLines = parseLineRange(firstLine);
                             Array.from(lines).forEach((line: HTMLElement, i) => {
                                 line.classList.toggle(
                                     CLS.LN_HIGHLIGHT,

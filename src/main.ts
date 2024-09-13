@@ -2,16 +2,12 @@ import { App, debounce, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import { CbeCssVar, CodeBlockPlus } from './core';
 
 // Remember to rename these classes and interfaces!
+
 interface CbeSettings {
     /**
      * 排除的语言
      */
     excludeLangs: string[];
-    /**
-     * 是否展示语言名称
-     */
-    showLangName: boolean;
-
     /**
      * 是否增强右键菜单栏
      */
@@ -28,15 +24,24 @@ interface CbeSettings {
      * 行号高亮的颜色
      */
     linenumHighlightColor: string;
+    /**
+     * 是否展示语言名称
+     */
+    showLangName: boolean;
+    /**
+     * 是否展示代码块折叠按钮
+     */
+    showCollapseBtn: boolean;
 }
 
 const DEFAULT_SETTINGS: CbeSettings = {
     excludeLangs: ['todoist'],
-    showLangName: true,
     useContextMenu: true,
     showLineNumber: true,
     linenumFontColor: 'var(--code-normal)',
-    linenumHighlightColor: 'rgba(255, 255, 0, 0.1)'
+    linenumHighlightColor: 'rgba(255, 255, 0, 0.1)',
+    showLangName: true,
+    showCollapseBtn: true
 };
 export default class CodeBlockEnhancerPlugin extends Plugin {
     settings: CbeSettings;
@@ -60,7 +65,6 @@ export default class CodeBlockEnhancerPlugin extends Plugin {
     async onload() {
         await this.loadSettings();
         this.addSettingTab(new CbeSettingsTab(this.app, this));
-
         this.setCssVar();
 
         const cbp = new CodeBlockPlus(this);
@@ -107,24 +111,14 @@ class CbeSettingsTab extends PluginSettingTab {
         new Setting(containerEl).setName('General').setHeading();
         new Setting(containerEl)
             .setName('Exclude language list')
-            .setDesc('Code blocks excluded from the language will not be processed by the plugin')
-            .addTextArea((text) =>
-                text
-                    .setPlaceholder('Separate by `,` (like `todoist,other,...`)')
+            .setDesc('The languages in the list will be ignored and not processed')
+            .addTextArea((text) => {
+                text.setPlaceholder('Split by `,` (like `todoist,other,...`)')
                     .setValue(pluginSetting.excludeLangs.join(','))
                     .onChange(async (value) => {
                         pluginSetting.excludeLangs = value.split(',');
                         await this.plugin.saveSettings();
-                    })
-            );
-        new Setting(containerEl)
-            .setName('Show language name')
-            .setDesc('Display the language name of the code block when enabled')
-            .addToggle((cb) => {
-                cb.setValue(pluginSetting.showLangName).onChange(async (isEnable) => {
-                    pluginSetting.showLangName = isEnable;
-                    await this.plugin.saveSettings();
-                });
+                    });
             });
 
         // new Setting(containerEl)
@@ -138,18 +132,17 @@ class CbeSettingsTab extends PluginSettingTab {
         //     });
 
         new Setting(containerEl).setName('Line number').setHeading();
-        new Setting(containerEl)
-            .setName('Show line number')
-            .setDesc('Show row numbers when enabled')
-            .addToggle((cb) => {
-                cb.setValue(pluginSetting.showLineNumber).onChange(async (isEnable) => {
-                    pluginSetting.showLineNumber = isEnable;
-                    await this.plugin.saveSettings();
-                });
-            });
+        this.createSimpleToggle(
+            containerEl,
+            'showLineNumber',
+            'Display line numbers',
+            'After enabling, line numbers will be displayed'
+        );
         new Setting(containerEl)
             .setName('Line number font color')
-            .setDesc('Such as :#ed9c9fcc/rgba(237,156,159,0.8)/var(--code-normal)')
+            .setDesc(
+                'Set the font color of the line numbers, like `#ed9c9fcc/rgba(237,156,159,0.8)/var(--code-normal)`'
+            )
             .addText((cb) => {
                 cb.setValue(pluginSetting.linenumFontColor).onChange(async (value) => {
                     pluginSetting.linenumFontColor = value;
@@ -162,7 +155,7 @@ class CbeSettingsTab extends PluginSettingTab {
             });
         new Setting(containerEl)
             .setName('Line highlight color')
-            .setDesc('Such as :#FFFF001A/rgba(255, 255, 0, 0.1)')
+            .setDesc('Set the line highlight color, like `#FFFF001A/rgba(255, 255, 0, 0.1)`')
             .addText((cb) => {
                 cb.setValue(pluginSetting.linenumHighlightColor).onChange(async (value) => {
                     pluginSetting.linenumHighlightColor = value;
@@ -170,6 +163,46 @@ class CbeSettingsTab extends PluginSettingTab {
                         CbeCssVar.linenumHighlightColor,
                         pluginSetting.linenumHighlightColor
                     );
+                    await this.plugin.saveSettings();
+                });
+            });
+        new Setting(containerEl).setName('Header').setHeading();
+
+        this.createSimpleToggle(
+            containerEl,
+            'showLangName',
+            'Display language names',
+            'After enabling, the language names will be displayed at the top'
+        );
+
+        this.createSimpleToggle(
+            containerEl,
+            'showCollapseBtn',
+            'Display the collapse button',
+            'After enabling, code blocks can be collapsed'
+        );
+    }
+
+    /**
+     * 创建一个简单的开关设置,并且在切换时自动保存
+     * @param containerEl el
+     * @param key  keyof CbeSettings
+     * @param name name
+     * @param desc desc
+     */
+    private createSimpleToggle<K extends keyof CbeSettings>(
+        containerEl: HTMLElement,
+        key: K,
+        name: string | DocumentFragment,
+        desc: string | DocumentFragment
+    ) {
+        const pluginSetting = this.plugin.settings;
+        new Setting(containerEl)
+            .setName(name)
+            .setDesc(desc)
+            .addToggle((cb) => {
+                cb.setValue(pluginSetting[key] as boolean).onChange(async (value: any) => {
+                    pluginSetting[key] = value;
                     await this.plugin.saveSettings();
                 });
             });

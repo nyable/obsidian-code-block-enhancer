@@ -38,3 +38,40 @@ export function queryVisibleElement(selector: string) {
     }) as HTMLElement[];
     return elements;
 }
+
+/**
+ * 将 {1,3,7-9}格式的字符串解析成一个数组[1,3,7,8,9]
+ * @param input string
+ * @returns number[]
+ */
+export function parseLineRange(input: string) {
+    const result: number[] = [];
+    if (!input) {
+        return result;
+    }
+    const match = input.match(/\{([^}]+)\}/);
+
+    if (!match) {
+        return result;
+    }
+
+    const rangeString = match[1]; // 提取花括号内的内容
+    const parts = rangeString.split(','); // 按逗号分割
+
+    parts.forEach((part) => {
+        const range = part.split('-'); // 检查是否有范围
+        if (range.length === 1) {
+            // 单个数字，直接转为整数并添加到结果中
+            result.push(parseInt(range[0], 10));
+        } else if (range.length === 2) {
+            // 范围，展开并添加到结果中
+            const start = parseInt(range[0], 10);
+            const end = parseInt(range[1], 10);
+            for (let i = start; i <= end; i++) {
+                result.push(i);
+            }
+        }
+    });
+
+    return result;
+}
