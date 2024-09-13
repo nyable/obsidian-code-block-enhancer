@@ -94,7 +94,23 @@ export enum CLS {
     /**
      * 行高亮
      */
-    LN_HIGHLIGHT = 'cbe-line-highlight'
+    LN_HIGHLIGHT = 'cbe-line-highlight',
+    /**
+     * obsidian自带的类 可点击的按钮
+     */
+    OB_CLICKABLE = 'clickable-icon',
+    /**
+     * 工具栏中的按钮
+     */
+    H_TOOL_BTN = 'cbe-toolbar-btn',
+    /**
+     * 启用替换复制按钮后在最外层加的类
+     */
+    HAS_COPYBTN = 'cbe-has-copy-btn',
+    /**
+     * 启用折叠按钮后在最外层加的类
+     */
+    HAS_COLLAPSED = 'cbe-collapsed'
 }
 export enum CbeCssVar {
     fontSize = '--cb-font-size',
@@ -198,13 +214,14 @@ export class CodeBlockPlus {
     }
 
     private addHeader(ctx: MarkdownPostProcessorContext, cbMeta: CodeBlockMeta): void {
-        const { showLangName, showCollapseBtn } = this.plugin.settings;
         const { langName, header } = cbMeta;
+        const { showLangName, showCollapseBtn, enableCbeCopyBtn, showCodeSnap } =
+            this.plugin.settings;
         if (showLangName) {
             header.append(createEl('div', { cls: CLS.H_LANG_NAME, text: langName }));
         }
 
-        const btCls = ['clickable-icon', 'cbe-toolbar-btn'];
+        const btCls = [CLS.OB_CLICKABLE, CLS.H_TOOL_BTN];
 
         const toolbar = createEl('div', { cls: CLS.H_TOOLBAR });
         header.append(toolbar);
@@ -216,79 +233,96 @@ export class CodeBlockPlus {
                 }
             );
             this.plugin.registerDomEvent(collapseBtn, 'click', (e) => {
-                const clsName = 'cbe-collapsed';
                 const classList = cbMeta.el.classList;
-                classList.toggle(clsName);
+                classList.toggle(CLS.HAS_COLLAPSED);
             });
             toolbar.append(collapseBtn);
         }
 
-        const snapBtn = createSpan({ cls: btCls, attr: { 'aria-label': 'Code Snap' } }, (el) => {
-            el.append(getIcon('camera') as Node);
-        });
-        this.plugin.registerDomEvent(snapBtn, 'click', (e) => {
-            const gap = 8;
-            domToImage
-                .toBlob(cbMeta.el, {
-                    bgcolor: 'transparent',
-                    height: cbMeta.el.offsetHeight + gap * 4,
-                    width: cbMeta.el.offsetWidth + gap * 2,
-                    style: {
-                        margin: `${gap}px`,
-                        padding: '0px',
-                        position: 'absolute',
-                        top: '0px',
-                        left: '0px'
-                    },
-                    // @ts-ignore
-                    adjustClonedNode: (node: HTMLElement, clone: HTMLElement, after: any) => {
-                        if (!after) {
-                            const classList = clone.classList;
-                            if (classList) {
-                                if (classList.contains(CLS.H_TOOLBAR)) {
-                                    clone.style.display = 'none';
-                                }
-                                if (classList.contains(CLS.HEADER)) {
-                                    clone.style.borderRadius = '4px';
-                                    const size = '1em';
-                                    const btnGroup = createDiv();
-                                    btnGroup.style.display = 'flex';
-                                    btnGroup.style.width = '6em';
-                                    btnGroup.style.alignSelf = 'center';
-                                    btnGroup.style.padding = '0 1em';
-                                    btnGroup.style.gap = '8px';
-                                    const bgColors = ['#ff5f57', '#ffbd2e', '#28c940'];
-                                    bgColors.forEach((color) => {
-                                        const btn = document.createElement('div');
-                                        btn.style.width = size;
-                                        btn.style.height = size;
-                                        btn.style.borderRadius = '50%';
-                                        btn.style.backgroundColor = color;
-                                        btnGroup.append(btn);
-                                    });
-                                    clone.append(btnGroup);
-                                }
-                                if (classList.contains(CLS.H_LANG_NAME)) {
-                                    clone.style.flex = '1';
-                                    clone.style.textAlign = 'right';
-                                    clone.style.paddingRight = '1em';
-                                    clone.style.fontSize = '1em';
-                                    clone.style.fontWeight = 'bold';
+        if (showCodeSnap) {
+            const snapBtn = createSpan(
+                { cls: btCls, attr: { 'aria-label': 'Code Snap' } },
+                (el) => {
+                    el.append(getIcon('camera') as Node);
+                }
+            );
+            this.plugin.registerDomEvent(snapBtn, 'click', (e) => {
+                const gap = 8;
+                domToImage
+                    .toBlob(cbMeta.el, {
+                        bgcolor: 'transparent',
+                        height: cbMeta.el.offsetHeight + gap * 4,
+                        width: cbMeta.el.offsetWidth + gap * 2,
+                        style: {
+                            margin: `${gap}px`,
+                            padding: '0px',
+                            position: 'absolute',
+                            top: '0px',
+                            left: '0px'
+                        },
+                        // @ts-ignore
+                        adjustClonedNode: (node: HTMLElement, clone: HTMLElement, after: any) => {
+                            if (!after) {
+                                const classList = clone.classList;
+                                if (classList) {
+                                    if (classList.contains(CLS.H_TOOLBAR)) {
+                                        clone.style.display = 'none';
+                                    }
+                                    if (classList.contains(CLS.HEADER)) {
+                                        clone.style.borderRadius = '4px';
+                                        const size = '1em';
+                                        const btnGroup = createDiv();
+                                        btnGroup.style.display = 'flex';
+                                        btnGroup.style.width = '6em';
+                                        btnGroup.style.alignSelf = 'center';
+                                        btnGroup.style.padding = '0 1em';
+                                        btnGroup.style.gap = '8px';
+                                        const bgColors = ['#ff5f57', '#ffbd2e', '#28c940'];
+                                        bgColors.forEach((color) => {
+                                            const btn = document.createElement('div');
+                                            btn.style.width = size;
+                                            btn.style.height = size;
+                                            btn.style.borderRadius = '50%';
+                                            btn.style.backgroundColor = color;
+                                            btnGroup.append(btn);
+                                        });
+                                        clone.append(btnGroup);
+                                    }
+                                    if (classList.contains(CLS.H_LANG_NAME)) {
+                                        clone.style.flex = '1';
+                                        clone.style.textAlign = 'right';
+                                        clone.style.paddingRight = '1em';
+                                        clone.style.fontSize = '1em';
+                                        clone.style.fontWeight = 'bold';
+                                    }
                                 }
                             }
+                            return clone;
                         }
-                        return clone;
-                    }
-                })
-                .then((b) => {
-                    navigator.clipboard.write([new ClipboardItem({ 'image/png': b })]);
-                    new Notice('Image has been copied!');
-                })
-                .catch(() => {
-                    new Notice('Failed to copy image!');
+                    })
+                    .then((b) => {
+                        navigator.clipboard.write([new ClipboardItem({ 'image/png': b })]);
+                        new Notice('Image has been copied!');
+                    })
+                    .catch(() => {
+                        new Notice('Failed to copy image!');
+                    });
+            });
+            toolbar.append(snapBtn);
+        }
+
+        if (enableCbeCopyBtn) {
+            cbMeta.el.classList.add(CLS.HAS_COPYBTN);
+            const copyBtn = createSpan({ cls: btCls, attr: { 'aria-label': 'Copy' } }, (el) => {
+                el.append(getIcon('copy') as Node);
+            });
+            this.plugin.registerDomEvent(copyBtn, 'click', (e) => {
+                navigator.clipboard.writeText(cbMeta.code.textContent || '').then(() => {
+                    new Notice('copied!');
                 });
-        });
-        toolbar.append(snapBtn);
+            });
+            toolbar.append(copyBtn);
+        }
     }
 
     /**

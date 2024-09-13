@@ -45,11 +45,10 @@ body {
     .cbe-toolbar {
         display: flex;
         flex-direction: row;
-        justify-content: start;
+        justify-content: end;
         align-items: center;
         visibility: hidden;
         padding-left: 16px;
-        padding-right: 48px;
         pointer-events: auto;
     }
     .cbe-linenum-wrap {
@@ -113,5 +112,14 @@ body {
     .cbe-linenum-wrap,
     code {
         visibility: hidden;
+    }
+}
+
+.cbe.cbe-has-copy-btn {
+    .cbe-toolbar {
+        flex: 1;
+    }
+    .copy-code-button {
+        display: none;
     }
 }

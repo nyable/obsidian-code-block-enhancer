@@ -36,6 +36,10 @@ interface CbeSettings {
      * 是否展示代码块截图按钮
      */
     showCodeSnap: boolean;
+    /**
+     * 启用复制按钮图标
+     */
+    enableCbeCopyBtn: boolean;
 }
 
 const DEFAULT_SETTINGS: CbeSettings = {
@@ -46,7 +50,8 @@ const DEFAULT_SETTINGS: CbeSettings = {
     linenumHighlightColor: 'rgba(255, 255, 0, 0.1)',
     showLangName: true,
     showCollapseBtn: true,
-    showCodeSnap: true
+    showCodeSnap: true,
+    enableCbeCopyBtn: true
 };
 export default class CodeBlockEnhancerPlugin extends Plugin {
     settings: CbeSettings;
@@ -192,6 +197,12 @@ class CbeSettingsTab extends PluginSettingTab {
             'showCodeSnap',
             'Display the code snap button',
             'After enabling, you can take screenshots of the code blocks'
+        );
+        this.createSimpleToggle(
+            containerEl,
+            'enableCbeCopyBtn',
+            'Icon copy button',
+            'Replace the original copy button'
         );
     }
 
