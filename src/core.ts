@@ -1,4 +1,11 @@
-import { debounce, getIcon, MarkdownPostProcessorContext, MarkdownView, Notice } from 'obsidian';
+import {
+    debounce,
+    getIcon,
+    MarkdownPostProcessorContext,
+    MarkdownView,
+    Menu,
+    Notice
+} from 'obsidian';
 import CodeBlockEnhancer from './main';
 import domToImage from 'dom-to-image-more';
 import { v4 as uuidv4 } from 'uuid';
@@ -113,7 +120,7 @@ export enum CLS {
     HAS_COLLAPSED = 'cbe-collapsed'
 }
 export enum CbeCssVar {
-    fontSize = '--cb-font-size',
+    codeFontSize = '--cb-font-size',
     headerHeight = '--cb-top-height',
     linenumBg = '--cb-linenum-bg',
     linenumBorder = '--cb-linenum-border',
@@ -199,7 +206,7 @@ export class CodeBlockPlus {
             highlightLines: []
         };
 
-        const { showLineNumber } = plugin.settings;
+        const { showLineNumber, useContextMenu } = plugin.settings;
 
         // add header
         this.addHeader(ctx, cbMeta);
@@ -207,6 +214,46 @@ export class CodeBlockPlus {
         if (showLineNumber) {
             this.addLineNumber(ctx, cbMeta);
         }
+        // add context menu
+        if (useContextMenu) {
+            this.addContextMenu(ctx, cbMeta);
+        }
+    }
+
+    addContextMenu(ctx: MarkdownPostProcessorContext, cbMeta: CodeBlockMeta) {
+        const { el, code } = cbMeta;
+        this.plugin.registerDomEvent(el, 'contextmenu', (event) => {
+            const target = event.target as HTMLElement;
+            if (target.tagName == 'CODE') {
+                const contextMenu = new Menu();
+                contextMenu.addItem((item) => {
+                    item.setTitle('Copy all')
+                        .setIcon('copy')
+                        .onClick((e) => {
+                            navigator.clipboard.writeText(code.textContent || '').then(() => {
+                                new Notice('Copied!');
+                            });
+                        });
+                });
+                if (cbMeta.lineSize > 30) {
+                    contextMenu.addItem((item) => {
+                        item.setTitle('To Top')
+                            .setIcon('arrow-up-to-line')
+                            .onClick((e) => {
+                                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            });
+                    });
+                    contextMenu.addItem((item) => {
+                        item.setTitle('To Bottom')
+                            .setIcon('arrow-down-to-line')
+                            .onClick((e) => {
+                                el.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                            });
+                    });
+                }
+                contextMenu.showAtMouseEvent(event);
+            }
+        });
     }
 
     private getTabSize() {
@@ -318,7 +365,7 @@ export class CodeBlockPlus {
             });
             this.plugin.registerDomEvent(copyBtn, 'click', (e) => {
                 navigator.clipboard.writeText(cbMeta.code.textContent || '').then(() => {
-                    new Notice('copied!');
+                    new Notice('Copied!');
                 });
             });
             toolbar.append(copyBtn);

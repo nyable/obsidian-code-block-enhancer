@@ -40,6 +40,10 @@ interface CbeSettings {
      * 启用复制按钮图标
      */
     enableCbeCopyBtn: boolean;
+    /**
+     * 代码块字体大小 14px
+     */
+    codeFontSize: string;
 }
 
 const DEFAULT_SETTINGS: CbeSettings = {
@@ -51,25 +55,34 @@ const DEFAULT_SETTINGS: CbeSettings = {
     showLangName: true,
     showCollapseBtn: true,
     showCodeSnap: true,
-    enableCbeCopyBtn: true
+    enableCbeCopyBtn: true,
+    codeFontSize: '14px'
 };
 export default class CodeBlockEnhancerPlugin extends Plugin {
     settings: CbeSettings;
 
-    private async setCssVar() {
+    async setCssVar() {
         const settings = this.settings;
-        const { linenumFontColor, linenumHighlightColor } = settings;
-        if (!linenumFontColor) {
-            settings.linenumFontColor = DEFAULT_SETTINGS.linenumFontColor;
-        }
-        if (!linenumHighlightColor) {
-            settings.linenumHighlightColor = DEFAULT_SETTINGS.linenumHighlightColor;
-        }
-        document.body.style.setProperty(CbeCssVar.linenumColor, settings.linenumFontColor);
-        document.body.style.setProperty(
-            CbeCssVar.linenumHighlightColor,
-            settings.linenumHighlightColor
-        );
+
+        const { linenumFontColor, linenumHighlightColor, codeFontSize } = settings;
+
+        type CbeStringKeys = {
+            [K in keyof CbeSettings]: CbeSettings[K] extends string ? K : never;
+        }[keyof CbeSettings];
+        const blankToDefaultKeys: CbeStringKeys[] = [
+            'codeFontSize',
+            'linenumFontColor',
+            'linenumHighlightColor'
+        ];
+
+        blankToDefaultKeys.forEach((key) => {
+            if (!(settings[key] && settings[key].trim())) {
+                settings[key] = DEFAULT_SETTINGS[key];
+            }
+        });
+        document.body.style.setProperty(CbeCssVar.linenumColor, linenumFontColor);
+        document.body.style.setProperty(CbeCssVar.linenumHighlightColor, linenumHighlightColor);
+        document.body.style.setProperty(CbeCssVar.codeFontSize, codeFontSize);
         await this.saveSettings();
     }
     async onload() {
@@ -130,16 +143,22 @@ class CbeSettingsTab extends PluginSettingTab {
                         await this.plugin.saveSettings();
                     });
             });
+        new Setting(containerEl)
+            .setName('Font size of code block')
+            .setDesc('Modify the font size of the code in the code block')
+            .addText((text) => {
+                text.setValue(pluginSetting.codeFontSize).onChange(async (v) => {
+                    pluginSetting.codeFontSize = v;
+                    await this.plugin.saveSettings();
+                });
+            });
 
-        // new Setting(containerEl)
-        //     .setName('Use ContextMenu')
-        //     .setDesc('Enhance the right-click menu in code block preview mode')
-        //     .addToggle((cb) => {
-        //         cb.setValue(pluginSetting.useContextMenu).onChange(async (isEnable) => {
-        //             pluginSetting.useContextMenu = isEnable;
-        //             await this.plugin.saveSettings();
-        //         });
-        //     });
+        this.createSimpleToggle(
+            containerEl,
+            'useContextMenu',
+            'Use context-menu',
+            'Enhance the right-click menu for code blocks'
+        );
 
         new Setting(containerEl).setName('Line number').setHeading();
         this.createSimpleToggle(
@@ -156,11 +175,7 @@ class CbeSettingsTab extends PluginSettingTab {
             .addText((cb) => {
                 cb.setValue(pluginSetting.linenumFontColor).onChange(async (value) => {
                     pluginSetting.linenumFontColor = value;
-                    document.body.style.setProperty(
-                        CbeCssVar.linenumColor,
-                        pluginSetting.linenumFontColor
-                    );
-                    await this.plugin.saveSettings();
+                    await this.plugin.setCssVar();
                 });
             });
         new Setting(containerEl)
@@ -169,11 +184,7 @@ class CbeSettingsTab extends PluginSettingTab {
             .addText((cb) => {
                 cb.setValue(pluginSetting.linenumHighlightColor).onChange(async (value) => {
                     pluginSetting.linenumHighlightColor = value;
-                    document.body.style.setProperty(
-                        CbeCssVar.linenumHighlightColor,
-                        pluginSetting.linenumHighlightColor
-                    );
-                    await this.plugin.saveSettings();
+                    await this.plugin.setCssVar();
                 });
             });
         new Setting(containerEl).setName('Header').setHeading();
