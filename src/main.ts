@@ -32,6 +32,10 @@ interface CbeSettings {
      * 是否展示代码块折叠按钮
      */
     showCollapseBtn: boolean;
+    /**
+     * 是否展示代码块截图按钮
+     */
+    showCodeSnap: boolean;
 }
 
 const DEFAULT_SETTINGS: CbeSettings = {
@@ -41,7 +45,8 @@ const DEFAULT_SETTINGS: CbeSettings = {
     linenumFontColor: 'var(--code-normal)',
     linenumHighlightColor: 'rgba(255, 255, 0, 0.1)',
     showLangName: true,
-    showCollapseBtn: true
+    showCollapseBtn: true,
+    showCodeSnap: true
 };
 export default class CodeBlockEnhancerPlugin extends Plugin {
     settings: CbeSettings;
@@ -180,6 +185,13 @@ class CbeSettingsTab extends PluginSettingTab {
             'showCollapseBtn',
             'Display the collapse button',
             'After enabling, code blocks can be collapsed'
+        );
+
+        this.createSimpleToggle(
+            containerEl,
+            'showCodeSnap',
+            'Display the code snap button',
+            'After enabling, you can take screenshots of the code blocks'
         );
     }
 

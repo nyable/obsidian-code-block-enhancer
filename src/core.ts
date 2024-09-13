@@ -1,6 +1,6 @@
-import { debounce, getIcon, MarkdownPostProcessorContext, MarkdownView } from 'obsidian';
+import { debounce, getIcon, MarkdownPostProcessorContext, MarkdownView, Notice } from 'obsidian';
 import CodeBlockEnhancer from './main';
-
+import domToImage from 'dom-to-image-more';
 import { v4 as uuidv4 } from 'uuid';
 import { parseLineRange, isMonoSpaceUnicode, queryVisibleElement } from './util';
 const DEFAULT_LANG_ATTR = 'language-text';
@@ -185,7 +185,7 @@ export class CodeBlockPlus {
 
         const { showLineNumber } = plugin.settings;
 
-        // create lang name tip in left
+        // add header
         this.addHeader(ctx, cbMeta);
         // add line number
         if (showLineNumber) {
@@ -209,9 +209,12 @@ export class CodeBlockPlus {
         const toolbar = createEl('div', { cls: CLS.H_TOOLBAR });
         header.append(toolbar);
         if (showCollapseBtn) {
-            const collapseBtn = createSpan({ cls: btCls }, (el) => {
-                el.append(getIcon('chevron-down') as Node);
-            });
+            const collapseBtn = createSpan(
+                { cls: btCls, attr: { 'aria-label': 'Collapse' } },
+                (el) => {
+                    el.append(getIcon('chevron-down') as Node);
+                }
+            );
             this.plugin.registerDomEvent(collapseBtn, 'click', (e) => {
                 const clsName = 'cbe-collapsed';
                 const classList = cbMeta.el.classList;
@@ -220,10 +223,72 @@ export class CodeBlockPlus {
             toolbar.append(collapseBtn);
         }
 
-        // const snapBtn = createSpan({ cls: btCls }, (el) => {
-        //     el.append(getIcon('camera') as Node);
-        // });
-        // toolbar.append(snapBtn);
+        const snapBtn = createSpan({ cls: btCls, attr: { 'aria-label': 'Code Snap' } }, (el) => {
+            el.append(getIcon('camera') as Node);
+        });
+        this.plugin.registerDomEvent(snapBtn, 'click', (e) => {
+            const gap = 8;
+            domToImage
+                .toBlob(cbMeta.el, {
+                    bgcolor: 'transparent',
+                    height: cbMeta.el.offsetHeight + gap * 4,
+                    width: cbMeta.el.offsetWidth + gap * 2,
+                    style: {
+                        margin: `${gap}px`,
+                        padding: '0px',
+                        position: 'absolute',
+                        top: '0px',
+                        left: '0px'
+                    },
+                    // @ts-ignore
+                    adjustClonedNode: (node: HTMLElement, clone: HTMLElement, after: any) => {
+                        if (!after) {
+                            const classList = clone.classList;
+                            if (classList) {
+                                if (classList.contains(CLS.H_TOOLBAR)) {
+                                    clone.style.display = 'none';
+                                }
+                                if (classList.contains(CLS.HEADER)) {
+                                    clone.style.borderRadius = '4px';
+                                    const size = '1em';
+                                    const btnGroup = createDiv();
+                                    btnGroup.style.display = 'flex';
+                                    btnGroup.style.width = '6em';
+                                    btnGroup.style.alignSelf = 'center';
+                                    btnGroup.style.padding = '0 1em';
+                                    btnGroup.style.gap = '8px';
+                                    const bgColors = ['#ff5f57', '#ffbd2e', '#28c940'];
+                                    bgColors.forEach((color) => {
+                                        const btn = document.createElement('div');
+                                        btn.style.width = size;
+                                        btn.style.height = size;
+                                        btn.style.borderRadius = '50%';
+                                        btn.style.backgroundColor = color;
+                                        btnGroup.append(btn);
+                                    });
+                                    clone.append(btnGroup);
+                                }
+                                if (classList.contains(CLS.H_LANG_NAME)) {
+                                    clone.style.flex = '1';
+                                    clone.style.textAlign = 'right';
+                                    clone.style.paddingRight = '1em';
+                                    clone.style.fontSize = '1em';
+                                    clone.style.fontWeight = 'bold';
+                                }
+                            }
+                        }
+                        return clone;
+                    }
+                })
+                .then((b) => {
+                    navigator.clipboard.write([new ClipboardItem({ 'image/png': b })]);
+                    new Notice('Image has been copied!');
+                })
+                .catch(() => {
+                    new Notice('Failed to copy image!');
+                });
+        });
+        toolbar.append(snapBtn);
     }
 
     /**

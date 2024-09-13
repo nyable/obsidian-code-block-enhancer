@@ -1,5 +1,5 @@
 body {
-    --cb-font-size: 16px;
+    --cb-font-size: 14px;
     --cb-header-height: 36px;
     --cb-linenum-bg: inherit;
     --cb-linenum-border: #999 1px solid;
@@ -20,6 +20,9 @@ body {
             visibility: visible;
         }
     }
+    .copy-code-button {
+        z-index: 200;
+    }
     .cbe-header {
         position: absolute;
         top: 0px;
@@ -32,6 +35,7 @@ body {
         font-size: 12px;
         display: flex;
         background-color: var(--code-background);
+        pointer-events: none;
     }
     .cbe-language-name {
         min-width: 4rem;
@@ -39,7 +43,6 @@ body {
         padding-left: 4px;
     }
     .cbe-toolbar {
-        flex: 1;
         display: flex;
         flex-direction: row;
         justify-content: start;
@@ -47,6 +50,7 @@ body {
         visibility: hidden;
         padding-left: 16px;
         padding-right: 48px;
+        pointer-events: auto;
     }
     .cbe-linenum-wrap {
         position: absolute;
