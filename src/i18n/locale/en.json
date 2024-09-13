@@ -1,0 +1,52 @@
+{
+  "key": "Hello world",
+  "settings": {
+    "general": "General",
+    "excludeLangs": {
+      "name": "Exclude language list",
+      "desc": "The languages in the list will be ignored and not processed",
+      "placeholder": "Split by `,` (like `todoist,other,...`)"
+    },
+    "codeFontSize": {
+      "name": "Font size of code block",
+      "desc": "Modify the font size of the code in the code block"
+    },
+    "useContextMenu": {
+      "name": "Use context-menu",
+      "desc": "Enhance the right-click menu for code blocks"
+    },
+    "lineNumber": "Line number",
+    "showLineNumber": {
+      "name": "Display line numbers",
+      "desc": "After enabling, line numbers will be displayed"
+    },
+    "linenumFontColor": {
+      "name": "Line number font color",
+      "desc": "Set the font color of the line numbers, like `#ed9c9fcc/rgba(237,156,159,0.8)/var(--code-normal)`"
+    },
+    "linenumHighlightColor": {
+      "name": "Line highlight color",
+      "desc": "Set the line highlight color, like `#FFFF001A/rgba(255, 255, 0, 0.1)`"
+    },
+    "headerBar": "Header Bar",
+    "showLangName": {
+      "name": "Display language names",
+      "desc": "After enabling, the language names will be displayed at the top"
+    },
+    "showCollapseBtn": {
+      "name": "Display the collapse button",
+      "desc": "After enabling, code blocks can be collapsed"
+    },
+    "showCodeSnap": {
+      "name": "Display the code snap button",
+      "desc": "After enabling, you can take screenshots of the code blocks"
+    },
+    "enableCbeCopyBtn": {
+      "name": "Icon copy button",
+      "desc": "Replace the original copy button"
+    }
+  },
+  "plugin": {
+    "name": "Code Block Enhancer"
+  }
+}

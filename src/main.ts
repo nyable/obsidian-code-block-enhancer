@@ -1,5 +1,6 @@
 import { App, debounce, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import { CbeCssVar, CodeBlockPlus } from './core';
+import { i18n } from './i18n';
 
 // Remember to rename these classes and interfaces!
 
@@ -100,6 +101,7 @@ export default class CodeBlockEnhancerPlugin extends Plugin {
                 cbp.updateLineNumber();
             }, 350)
         );
+
         console.log('Load Code Block Enhancer Plugin!');
     }
 
@@ -129,14 +131,14 @@ class CbeSettingsTab extends PluginSettingTab {
         const pluginSetting = this.plugin.settings;
         containerEl.empty();
         containerEl.createEl('h1', {
-            text: `Code Block Enhancer Settings ${this.plugin.manifest.version}`
+            text: `${i18n.t('plugin.name')} ${this.plugin.manifest.version}`
         });
-        new Setting(containerEl).setName('General').setHeading();
+        new Setting(containerEl).setName(i18n.t('settings.general')).setHeading();
         new Setting(containerEl)
-            .setName('Exclude language list')
-            .setDesc('The languages in the list will be ignored and not processed')
+            .setName(i18n.t('settings.excludeLangs.name'))
+            .setDesc(i18n.t('settings.excludeLangs.desc'))
             .addTextArea((text) => {
-                text.setPlaceholder('Split by `,` (like `todoist,other,...`)')
+                text.setPlaceholder(i18n.t('settings.excludeLangs.placeholder'))
                     .setValue(pluginSetting.excludeLangs.join(','))
                     .onChange(async (value) => {
                         pluginSetting.excludeLangs = value.split(',');
@@ -144,8 +146,8 @@ class CbeSettingsTab extends PluginSettingTab {
                     });
             });
         new Setting(containerEl)
-            .setName('Font size of code block')
-            .setDesc('Modify the font size of the code in the code block')
+            .setName(i18n.t('settings.codeFontSize.name'))
+            .setDesc(i18n.t('settings.codeFontSize.desc'))
             .addText((text) => {
                 text.setValue(pluginSetting.codeFontSize).onChange(async (v) => {
                     pluginSetting.codeFontSize = v;
@@ -156,22 +158,20 @@ class CbeSettingsTab extends PluginSettingTab {
         this.createSimpleToggle(
             containerEl,
             'useContextMenu',
-            'Use context-menu',
-            'Enhance the right-click menu for code blocks'
+            i18n.t('settings.useContextMenu.name'),
+            i18n.t('settings.useContextMenu.desc')
         );
 
-        new Setting(containerEl).setName('Line number').setHeading();
+        new Setting(containerEl).setName(i18n.t('settings.lineNumber')).setHeading();
         this.createSimpleToggle(
             containerEl,
             'showLineNumber',
-            'Display line numbers',
-            'After enabling, line numbers will be displayed'
+            i18n.t('settings.showLineNumber.name'),
+            i18n.t('settings.showLineNumber.desc')
         );
         new Setting(containerEl)
-            .setName('Line number font color')
-            .setDesc(
-                'Set the font color of the line numbers, like `#ed9c9fcc/rgba(237,156,159,0.8)/var(--code-normal)`'
-            )
+            .setName(i18n.t('settings.linenumFontColor.name'))
+            .setDesc(i18n.t('settings.linenumFontColor.desc'))
             .addText((cb) => {
                 cb.setValue(pluginSetting.linenumFontColor).onChange(async (value) => {
                     pluginSetting.linenumFontColor = value;
@@ -179,41 +179,41 @@ class CbeSettingsTab extends PluginSettingTab {
                 });
             });
         new Setting(containerEl)
-            .setName('Line highlight color')
-            .setDesc('Set the line highlight color, like `#FFFF001A/rgba(255, 255, 0, 0.1)`')
+            .setName(i18n.t('settings.linenumHighlightColor.name'))
+            .setDesc(i18n.t('settings.linenumHighlightColor.desc'))
             .addText((cb) => {
                 cb.setValue(pluginSetting.linenumHighlightColor).onChange(async (value) => {
                     pluginSetting.linenumHighlightColor = value;
                     await this.plugin.setCssVar();
                 });
             });
-        new Setting(containerEl).setName('Header').setHeading();
+        new Setting(containerEl).setName(i18n.t('settings.headerBar')).setHeading();
 
         this.createSimpleToggle(
             containerEl,
             'showLangName',
-            'Display language names',
-            'After enabling, the language names will be displayed at the top'
+            i18n.t('settings.showLangName.name'),
+            i18n.t('settings.showLangName.desc')
         );
 
         this.createSimpleToggle(
             containerEl,
             'showCollapseBtn',
-            'Display the collapse button',
-            'After enabling, code blocks can be collapsed'
+            i18n.t('settings.showCollapseBtn.name'),
+            i18n.t('settings.showCollapseBtn.desc')
         );
 
         this.createSimpleToggle(
             containerEl,
             'showCodeSnap',
-            'Display the code snap button',
-            'After enabling, you can take screenshots of the code blocks'
+            i18n.t('settings.showCodeSnap.name'),
+            i18n.t('settings.showCodeSnap.desc')
         );
         this.createSimpleToggle(
             containerEl,
             'enableCbeCopyBtn',
-            'Icon copy button',
-            'Replace the original copy button'
+            i18n.t('settings.enableCbeCopyBtn.name'),
+            i18n.t('settings.enableCbeCopyBtn.desc')
         );
     }
 

@@ -28,6 +28,7 @@
     },
     "dependencies": {
         "dom-to-image-more": "3.4.2",
+        "i18next": "23.15.1",
         "sass": "1.78.0",
         "uuid": "10.0.0"
     }
