@@ -78,20 +78,22 @@ body {
         padding-top: var(--cb-header-height) !important;
     }
 
-    pre[class*="language-"].cbe-has-linenumber {
+    .cbe-toolbar-btn {
+        margin: 0px 4px;
+    }
+}
+
+.cbe.cbe-has-linenumber {
+    pre[class*="language-"] {
         @include cbe-code-wrap();
         padding-left: 4.5em !important;
     }
-    code[class*="language-"].cbe-has-linenumber {
+    code[class*="language-"] {
         @include cbe-code-wrap();
         width: 100%;
         padding: 0 !important;
         font-size: var(--cb-font-size) !important;
         background: var(--cb-code-bg) !important;
-    }
-
-    .cbe-toolbar-btn {
-        margin: 0px 4px;
     }
 }
 

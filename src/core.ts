@@ -231,7 +231,8 @@ export class CodeBlockPlus {
      */
     updateLineNumber() {
         BASE_LINE_INFO.updated = false;
-        const codeBlocks = queryVisibleElement(`pre.${CLS.HAS_LINENUMBER}>code`);
+        const codeBlocks = queryVisibleElement(`div.${CLS.HAS_LINENUMBER}>pre>code`);
+
         codeBlocks.forEach((code: HTMLElement, index: number) => {
             if (index == 0) {
                 this.updateBaseLineInfo(code);
@@ -341,13 +342,14 @@ export class CodeBlockPlus {
      * @param cbMeta 代码块数据
      */
     private addLineNumber(ctx: MarkdownPostProcessorContext, cbMeta: CodeBlockMeta) {
-        const { pre, code, lineSize, cbeId } = cbMeta;
+        const { pre, code, lineSize, cbeId, el } = cbMeta;
 
         const wrap = createEl('div', { cls: CLS.LN_WRAP });
         pre.append(wrap);
 
-        pre.classList.add(CLS.HAS_LINENUMBER);
-        code.classList.add(CLS.HAS_LINENUMBER);
+        el.classList.add(CLS.HAS_LINENUMBER);
+        // pre.classList.add(CLS.HAS_LINENUMBER);
+        // code.classList.add(CLS.HAS_LINENUMBER);
 
         pre.setAttribute(ATTR.CBE_ID, cbeId);
         code.setAttribute(ATTR.CBE_ID, cbeId);
