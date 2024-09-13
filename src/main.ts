@@ -133,6 +133,7 @@ class CbeSettingsTab extends PluginSettingTab {
         containerEl.createEl('h1', {
             text: `${i18n.t('plugin.name')} ${this.plugin.manifest.version}`
         });
+        new Setting(containerEl).setDesc(i18n.t('settings.desc'));
         new Setting(containerEl).setName(i18n.t('settings.general')).setHeading();
         new Setting(containerEl)
             .setName(i18n.t('settings.excludeLangs.name'))

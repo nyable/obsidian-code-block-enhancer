@@ -1,51 +1,69 @@
 {
-    "settings": {
-        "general": "一般",
-        "excludeLangs": {
-            "name": "排除的语言列表",
-            "desc": "在这个列表中的语言将会被忽略，不进行处理",
-            "placeholder": "以`,`分隔，例如`todoist,other,...`"
-        },
-        "codeFontSize": {
-            "name": "代码块字体大小",
-            "desc": "修改代码块的字体大小"
-        },
-        "useContextMenu": {
-            "name": "启用右键菜单",
-            "desc": "增强代码块的右键菜单"
-        },
-        "lineNumber": "行号",
-        "showLineNumber": {
-            "name": "显示行号",
-            "desc": "启用后将显示行号"
-        },
-        "linenumFontColor": {
-            "name": "行号字体颜色",
-            "desc": "设置行号的字体颜色，例如 #ed9c9fcc/rgba(237,156,159,0.8)/var(--code-normal)"
-        },
-        "linenumHighlightColor": {
-            "name": "行号高亮颜色",
-            "desc": "设置行高亮颜色，例如 #FFFF001A/rgba(255, 255, 0, 0.1)。"
-        },
-        "headerBar": "头部栏",
-        "showLangName": {
-            "name": "显示语言名称",
-            "desc": "启用后，语言名称将显示在顶部"
-        },
-        "showCollapseBtn": {
-            "name": "显示折叠按钮",
-            "desc": "启用后，代码块可以折叠"
-        },
-        "showCodeSnap": {
-            "name": "显示代码快照按钮",
-            "desc": "启用后，可以对代码块进行截图"
-        },
-        "enableCbeCopyBtn": {
-            "name": "使用图标复制按钮",
-            "desc": "替换原来的复制按钮"
-        }
+  "settings": {
+    "general": "一般",
+    "excludeLangs": {
+      "name": "排除的语言列表",
+      "desc": "在这个列表中的语言将会被忽略，不进行处理",
+      "placeholder": "以`,`分隔，例如`todoist,other,...`"
     },
-    "plugin": {
-        "name": "代码块增强器"
+    "codeFontSize": {
+      "name": "代码块字体大小",
+      "desc": "修改代码块的字体大小"
+    },
+    "useContextMenu": {
+      "name": "启用右键菜单",
+      "desc": "增强代码块的右键菜单"
+    },
+    "lineNumber": "行号",
+    "showLineNumber": {
+      "name": "显示行号",
+      "desc": "启用后将显示行号"
+    },
+    "linenumFontColor": {
+      "name": "行号字体颜色",
+      "desc": "设置行号的字体颜色，例如 #ed9c9fcc/rgba(237,156,159,0.8)/var(--code-normal)"
+    },
+    "linenumHighlightColor": {
+      "name": "行号高亮颜色",
+      "desc": "设置行高亮颜色，例如 #FFFF001A/rgba(255, 255, 0, 0.1)。"
+    },
+    "headerBar": "头部栏",
+    "showLangName": {
+      "name": "显示语言名称",
+      "desc": "启用后，语言名称将显示在顶部"
+    },
+    "showCollapseBtn": {
+      "name": "显示折叠按钮",
+      "desc": "启用后，代码块可以折叠"
+    },
+    "showCodeSnap": {
+      "name": "显示代码快照按钮",
+      "desc": "启用后，可以对代码块进行截图"
+    },
+    "enableCbeCopyBtn": {
+      "name": "使用图标复制按钮",
+      "desc": "替换原来的复制按钮"
+    },
+    "desc": "修改设置后最好重新打开页面或者Obsidian"
+  },
+  "plugin": {
+    "name": "代码块增强器"
+  },
+  "contextMenu": {
+    "label": {
+      "ToTop": "至顶部",
+      "ToBottom": "至底部",
+      "CopyAll": "复制代码块"
     }
+  },
+  "common": {
+    "notice": {
+      "copySuccess": "复制完毕!"
+    }
+  },
+  "btn": {
+    "copy": "复制",
+    "codeSnap": "快照",
+    "collapse": "折叠"
+  }
 }

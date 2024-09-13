@@ -10,6 +10,7 @@ import CodeBlockEnhancer from './main';
 import domToImage from 'dom-to-image-more';
 import { v4 as uuidv4 } from 'uuid';
 import { parseLineRange, isMonoSpaceUnicode, queryVisibleElement } from './util';
+import { i18n } from './i18n';
 const DEFAULT_LANG_ATTR = 'language-text';
 const DEFAULT_LANG = '';
 const LANG_REG = /^language-/;
@@ -227,24 +228,24 @@ export class CodeBlockPlus {
             if (target.tagName == 'CODE') {
                 const contextMenu = new Menu();
                 contextMenu.addItem((item) => {
-                    item.setTitle('Copy all')
+                    item.setTitle(i18n.t('contextMenu.label.CopyAll'))
                         .setIcon('copy')
                         .onClick((e) => {
                             navigator.clipboard.writeText(code.textContent || '').then(() => {
-                                new Notice('Copied!');
+                                new Notice(i18n.t('common.notice.copySuccess'));
                             });
                         });
                 });
                 if (cbMeta.lineSize > 30) {
                     contextMenu.addItem((item) => {
-                        item.setTitle('To Top')
+                        item.setTitle(i18n.t('contextMenu.label.ToTop'))
                             .setIcon('arrow-up-to-line')
                             .onClick((e) => {
                                 el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                             });
                     });
                     contextMenu.addItem((item) => {
-                        item.setTitle('To Bottom')
+                        item.setTitle(i18n.t('contextMenu.label.ToBottom'))
                             .setIcon('arrow-down-to-line')
                             .onClick((e) => {
                                 el.scrollIntoView({ behavior: 'smooth', block: 'end' });
@@ -274,7 +275,7 @@ export class CodeBlockPlus {
         header.append(toolbar);
         if (showCollapseBtn) {
             const collapseBtn = createSpan(
-                { cls: btCls, attr: { 'aria-label': 'Collapse' } },
+                { cls: btCls, attr: { 'aria-label': i18n.t('btn.collapse') } },
                 (el) => {
                     el.append(getIcon('chevron-down') as Node);
                 }
@@ -288,7 +289,7 @@ export class CodeBlockPlus {
 
         if (showCodeSnap) {
             const snapBtn = createSpan(
-                { cls: btCls, attr: { 'aria-label': 'Code Snap' } },
+                { cls: btCls, attr: { 'aria-label': i18n.t('btn.codeSnap') } },
                 (el) => {
                     el.append(getIcon('camera') as Node);
                 }
@@ -349,10 +350,7 @@ export class CodeBlockPlus {
                     })
                     .then((b) => {
                         navigator.clipboard.write([new ClipboardItem({ 'image/png': b })]);
-                        new Notice('Image has been copied!');
-                    })
-                    .catch(() => {
-                        new Notice('Failed to copy image!');
+                        new Notice(i18n.t('common.notice.copySuccess'));
                     });
             });
             toolbar.append(snapBtn);
@@ -360,12 +358,15 @@ export class CodeBlockPlus {
 
         if (enableCbeCopyBtn) {
             cbMeta.el.classList.add(CLS.HAS_COPYBTN);
-            const copyBtn = createSpan({ cls: btCls, attr: { 'aria-label': 'Copy' } }, (el) => {
-                el.append(getIcon('copy') as Node);
-            });
+            const copyBtn = createSpan(
+                { cls: btCls, attr: { 'aria-label': i18n.t('btn.copy') } },
+                (el) => {
+                    el.append(getIcon('copy') as Node);
+                }
+            );
             this.plugin.registerDomEvent(copyBtn, 'click', (e) => {
                 navigator.clipboard.writeText(cbMeta.code.textContent || '').then(() => {
-                    new Notice('Copied!');
+                    new Notice(i18n.t('common.notice.copySuccess'));
                 });
             });
             toolbar.append(copyBtn);
