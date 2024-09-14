@@ -11,7 +11,7 @@ import domToImage from 'dom-to-image-more';
 import { v4 as uuidv4 } from 'uuid';
 import { parseLineRange, isMonoSpaceUnicode, queryVisibleElement } from './util';
 import { i18n } from './i18n';
-const DEFAULT_LANG_ATTR = 'language-text';
+
 const DEFAULT_LANG = '';
 const LANG_REG = /^language-/;
 const LINE_SPLIT_MARK = '\n';
@@ -65,7 +65,9 @@ interface BaseLineInfo {
     maxWidth: number;
     lineHeight: number;
     codeWidth: number;
+    tabSize: number;
 }
+
 export enum CLS {
     /**
      * 最外层的类
@@ -118,7 +120,8 @@ export enum CLS {
     /**
      * 启用折叠按钮后在最外层加的类
      */
-    HAS_COLLAPSED = 'cbe-collapsed'
+    HAS_COLLAPSED = 'cbe-collapsed',
+    DEFAULT_LANG = 'language-text'
 }
 export enum CbeCssVar {
     codeFontSize = '--cb-font-size',
@@ -138,7 +141,8 @@ const BASE_LINE_INFO: BaseLineInfo = {
     minWidth: 0,
     maxWidth: 0,
     lineHeight: 0,
-    codeWidth: 0
+    codeWidth: 0,
+    tabSize: 4
 };
 
 export class CodeBlockPlus {
@@ -178,7 +182,8 @@ export class CodeBlockPlus {
 
         // Add default language style when lang is empty
         if (!code.classList.toString().includes('language-')) {
-            pre.classList.add(DEFAULT_LANG_ATTR);
+            pre.classList.add(CLS.DEFAULT_LANG);
+            code.classList.add(CLS.DEFAULT_LANG);
         }
 
         // 增加一个插件特定的类
@@ -255,10 +260,6 @@ export class CodeBlockPlus {
                 contextMenu.showAtMouseEvent(event);
             }
         });
-    }
-
-    private getTabSize() {
-        return (this.plugin.app.vault as any)?.config.tabSize || 4;
     }
 
     private addHeader(ctx: MarkdownPostProcessorContext, cbMeta: CodeBlockMeta): void {
@@ -380,9 +381,9 @@ export class CodeBlockPlus {
         BASE_LINE_INFO.updated = false;
         const codeBlocks = queryVisibleElement(`div.${CLS.HAS_LINENUMBER}>pre>code`);
 
-        codeBlocks.forEach((code: HTMLElement, index: number) => {
+        codeBlocks.forEach(async (code: HTMLElement, index: number) => {
             if (index == 0) {
-                this.updateBaseLineInfo(code);
+                await this.updateBaseLineInfo(code);
             }
             const uuid = code.getAttribute(ATTR.CBE_ID);
             if (uuid) {
@@ -403,28 +404,34 @@ export class CodeBlockPlus {
      * 感觉可以改成每个代码块第一行时计算,然后缓存给这个代码块后续使用,到最后一行时移除缓存
      */
     updateBaseLineInfo(target: Element) {
-        if (target) {
-            const tempSpan = createEl('span');
-            target.append(tempSpan);
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                if (target) {
+                    const tempSpan = createEl('span');
+                    target.append(tempSpan);
 
-            tempSpan.style.display = 'inline-block';
-            tempSpan.innerText = 'A';
-            BASE_LINE_INFO.minWidth = tempSpan.getBoundingClientRect().width;
-            tempSpan.innerText = '好';
-            BASE_LINE_INFO.maxWidth = tempSpan.getBoundingClientRect().width;
+                    tempSpan.style.display = 'inline-block';
+                    tempSpan.innerText = 'A';
+                    BASE_LINE_INFO.minWidth = tempSpan.getBoundingClientRect().width;
+                    tempSpan.innerText = '好';
+                    BASE_LINE_INFO.maxWidth = tempSpan.getBoundingClientRect().width;
 
-            tempSpan.style.display = 'block';
-            tempSpan.innerText = 'A好';
-            const rect = tempSpan.getBoundingClientRect();
-            BASE_LINE_INFO.lineHeight = rect.height;
-            BASE_LINE_INFO.codeWidth = target.getBoundingClientRect().width;
+                    tempSpan.style.display = 'block';
+                    tempSpan.innerText = 'A好';
+                    const rect = tempSpan.getBoundingClientRect();
+                    BASE_LINE_INFO.lineHeight = rect.height;
+                    BASE_LINE_INFO.codeWidth = target.getBoundingClientRect().width;
 
-            tempSpan.remove();
-            if (BASE_LINE_INFO.lineHeight != 0) {
-                BASE_LINE_INFO.updated = true;
-            }
-            console.debug(BASE_LINE_INFO, 'over!');
-        }
+                    tempSpan.remove();
+                    if (BASE_LINE_INFO.lineHeight != 0) {
+                        BASE_LINE_INFO.updated = true;
+                    }
+                    BASE_LINE_INFO.tabSize = parseInt(getComputedStyle(target).tabSize) || 4;
+                    console.debug(BASE_LINE_INFO, 'over!');
+                }
+                resolve(null);
+            }, 200);
+        });
     }
     private setLineNumStyle(line: HTMLElement, cbMeta: CodeBlockMeta, i: number) {
         this.setLineNumStyleByCharCode(line, cbMeta, i);
@@ -454,7 +461,7 @@ export class CodeBlockPlus {
      * @param i 行号索引
      */
     private setLineNumStyleByCharCode(line: HTMLElement, cbMeta: CodeBlockMeta, i: number) {
-        const { codeWidth, maxWidth, minWidth, lineHeight } = BASE_LINE_INFO;
+        const { codeWidth, maxWidth, minWidth, lineHeight, tabSize } = BASE_LINE_INFO;
 
         const text = cbMeta.contentList[i];
         const perLineMinSize = Math.floor(codeWidth / maxWidth);
@@ -468,7 +475,7 @@ export class CodeBlockPlus {
                 const char = text.charCodeAt(i);
                 let charWidth = 0;
                 if (char == 9) {
-                    charWidth = minWidth * this.getTabSize();
+                    charWidth = minWidth * tabSize;
                 } else {
                     charWidth = isMonoSpaceUnicode(char) ? minWidth : maxWidth;
                 }
@@ -520,11 +527,11 @@ export class CodeBlockPlus {
                 });
 
                 const observer = new IntersectionObserver((entries, observer) => {
-                    entries.forEach((entry) => {
+                    entries.forEach(async (entry) => {
                         if (entry.isIntersecting) {
                             const code = entry.target;
                             if (BASE_LINE_INFO.updated == false) {
-                                this.updateBaseLineInfo(code);
+                                await this.updateBaseLineInfo(code);
                             }
                             const lines = wrap.children;
                             const firstLine =
