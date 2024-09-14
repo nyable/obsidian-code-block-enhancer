@@ -8,7 +8,7 @@
     },
     "codeFontSize": {
       "name": "代码块字体大小",
-      "desc": "修改代码块的字体大小"
+      "desc": "修改代码块的字体大小（建议值为16px或14px）。行号通过计算得出，修改字体大小可能会导致行号错位。"
     },
     "useContextMenu": {
       "name": "启用右键菜单",
@@ -44,7 +44,25 @@
       "name": "使用图标复制按钮",
       "desc": "替换原来的复制按钮"
     },
-    "desc": "修改设置后最好重新打开页面或者Obsidian"
+    "desc": "部分设置在重新打开页面或重新打开Obsidian后才会生效",
+    "linenumHoverMode": {
+      "name": "悬浮时",
+      "desc": "悬浮在行号上的行为",
+      "opt": {
+        "None": "无",
+        "Highlight": "高亮"
+      }
+    },
+    "linenumClickMode": {
+      "name": "单击时",
+      "desc": "单击行号时的行为",
+      "opt": {
+        "None": "无",
+        "Copy": "复制",
+        "Highlight": "高亮"
+      }
+    },
+    "reloadApp": "重载应用"
   },
   "plugin": {
     "name": "代码块增强器"

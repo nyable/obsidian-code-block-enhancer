@@ -1,51 +1,7 @@
 import { App, debounce, Plugin, PluginSettingTab, Setting } from 'obsidian';
-import { CbeCssVar, CodeBlockPlus } from './core';
+import { CodeBlockPlus } from './core';
 import { i18n } from './i18n';
-
-// Remember to rename these classes and interfaces!
-
-interface CbeSettings {
-    /**
-     * 排除的语言
-     */
-    excludeLangs: string[];
-    /**
-     * 是否增强右键菜单栏
-     */
-    useContextMenu: boolean;
-    /**
-     * 是否展示行号
-     */
-    showLineNumber: boolean;
-    /**
-     * 行号的颜色
-     */
-    linenumFontColor: string;
-    /**
-     * 行号高亮的颜色
-     */
-    linenumHighlightColor: string;
-    /**
-     * 是否展示语言名称
-     */
-    showLangName: boolean;
-    /**
-     * 是否展示代码块折叠按钮
-     */
-    showCollapseBtn: boolean;
-    /**
-     * 是否展示代码块截图按钮
-     */
-    showCodeSnap: boolean;
-    /**
-     * 启用复制按钮图标
-     */
-    enableCbeCopyBtn: boolean;
-    /**
-     * 代码块字体大小 14px
-     */
-    codeFontSize: string;
-}
+import { CbeCssVar, LineClickMode, LinenumHoverMode as LineHoverMode } from './constant';
 
 const DEFAULT_SETTINGS: CbeSettings = {
     excludeLangs: ['todoist'],
@@ -57,7 +13,9 @@ const DEFAULT_SETTINGS: CbeSettings = {
     showCollapseBtn: true,
     showCodeSnap: true,
     enableCbeCopyBtn: true,
-    codeFontSize: '14px'
+    codeFontSize: '16px',
+    linenumHoverMode: LineHoverMode.None,
+    linenumClickMode: LineClickMode.None
 };
 export default class CodeBlockEnhancerPlugin extends Plugin {
     settings: CbeSettings;
@@ -134,6 +92,7 @@ class CbeSettingsTab extends PluginSettingTab {
             text: `${i18n.t('plugin.name')} ${this.plugin.manifest.version}`
         });
         new Setting(containerEl).setDesc(i18n.t('settings.desc'));
+        // general settings
         new Setting(containerEl).setName(i18n.t('settings.general')).setHeading();
         new Setting(containerEl)
             .setName(i18n.t('settings.excludeLangs.name'))
@@ -162,7 +121,7 @@ class CbeSettingsTab extends PluginSettingTab {
             i18n.t('settings.useContextMenu.name'),
             i18n.t('settings.useContextMenu.desc')
         );
-
+        // line number settings
         new Setting(containerEl).setName(i18n.t('settings.lineNumber')).setHeading();
         this.createSimpleToggle(
             containerEl,
@@ -188,6 +147,37 @@ class CbeSettingsTab extends PluginSettingTab {
                     await this.plugin.setCssVar();
                 });
             });
+
+        new Setting(containerEl)
+            .setName(i18n.t('settings.linenumHoverMode.name'))
+            .setDesc(i18n.t('settings.linenumHoverMode.desc'))
+            .addDropdown((cb) => {
+                cb.addOptions({
+                    [LineHoverMode.None]: i18n.t('settings.linenumHoverMode.opt.None'),
+                    [LineHoverMode.Highlight]: i18n.t('settings.linenumHoverMode.opt.Highlight')
+                })
+                    .setValue(pluginSetting.linenumHoverMode)
+                    .onChange(async (value) => {
+                        pluginSetting.linenumHoverMode = value;
+                        await this.plugin.saveSettings();
+                    });
+            });
+        new Setting(containerEl)
+            .setName(i18n.t('settings.linenumClickMode.name'))
+            .setDesc(i18n.t('settings.linenumClickMode.desc'))
+            .addDropdown((cb) => {
+                cb.addOptions({
+                    [LineClickMode.None]: i18n.t('settings.linenumClickMode.opt.None'),
+                    [LineClickMode.Copy]: i18n.t('settings.linenumClickMode.opt.Copy'),
+                    [LineClickMode.Highlight]: i18n.t('settings.linenumClickMode.opt.Highlight')
+                })
+                    .setValue(pluginSetting.linenumClickMode)
+                    .onChange(async (value) => {
+                        pluginSetting.linenumClickMode = value;
+                        await this.plugin.saveSettings();
+                    });
+            });
+        // header settings
         new Setting(containerEl).setName(i18n.t('settings.headerBar')).setHeading();
 
         this.createSimpleToggle(
@@ -216,6 +206,14 @@ class CbeSettingsTab extends PluginSettingTab {
             i18n.t('settings.enableCbeCopyBtn.name'),
             i18n.t('settings.enableCbeCopyBtn.desc')
         );
+
+        new Setting(containerEl).addButton((cb) => {
+            cb.setButtonText(i18n.t('settings.reloadApp'))
+                .onClick(() => {
+                    window.location.reload();
+                })
+                .setCta();
+        });
     }
 
     /**

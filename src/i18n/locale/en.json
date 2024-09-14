@@ -8,7 +8,7 @@
     },
     "codeFontSize": {
       "name": "Font size of code block",
-      "desc": "Modify the font size of the code in the code block"
+      "desc": "Change the font size of the code block (recommended values are 16px or 14px). The line numbers are calculated, and modifying the font size may cause misalignment of the line numbers."
     },
     "useContextMenu": {
       "name": "Use context-menu",
@@ -44,7 +44,25 @@
       "name": "Icon copy button",
       "desc": "Replace the original copy button"
     },
-    "desc": "It’s best to reopen the page or Obsidian after modifying the settings"
+    "desc": "Some settings only take effect after reopening the page or restarting Obsidian.",
+    "linenumHoverMode": {
+      "name": "On hover",
+      "desc": "Behavior when hovering over the line number",
+      "opt": {
+        "None": "None",
+        "Highlight": "Highlight"
+      }
+    },
+    "linenumClickMode": {
+      "name": "On click",
+      "desc": "Behavior when clicking the line number",
+      "opt": {
+        "None": "None",
+        "Copy": "Copy",
+        "Highlight": "Highlight"
+      }
+    },
+    "reloadApp": "Reload Obsidian"
   },
   "plugin": {
     "name": "Code Block Enhancer"

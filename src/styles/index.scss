@@ -75,6 +75,15 @@ body {
         .cbe-line-highlight {
             background-color: var(--cb-linenum-highlight-color);
         }
+        .cbe-line-hover {
+            &:hover {
+                //TODO: use css var
+                background-color: rgba(138, 92, 245, 0.15);
+            }
+        }
+        .cbe-line-highlight2 {
+            background-color: rgba(138, 92, 245, 0.15);
+        }
     }
 
     pre[class*="language-"] {

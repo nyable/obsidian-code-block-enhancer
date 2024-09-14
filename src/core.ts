@@ -11,130 +11,11 @@ import domToImage from 'dom-to-image-more';
 import { v4 as uuidv4 } from 'uuid';
 import { parseLineRange, isMonoSpaceUnicode, queryVisibleElement } from './util';
 import { i18n } from './i18n';
+import { ATTR, CLS, LineClickMode, LinenumHoverMode } from './constant';
 
 const DEFAULT_LANG = '';
 const LANG_REG = /^language-/;
 const LINE_SPLIT_MARK = '\n';
-
-interface CodeBlockMeta {
-    /**
-     * 自己生成的代码块唯一ID
-     */
-    cbeId: string;
-    /**
-     * 代码块语言
-     */
-    langName: string;
-    /**
-     * 代码块的内容行数,不包括开始和结尾的```
-     */
-    lineSize: number;
-    /**
-     * 总字数
-     */
-    textSize: number;
-    /**
-     * 原始参数中的el
-     */
-    el: HTMLElement;
-    /**
-     * 代码块中的pre标签,从el中获取
-     */
-    pre: HTMLElement;
-    /**
-     *  代码块中的code标签,从el中获取
-     */
-    code: HTMLElement;
-    /**
-     * 顶部的header元素
-     */
-    header: HTMLElement;
-    /**
-     * 每一行的内容数组
-     */
-    contentList: string[];
-    /**
-     * 应该高亮的行
-     */
-    highlightLines: number[];
-}
-
-interface BaseLineInfo {
-    updated: boolean;
-    minWidth: number;
-    maxWidth: number;
-    lineHeight: number;
-    codeWidth: number;
-    tabSize: number;
-}
-
-export enum CLS {
-    /**
-     * 最外层的类
-     */
-    ROOT = 'cbe',
-    /**
-     * 有行号时会在pre和code上加上,用来强制生效一些样式
-     */
-    HAS_LINENUMBER = 'cbe-has-linenumber',
-    /**
-     * 代码块顶部区域,包括语言名和工具栏
-     */
-    HEADER = 'cbe-header',
-    /**
-     * 语言名
-     */
-    H_LANG_NAME = 'cbe-language-name',
-    /**
-     * 工具栏
-     */
-    H_TOOLBAR = 'cbe-toolbar',
-    /**
-     * 行号
-     */
-    LN_WRAP = 'cbe-linenum-wrap',
-    /**
-     * 一整行
-     */
-    LN_LINE = 'cbe-line',
-    /**
-     * 显示行号用
-     */
-    LN_NUM = 'cbe-linenum',
-    /**
-     * 行高亮
-     */
-    LN_HIGHLIGHT = 'cbe-line-highlight',
-    /**
-     * obsidian自带的类 可点击的按钮
-     */
-    OB_CLICKABLE = 'clickable-icon',
-    /**
-     * 工具栏中的按钮
-     */
-    H_TOOL_BTN = 'cbe-toolbar-btn',
-    /**
-     * 启用替换复制按钮后在最外层加的类
-     */
-    HAS_COPYBTN = 'cbe-has-copy-btn',
-    /**
-     * 启用折叠按钮后在最外层加的类
-     */
-    HAS_COLLAPSED = 'cbe-collapsed',
-    DEFAULT_LANG = 'language-text'
-}
-export enum CbeCssVar {
-    codeFontSize = '--cb-font-size',
-    headerHeight = '--cb-top-height',
-    linenumBg = '--cb-linenum-bg',
-    linenumBorder = '--cb-linenum-border',
-    linenumColor = '--cb-linenum-color',
-    linenumHighlightColor = '--cb-linenum-highlight-color',
-    codeBg = '--cb-code-bg'
-}
-export enum ATTR {
-    CBE_ID = 'cbe-id'
-}
 
 const BASE_LINE_INFO: BaseLineInfo = {
     updated: false,
@@ -236,9 +117,7 @@ export class CodeBlockPlus {
                     item.setTitle(i18n.t('contextMenu.label.CopyAll'))
                         .setIcon('copy')
                         .onClick((e) => {
-                            navigator.clipboard.writeText(code.textContent || '').then(() => {
-                                new Notice(i18n.t('common.notice.copySuccess'));
-                            });
+                            copyText(code.textContent);
                         });
                 });
                 if (cbMeta.lineSize > 30) {
@@ -350,8 +229,11 @@ export class CodeBlockPlus {
                         }
                     })
                     .then((b) => {
-                        navigator.clipboard.write([new ClipboardItem({ 'image/png': b })]);
-                        new Notice(i18n.t('common.notice.copySuccess'));
+                        navigator.clipboard
+                            .write([new ClipboardItem({ 'image/png': b })])
+                            .then(() => {
+                                new Notice(i18n.t('common.notice.copySuccess'));
+                            });
                     });
             });
             toolbar.append(snapBtn);
@@ -366,9 +248,7 @@ export class CodeBlockPlus {
                 }
             );
             this.plugin.registerDomEvent(copyBtn, 'click', (e) => {
-                navigator.clipboard.writeText(cbMeta.code.textContent || '').then(() => {
-                    new Notice(i18n.t('common.notice.copySuccess'));
-                });
+                copyText(cbMeta.code.textContent);
             });
             toolbar.append(copyBtn);
         }
@@ -497,11 +377,33 @@ export class CodeBlockPlus {
      */
     private addLineNumber(ctx: MarkdownPostProcessorContext, cbMeta: CodeBlockMeta) {
         const { pre, code, lineSize, cbeId, el } = cbMeta;
-
-        const wrap = createEl('div', { cls: CLS.LN_WRAP });
-        pre.append(wrap);
+        const { linenumHoverMode, linenumClickMode } = this.plugin.settings;
 
         el.classList.add(CLS.HAS_LINENUMBER);
+
+        const wrap = createEl('div', { cls: CLS.LN_WRAP });
+        if (LineClickMode.None != linenumClickMode) {
+            this.plugin.registerDomEvent(wrap, 'click', (evt) => {
+                const target = evt.target;
+                if (target instanceof HTMLElement && target.classList.contains(CLS.LN_NUM)) {
+                    const lineEl = target.parentElement as HTMLElement;
+                    const attrNum = lineEl.getAttribute(ATTR.LINENUM);
+                    if (attrNum == null) {
+                        return;
+                    }
+                    const lineIndex = parseInt(attrNum) - 1;
+                    if (LineClickMode.Copy == linenumClickMode) {
+                        const text = cbMeta.contentList[lineIndex];
+                        copyText(text);
+                    } else if (LineClickMode.Highlight == linenumClickMode) {
+                        lineEl.classList.toggle(CLS.LN_HIGHLIGHT2);
+                    }
+                }
+            });
+        }
+
+        pre.append(wrap);
+
         // pre.classList.add(CLS.HAS_LINENUMBER);
         // code.classList.add(CLS.HAS_LINENUMBER);
 
@@ -515,11 +417,14 @@ export class CodeBlockPlus {
                 Array.from({ length: lineSize }, (v, k) => k).forEach((i) => {
                     const line = createEl('div', {
                         cls: [CLS.LN_LINE],
-                        attr: { linenum: i + 1 }
+                        attr: { [ATTR.LINENUM]: i + 1 }
                     });
+                    if (linenumHoverMode === LinenumHoverMode.Highlight) {
+                        line.classList.add(CLS.LN_ON_HOVER);
+                    }
                     const linunum = createEl('div', {
                         cls: [CLS.LN_NUM],
-                        attr: { linenum: i + 1 }
+                        attr: { [ATTR.LINENUM]: i + 1 }
                     });
 
                     line.append(linunum);
@@ -568,5 +473,13 @@ export class CodeBlockPlus {
             }
         });
         this.observerCache = [];
+    }
+}
+
+function copyText(text: string | null) {
+    if (text) {
+        navigator.clipboard.writeText(text).then(() => {
+            new Notice(i18n.t('common.notice.copySuccess'));
+        });
     }
 }
