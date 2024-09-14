@@ -26,7 +26,7 @@ const BASE_LINE_INFO: BaseLineInfo = {
     tabSize: 4
 };
 
-export class CodeBlockPlus {
+export class CoreCodeBlockPostProcessor {
     private plugin: CodeBlockEnhancer;
     private observerCache: IntersectionObserver[] = [];
     private metaCache: Map<string, CodeBlockMeta> = new Map<string, CodeBlockMeta>();

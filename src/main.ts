@@ -1,5 +1,5 @@
 import { App, debounce, Plugin, PluginSettingTab, Setting } from 'obsidian';
-import { CodeBlockPlus } from './core';
+import { CoreCodeBlockPostProcessor } from './core-processor';
 import { i18n } from './i18n';
 import { CbeCssVar, LineClickMode, LinenumHoverMode as LineHoverMode } from './constant';
 
@@ -49,7 +49,7 @@ export default class CodeBlockEnhancerPlugin extends Plugin {
         this.addSettingTab(new CbeSettingsTab(this.app, this));
         this.setCssVar();
 
-        const cbp = new CodeBlockPlus(this);
+        const cbp = new CoreCodeBlockPostProcessor(this);
         this.registerMarkdownPostProcessor((el, ctx) => {
             cbp.enhanceCodeBlock(el, ctx);
         });
