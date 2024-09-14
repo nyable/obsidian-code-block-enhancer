@@ -18,7 +18,7 @@ Enhancer the markdown code block in preview mode.
 
 ## Screenshot
 ### Preview Mode
-![PreviewMode](./screenshot/PreviewMode.gif)
+![PreviewMode](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/Preview_Mode.gif?raw=true)
 
 ### Default Dark theme
 
