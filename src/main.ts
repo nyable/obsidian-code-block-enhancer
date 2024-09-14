@@ -2,6 +2,7 @@ import { App, debounce, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import { CoreCodeBlockPostProcessor } from './core-processor';
 import { i18n } from './i18n';
 import { CbeCssVar, LineClickMode, LinenumHoverMode as LineHoverMode } from './constant';
+import { editorExtensionProvider } from './editor-extensions';
 
 const DEFAULT_SETTINGS: CbeSettings = {
     excludeLangs: ['todoist'],
@@ -59,6 +60,7 @@ export default class CodeBlockEnhancerPlugin extends Plugin {
                 cbp.updateLineNumber();
             }, 350)
         );
+        this.registerEditorExtension(editorExtensionProvider(this));
 
         console.log('Load Code Block Enhancer Plugin!');
     }
