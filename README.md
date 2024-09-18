@@ -9,41 +9,31 @@ Inspired by [obsidian-code-block-copy](https://github.com/jdbrice/obsidian-code-
 
 Enhancer the markdown code block in preview mode.
 
--   Provide `Line Number`.
--   Show `Language Name`.
--   Custom exclusion language.
--   Enhance contextmenu in code block.
+-   Provide line number
+-   Show language name
+-   Code snap
+-   Custom exclusion language
+-   Enhance contextmenu in code block
+-   ......
 
 ## Screenshot
-
-![Gif](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/GIF.gif?raw=true)
+### Preview Mode
+![PreviewMode](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/Preview_Mode.gif?raw=true)
 
 ### Default Dark theme
 
-![Obsidian_Default_Dark_Theme](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/Obsidian_Default_Dark_Theme.png?raw=true)
+![Obsidian_Default_Dark_Theme](./screenshot/Obsidian_Dark_Theme.jpg)
 
 ### Default Light theme
 
-![Obsidian_Default_Light_Theme](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/Obsidian_Default_Light_Theme.png?raw=true)
+![Obsidian_Default_Light_Theme](./screenshot/Obsidian_Light_Theme.jpg)
 
 ### Plugin setting
 
-![plugin_settings](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/plugin_settings.png?raw=true)
+![plugin_settings](./screenshot/Plugin_Settings.jpg)
 
 # How to use
 
-## Obsidian
-
--   Open Obsidian
--   Settings -> Community plugins -> Turn off Safe Mode
--   Browes community plugins and search `Code Block Enhancer`
--   Install and enable
-
-## Releases
-
--   Download `main.js`, `styles.css`, `manifest.json` in the [latest release](https://github.com/nyable/obsidian-code-block-enhancer/releases/latest)
--   Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/obsidian-code-block-enhancer/`.
--   Enable plugin in Obsidian setting.
 
 ## Source Code
 
@@ -52,3 +42,12 @@ Enhancer the markdown code block in preview mode.
 -   `npm run build` to build file in `./dist`.
 -   Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/obsidian-code-block-enhancer/`.
 -   Enable plugin in Obsidian setting.
+
+
+
+## Releases
+
+-   Download `main.js`, `styles.css`, `manifest.json` in the [latest release](https://github.com/nyable/obsidian-code-block-enhancer/releases/latest)
+-   Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/obsidian-code-block-enhancer/`.
+-   Enable plugin in Obsidian setting.
+
