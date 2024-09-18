@@ -15,6 +15,7 @@ body {
 }
 .cbe {
     position: relative;
+    padding-top: var(--cb-header-height) !important;
     &:hover {
         .cbe-toolbar {
             visibility: visible;
@@ -41,6 +42,7 @@ body {
         min-width: 4rem;
         text-align: center;
         padding-left: 4px;
+        font-size: 14px;
     }
     .cbe-toolbar {
         display: flex;
@@ -77,7 +79,6 @@ body {
         }
         .cbe-line-hover {
             &:hover {
-                //TODO: use css var
                 background-color: rgba(138, 92, 245, 0.15);
             }
         }
@@ -86,20 +87,15 @@ body {
         }
     }
 
-    pre[class*="language-"] {
-        padding-top: var(--cb-header-height) !important;
-    }
-
     .cbe-toolbar-btn {
         margin: 0px 4px;
     }
 }
 
 .cbe.cbe-has-linenumber {
-    pre[class*="language-"] {
-        @include cbe-code-wrap();
-        padding-left: 4.5em !important;
-    }
+    @include cbe-code-wrap();
+    padding-left: 4.5em !important;
+    background: var(--cb-code-bg) !important;
     code[class*="language-"] {
         @include cbe-code-wrap();
         width: 100%;
@@ -111,13 +107,9 @@ body {
 
 .cbe.cbe-collapsed {
     border-top: 4px #39c5bb solid;
-    margin: 20px 0;
     height: var(--cb-header-height);
-    pre {
-        height: 0px !important;
-        padding: 0 !important;
-        margin: 0 !important;
-    }
+    padding: 0 !important;
+    margin: 20px 0 !important;
     .cbe-linenum-wrap,
     code {
         visibility: hidden;

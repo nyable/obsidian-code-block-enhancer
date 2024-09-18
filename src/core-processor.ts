@@ -59,7 +59,7 @@ export class CoreCodeBlockPostProcessor {
         });
 
         const pre = code.parentElement as HTMLElement;
-        const div = pre.parentElement as HTMLElement;
+        // const div = pre.parentElement as HTMLElement;
 
         // Add default language style when lang is empty
         if (!code.classList.toString().includes('language-')) {
@@ -68,11 +68,11 @@ export class CoreCodeBlockPostProcessor {
         }
 
         // 增加一个插件特定的类
-        div.classList.add(CLS.ROOT);
+        pre.classList.add(CLS.ROOT);
 
         // 增加一个顶部的元素
         const header = createEl('div', { cls: CLS.HEADER });
-        el.append(header);
+        pre.append(header);
 
         const textContent = code.textContent as string;
 
@@ -142,7 +142,7 @@ export class CoreCodeBlockPostProcessor {
     }
 
     private addHeader(ctx: MarkdownPostProcessorContext, cbMeta: CodeBlockMeta): void {
-        const { langName, header } = cbMeta;
+        const { langName, header, pre, code } = cbMeta;
         const { showLangName, showCollapseBtn, enableCbeCopyBtn, showCodeSnap } =
             this.plugin.settings;
         if (showLangName) {
@@ -161,7 +161,7 @@ export class CoreCodeBlockPostProcessor {
                 }
             );
             this.plugin.registerDomEvent(collapseBtn, 'click', (e) => {
-                const classList = cbMeta.el.classList;
+                const classList = pre.classList;
                 classList.toggle(CLS.HAS_COLLAPSED);
             });
             toolbar.append(collapseBtn);
@@ -175,18 +175,11 @@ export class CoreCodeBlockPostProcessor {
                 }
             );
             this.plugin.registerDomEvent(snapBtn, 'click', (e) => {
-                const gap = 8;
                 domToImage
-                    .toBlob(cbMeta.el, {
-                        bgcolor: 'transparent',
-                        height: cbMeta.el.offsetHeight + gap * 4,
-                        width: cbMeta.el.offsetWidth + gap * 2,
+                    //@ts-ignore
+                    .toCanvas(pre, {
                         style: {
-                            margin: `${gap}px`,
-                            padding: '0px',
-                            position: 'absolute',
-                            top: '0px',
-                            left: '0px'
+                            margin: '0px'
                         },
                         // @ts-ignore
                         adjustClonedNode: (node: HTMLElement, clone: HTMLElement, after: any) => {
@@ -228,19 +221,57 @@ export class CoreCodeBlockPostProcessor {
                             return clone;
                         }
                     })
-                    .then((b) => {
-                        navigator.clipboard
-                            .write([new ClipboardItem({ 'image/png': b })])
-                            .then(() => {
-                                new Notice(i18n.t('common.notice.copySuccess'));
+                    .then((b: HTMLCanvasElement) => {
+                        const nCanvas = document.createElement('canvas');
+                        const nCtx = nCanvas.getContext('2d');
+                        const mw = 32;
+                        const mh = 32;
+
+                        nCanvas.width = b.width + mw;
+                        nCanvas.height = b.height + mh;
+                        if (nCtx) {
+                            const gradient = nCtx.createLinearGradient(
+                                0,
+                                0,
+                                nCanvas.width,
+                                nCanvas.height
+                            );
+                            ['#ffafbd', '#ffc3a0', '#ffccbc', '#d1c4e9', '#c5e1a5'].forEach(
+                                (color, index, arr) => {
+                                    gradient.addColorStop(index / (arr.length - 1), color);
+                                }
+                            );
+                            nCtx.fillStyle = gradient;
+                            nCtx.fillRect(0, 0, nCanvas.width, nCanvas.height);
+                            // 设置阴影属性
+                            nCtx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+                            nCtx.shadowBlur = 10;
+                            nCtx.shadowOffsetX = -5;
+                            nCtx.shadowOffsetY = 5;
+
+                            nCtx.drawImage(b, mw / 2, mh / 2, b.width, b.height);
+                            nCanvas.toBlob((nblob) => {
+                                if (nblob) {
+                                    navigator.clipboard
+                                        .write([new ClipboardItem({ 'image/png': nblob })])
+                                        .then(() => {
+                                            new Notice(i18n.t('common.notice.copySuccess'));
+                                        });
+                                }
                             });
+                        }
+                        // navigator.clipboard
+                        //     .write([new ClipboardItem({ 'image/png': b })])
+                        //     .then(() => {
+                        //         new Notice(i18n.t('common.notice.copySuccess'));
+                        //     });
                     });
             });
             toolbar.append(snapBtn);
         }
 
         if (enableCbeCopyBtn) {
-            cbMeta.el.classList.add(CLS.HAS_COPYBTN);
+            pre.classList.add(CLS.HAS_COPYBTN);
             const copyBtn = createSpan(
                 { cls: btCls, attr: { 'aria-label': i18n.t('btn.copy') } },
                 (el) => {
@@ -248,7 +279,7 @@ export class CoreCodeBlockPostProcessor {
                 }
             );
             this.plugin.registerDomEvent(copyBtn, 'click', (e) => {
-                copyText(cbMeta.code.textContent);
+                copyText(code.textContent);
             });
             toolbar.append(copyBtn);
         }
@@ -376,10 +407,10 @@ export class CoreCodeBlockPostProcessor {
      * @param cbMeta 代码块数据
      */
     private addLineNumber(ctx: MarkdownPostProcessorContext, cbMeta: CodeBlockMeta) {
-        const { pre, code, lineSize, cbeId, el } = cbMeta;
+        const { pre, code, lineSize, cbeId } = cbMeta;
         const { linenumHoverMode, linenumClickMode } = this.plugin.settings;
 
-        el.classList.add(CLS.HAS_LINENUMBER);
+        pre.classList.add(CLS.HAS_LINENUMBER);
 
         const wrap = createEl('div', { cls: CLS.LN_WRAP });
         if (LineClickMode.None != linenumClickMode) {
