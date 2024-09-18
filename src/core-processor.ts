@@ -108,8 +108,9 @@ export class CoreCodeBlockPostProcessor {
     }
 
     addContextMenu(ctx: MarkdownPostProcessorContext, cbMeta: CodeBlockMeta) {
-        const { el, code } = cbMeta;
-        this.plugin.registerDomEvent(el, 'contextmenu', (event) => {
+        const { pre, code } = cbMeta;
+        this.plugin.registerDomEvent(pre, 'contextmenu', (event) => {
+            event.preventDefault();
             const target = event.target as HTMLElement;
             if (target.tagName == 'CODE') {
                 const contextMenu = new Menu();
@@ -125,14 +126,14 @@ export class CoreCodeBlockPostProcessor {
                         item.setTitle(i18n.t('contextMenu.label.ToTop'))
                             .setIcon('arrow-up-to-line')
                             .onClick((e) => {
-                                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                pre.scrollIntoView({ behavior: 'smooth', block: 'start' });
                             });
                     });
                     contextMenu.addItem((item) => {
                         item.setTitle(i18n.t('contextMenu.label.ToBottom'))
                             .setIcon('arrow-down-to-line')
                             .onClick((e) => {
-                                el.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                                pre.scrollIntoView({ behavior: 'smooth', block: 'end' });
                             });
                     });
                 }
