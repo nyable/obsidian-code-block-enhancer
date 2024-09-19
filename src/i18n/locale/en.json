@@ -71,7 +71,9 @@
     "label": {
       "ToTop": "To Top",
       "ToBottom": "To Bottom",
-      "CopyAll": "Copy All"
+      "CopyAll": "Copy All",
+      "Copy": "Copy",
+      "Link": "Open Link"
     }
   },
   "common": {

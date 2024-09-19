@@ -109,11 +109,36 @@ export class CoreCodeBlockPostProcessor {
 
     addContextMenu(ctx: MarkdownPostProcessorContext, cbMeta: CodeBlockMeta) {
         const { pre, code } = cbMeta;
-        this.plugin.registerDomEvent(pre, 'contextmenu', (event) => {
+        this.plugin.registerDomEvent(code, 'contextmenu', (event) => {
             event.preventDefault();
             const target = event.target as HTMLElement;
-            if (target.tagName == 'CODE') {
+            const selection = window.getSelection();
+            if (['CODE', 'SPAN'].includes(target.tagName.toUpperCase())) {
                 const contextMenu = new Menu();
+                console.log(selection);
+
+                if (selection && selection.type === 'Range' && selection.rangeCount > 0) {
+                    const selText = selection.toString();
+                    const trimText = selText.trim();
+                    if (trimText.startsWith('http')) {
+                        contextMenu.addItem((item) => {
+                            item.setTitle(i18n.t('contextMenu.label.Link'))
+                                .setIcon('link')
+                                .onClick((e) => {
+                                    window.open(trimText.split(/\s/)[0], '_blank');
+                                });
+                        });
+                    }
+
+                    contextMenu.addItem((item) => {
+                        item.setTitle(i18n.t('contextMenu.label.Copy'))
+                            .setIcon('copy')
+                            .onClick((e) => {
+                                copyText(selText);
+                            });
+                    });
+                }
+
                 contextMenu.addItem((item) => {
                     item.setTitle(i18n.t('contextMenu.label.CopyAll'))
                         .setIcon('copy')
@@ -121,7 +146,7 @@ export class CoreCodeBlockPostProcessor {
                             copyText(code.textContent);
                         });
                 });
-                if (cbMeta.lineSize > 30) {
+                if (cbMeta.lineSize > 25) {
                     contextMenu.addItem((item) => {
                         item.setTitle(i18n.t('contextMenu.label.ToTop'))
                             .setIcon('arrow-up-to-line')

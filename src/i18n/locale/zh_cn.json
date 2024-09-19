@@ -71,7 +71,9 @@
     "label": {
       "ToTop": "至顶部",
       "ToBottom": "至底部",
-      "CopyAll": "复制代码块"
+      "CopyAll": "复制代码块",
+      "Copy": "复制",
+      "Link": "打开链接"
     }
   },
   "common": {
