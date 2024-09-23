@@ -1,3 +1,4 @@
+@import './other.scss';
 body {
     --cb-font-size: 14px;
     --cb-header-height: 36px;
@@ -96,7 +97,7 @@ body {
     @include cbe-code-wrap();
     padding-left: 4.5em !important;
     background: var(--cb-code-bg) !important;
-    code[class*="language-"] {
+    code[class*='language-'] {
         @include cbe-code-wrap();
         width: 100%;
         padding: 0 !important;

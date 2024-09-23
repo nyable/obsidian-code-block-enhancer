@@ -1,0 +1,10 @@
+.markdown-source-view {
+    .cbe-bracket-missed {
+        color: red;
+    }
+    .cbe-bracket-matched {
+        // border-bottom: 0.5px solid rgba(128, 128, 128, 0.85);
+        // outline: 0.5px dashed rgba(128, 128, 128, 0.85);
+        box-shadow: 0 0 0 1px rgba(128, 128, 128, 0.85);
+    }
+}
