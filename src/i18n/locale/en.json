@@ -62,7 +62,11 @@
         "Highlight": "Highlight"
       }
     },
-    "reloadApp": "Reload Obsidian"
+    "reloadApp": "Reload Obsidian",
+    "enableLinkPasteModal": {
+      "name": "Enhance link pasting",
+      "desc": "In editing mode, pasting links will present different processing options for selection"
+    }
   },
   "plugin": {
     "name": "Code Block Enhancer"
@@ -85,5 +89,15 @@
     "copy": "Copy",
     "codeSnap": "Code Snap",
     "collapse": "Collapse"
+  },
+  "suggestion": {
+    "linkAction": {
+      "link": {
+        "label": "As a link"
+      },
+      "text": {
+        "label": "As a text"
+      }
+    }
   }
 }

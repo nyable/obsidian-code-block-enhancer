@@ -62,7 +62,11 @@
         "Highlight": "高亮"
       }
     },
-    "reloadApp": "重载应用"
+    "reloadApp": "重载应用",
+    "enableLinkPasteModal": {
+      "desc": "在编辑模式下，粘贴链接将出现不同处理方式进行选择",
+      "name": "增强链接粘贴"
+    }
   },
   "plugin": {
     "name": "代码块增强器"
@@ -85,5 +89,15 @@
     "copy": "复制",
     "codeSnap": "快照",
     "collapse": "折叠"
+  },
+  "suggestion": {
+    "linkAction": {
+      "link": {
+        "label": "作为链接"
+      },
+      "text": {
+        "label": "作为文本"
+      }
+    }
   }
 }

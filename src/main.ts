@@ -2,7 +2,7 @@ import { App, debounce, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import { CoreCodeBlockPostProcessor } from './core-processor';
 import { i18n } from './i18n';
 import { CbeCssVar, LineClickMode, LinenumHoverMode as LineHoverMode } from './constant';
-import { editorExtensionProvider } from './editor-extensions';
+import { editorExtensionProvider, editorModeEnhancer } from './editor-extensions';
 
 const DEFAULT_SETTINGS: CbeSettings = {
     excludeLangs: ['todoist'],
@@ -16,7 +16,8 @@ const DEFAULT_SETTINGS: CbeSettings = {
     enableCbeCopyBtn: true,
     codeFontSize: '16px',
     linenumHoverMode: LineHoverMode.None,
-    linenumClickMode: LineClickMode.None
+    linenumClickMode: LineClickMode.None,
+    enableLinkPasteModal: true
 };
 export default class CodeBlockEnhancerPlugin extends Plugin {
     settings: CbeSettings;
@@ -61,7 +62,7 @@ export default class CodeBlockEnhancerPlugin extends Plugin {
             }, 350)
         );
         this.registerEditorExtension(editorExtensionProvider(this));
-
+        editorModeEnhancer(this);
         console.log('Load Code Block Enhancer Plugin!');
     }
 
@@ -216,6 +217,14 @@ class CbeSettingsTab extends PluginSettingTab {
                 })
                 .setCta();
         });
+
+        new Setting(containerEl).setName(i18n.t('settings.editMode')).setHeading();
+        this.createSimpleToggle(
+            containerEl,
+            'enableLinkPasteModal',
+            i18n.t('settings.enableLinkPasteModal.name'),
+            i18n.t('settings.enableLinkPasteModal.desc')
+        );
     }
 
     /**
