@@ -66,7 +66,8 @@
     "enableLinkPasteModal": {
       "desc": "在编辑模式下，粘贴链接将出现不同处理方式进行选择",
       "name": "增强链接粘贴"
-    }
+    },
+    "editMode": "编辑模式"
   },
   "plugin": {
     "name": "代码块增强器"

@@ -210,14 +210,6 @@ class CbeSettingsTab extends PluginSettingTab {
             i18n.t('settings.enableCbeCopyBtn.desc')
         );
 
-        new Setting(containerEl).addButton((cb) => {
-            cb.setButtonText(i18n.t('settings.reloadApp'))
-                .onClick(() => {
-                    window.location.reload();
-                })
-                .setCta();
-        });
-
         new Setting(containerEl).setName(i18n.t('settings.editMode')).setHeading();
         this.createSimpleToggle(
             containerEl,
@@ -225,6 +217,14 @@ class CbeSettingsTab extends PluginSettingTab {
             i18n.t('settings.enableLinkPasteModal.name'),
             i18n.t('settings.enableLinkPasteModal.desc')
         );
+
+        new Setting(containerEl).addButton((cb) => {
+            cb.setButtonText(i18n.t('settings.reloadApp'))
+                .onClick(() => {
+                    window.location.reload();
+                })
+                .setCta();
+        });
     }
 
     /**
