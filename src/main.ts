@@ -17,6 +17,7 @@ const DEFAULT_SETTINGS: CbeSettings = {
     codeFontSize: '16px',
     linenumHoverMode: LineHoverMode.None,
     linenumClickMode: LineClickMode.None,
+    enableLinenumContextMenu: true,
     enableLinkPasteModal: true
 };
 export default class CodeBlockEnhancerPlugin extends Plugin {
@@ -180,6 +181,12 @@ class CbeSettingsTab extends PluginSettingTab {
                         await this.plugin.saveSettings();
                     });
             });
+        this.createSimpleToggle(
+            containerEl,
+            'enableLinenumContextMenu',
+            i18n.t('settings.enableLinenumContextMenu.name'),
+            i18n.t('settings.enableLinenumContextMenu.desc')
+        );
         // header settings
         new Setting(containerEl).setName(i18n.t('settings.headerBar')).setHeading();
 

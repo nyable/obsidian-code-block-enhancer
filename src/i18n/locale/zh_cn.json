@@ -67,7 +67,11 @@
       "desc": "在编辑模式下，粘贴链接将出现不同处理方式进行选择",
       "name": "增强链接粘贴"
     },
-    "editMode": "编辑模式"
+    "editMode": "编辑模式",
+    "enableLinenumContextMenu": {
+      "name": "行号右键菜单",
+      "desc": "右键行号时显示右键菜单"
+    }
   },
   "plugin": {
     "name": "代码块增强器"
@@ -78,7 +82,10 @@
       "ToBottom": "至底部",
       "CopyAll": "复制代码块",
       "Copy": "复制",
-      "Link": "打开链接"
+      "Link": "打开链接",
+      "ToggleHighlight": "切换高亮",
+      "CopyHighlightRange": "复制高亮行号",
+      "CopyHighlightCode": "复制高亮代码"
     }
   },
   "common": {

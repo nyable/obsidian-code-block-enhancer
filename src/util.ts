@@ -75,3 +75,29 @@ export function parseLineRange(input: string) {
 
     return result;
 }
+/**
+ * 将数字数组合并范围, [1,3,5,6,7,9] = > ['1','3','5-7','9']
+ * @param numbers 数字数组
+ * @returns 合并范围后的数组
+ */
+export function mergeLineRange(numbers: number[]): string[] {
+    const arr = [...new Set(numbers)].sort((a, b) => a - b);
+    const result: string[] = [];
+    if (arr.length === 0) {
+        return result;
+    }
+    let start = arr[0];
+    let end = arr[0];
+
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] === end + 1) {
+            end = arr[i];
+        } else {
+            result.push(start === end ? `${start}` : `${start}-${end}`);
+            start = arr[i];
+            end = arr[i];
+        }
+    }
+    result.push(start === end ? `${start}` : `${start}-${end}`);
+    return result;
+}

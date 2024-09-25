@@ -67,7 +67,11 @@
       "name": "Enhance link pasting",
       "desc": "In editing mode, pasting links will present different processing options for selection"
     },
-    "editMode": "Edit Mode"
+    "editMode": "Edit Mode",
+    "enableLinenumContextMenu": {
+      "name": "Line number context menu",
+      "desc": "Right-clicking the line number displays the context menu."
+    }
   },
   "plugin": {
     "name": "Code Block Enhancer"
@@ -78,7 +82,10 @@
       "ToBottom": "To Bottom",
       "CopyAll": "Copy All",
       "Copy": "Copy",
-      "Link": "Open Link"
+      "Link": "Open Link",
+      "ToggleHighlight": "Toggle Highlight",
+      "CopyHighlightRange": "Copy Highlighted Linenumber",
+      "CopyHighlightCode": "Copy Highlighted Code"
     }
   },
   "common": {

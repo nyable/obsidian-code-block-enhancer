@@ -9,7 +9,7 @@ import {
 import CodeBlockEnhancer from './main';
 import domToImage from 'dom-to-image-more';
 import { v4 as uuidv4 } from 'uuid';
-import { parseLineRange, isMonoSpaceUnicode, queryVisibleElement } from './util';
+import { parseLineRange, isMonoSpaceUnicode, queryVisibleElement, mergeLineRange } from './util';
 import { i18n } from './i18n';
 import { ATTR, CLS, LineClickMode, LinenumHoverMode } from './constant';
 
@@ -115,7 +115,6 @@ export class CoreCodeBlockPostProcessor {
             const selection = window.getSelection();
             if (['CODE', 'SPAN'].includes(target.tagName.toUpperCase())) {
                 const contextMenu = new Menu();
-                console.log(selection);
 
                 if (selection && selection.type === 'Range' && selection.rangeCount > 0) {
                     const selText = selection.toString();
@@ -434,7 +433,8 @@ export class CoreCodeBlockPostProcessor {
      */
     private addLineNumber(ctx: MarkdownPostProcessorContext, cbMeta: CodeBlockMeta) {
         const { pre, code, lineSize, cbeId } = cbMeta;
-        const { linenumHoverMode, linenumClickMode } = this.plugin.settings;
+        const { linenumHoverMode, linenumClickMode, enableLinenumContextMenu } =
+            this.plugin.settings;
 
         pre.classList.add(CLS.HAS_LINENUMBER);
 
@@ -442,6 +442,7 @@ export class CoreCodeBlockPostProcessor {
         if (LineClickMode.None != linenumClickMode) {
             this.plugin.registerDomEvent(wrap, 'click', (evt) => {
                 const target = evt.target;
+
                 if (target instanceof HTMLElement && target.classList.contains(CLS.LN_NUM)) {
                     const lineEl = target.parentElement as HTMLElement;
                     const attrNum = lineEl.getAttribute(ATTR.LINENUM);
@@ -455,6 +456,79 @@ export class CoreCodeBlockPostProcessor {
                     } else if (LineClickMode.Highlight == linenumClickMode) {
                         lineEl.classList.toggle(CLS.LN_HIGHLIGHT2);
                     }
+                }
+            });
+        }
+        if (enableLinenumContextMenu) {
+            this.plugin.registerDomEvent(wrap, 'contextmenu', (event) => {
+                event.preventDefault();
+                const target = event.target as HTMLElement;
+                if (target.classList.contains(CLS.LN_NUM)) {
+                    const lineEl = target.parentElement as HTMLElement;
+                    const attrNum = lineEl.getAttribute(ATTR.LINENUM);
+                    if (attrNum == null) {
+                        return;
+                    }
+                    const index = parseInt(attrNum) - 1;
+                    const contextMenu = new Menu();
+
+                    contextMenu.addItem((item) => {
+                        item.setTitle(i18n.t('contextMenu.label.Copy'))
+                            .setIcon('copy')
+                            .onClick((e) => {
+                                const text = cbMeta.contentList[index];
+                                copyText(text);
+                            });
+                    });
+                    contextMenu.addItem((item) => {
+                        item.setTitle(i18n.t('contextMenu.label.ToggleHighlight'))
+                            .setIcon('highlighter')
+                            .onClick((e) => {
+                                lineEl.classList.toggle(CLS.LN_HIGHLIGHT2);
+                            });
+                    });
+                    contextMenu.addItem((item) => {
+                        item.setTitle(i18n.t('contextMenu.label.CopyHighlightRange'))
+                            .setIcon('list-ordered')
+                            .onClick((e) => {
+                                const ranges: number[] = [];
+                                wrap.querySelectorAll(
+                                    [CLS.LN_HIGHLIGHT, CLS.LN_HIGHLIGHT2]
+                                        .map((cls) => `.${cls}`)
+                                        .join(',')
+                                ).forEach((el) => {
+                                    const lineNum = el.getAttribute(ATTR.LINENUM);
+                                    if (lineNum != null) {
+                                        ranges.push(parseInt(lineNum));
+                                    }
+                                });
+                                copyText(`{${mergeLineRange(ranges)}}`);
+                            });
+                    });
+                    contextMenu.addItem((item) => {
+                        item.setTitle(i18n.t('contextMenu.label.CopyHighlightCode'))
+                            .setIcon('code')
+                            .onClick((e) => {
+                                const text: string[] = [];
+                                wrap.querySelectorAll(
+                                    [CLS.LN_HIGHLIGHT, CLS.LN_HIGHLIGHT2]
+                                        .map((cls) => `.${cls}`)
+                                        .join(',')
+                                ).forEach((el) => {
+                                    const lineNum = el.getAttribute(ATTR.LINENUM);
+                                    if (lineNum != null) {
+                                        const index = parseInt(lineNum) - 1;
+                                        text.push(cbMeta.contentList[index]);
+                                    }
+                                });
+                                copyText(text.join('\n'));
+                            });
+                    });
+                    contextMenu.addSeparator().addItem((item) => {
+                        item.setTitle(`L${index + 1}`).setDisabled(true);
+                    });
+
+                    contextMenu.showAtMouseEvent(event);
                 }
             });
         }
@@ -534,7 +608,7 @@ export class CoreCodeBlockPostProcessor {
 }
 
 function copyText(text: string | null) {
-    if (text) {
+    if (text !== null) {
         navigator.clipboard.writeText(text).then(() => {
             new Notice(i18n.t('common.notice.copySuccess'));
         });
