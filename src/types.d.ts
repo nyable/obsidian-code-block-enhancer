@@ -52,9 +52,13 @@ interface CbeSettings {
      */
     enableLinenumContextMenu: boolean;
     /**
-     * 是否启用链接粘贴模态框(选择粘贴的形式)
+     * 编辑模式下,是否启用链接粘贴模态框(选择粘贴的形式)
      */
     enableLinkPasteModal: boolean;
+    /**
+     * 编辑模式下,是否启用括号匹配
+     */
+    enableBracketMatching: boolean;
 }
 
 interface CodeBlockMeta {

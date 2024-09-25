@@ -3,8 +3,10 @@ import { i18n } from './i18n';
 import CodeBlockEnhancerPlugin from './main';
 import { App, Editor, MarkdownView, SuggestModal } from 'obsidian';
 import { bracketMatching } from '@codemirror/language';
-import { Range } from '@codemirror/state';
+import { Extension, Range } from '@codemirror/state';
 export function editorExtensionProvider(plugin: CodeBlockEnhancerPlugin) {
+    const pluginList: Extension[] = [];
+    const { enableBracketMatching } = plugin.settings;
     const highlightBracketMatching = bracketMatching({
         renderMatch: (match, state) => {
             const { matched, start, end } = match;
@@ -81,7 +83,10 @@ export function editorExtensionProvider(plugin: CodeBlockEnhancerPlugin) {
             return decorations;
         }
     });
-    return [highlightBracketMatching];
+    if (enableBracketMatching) {
+        pluginList.push(highlightBracketMatching);
+    }
+    return pluginList;
 }
 
 export function editorModeEnhancer(plugin: CodeBlockEnhancerPlugin) {

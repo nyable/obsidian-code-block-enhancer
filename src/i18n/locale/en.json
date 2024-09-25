@@ -71,6 +71,10 @@
     "enableLinenumContextMenu": {
       "name": "Line number context menu",
       "desc": "Right-clicking the line number displays the context menu."
+    },
+    "enableBracketMatching": {
+      "name": "Enable bracket matching",
+      "desc": "In edit mode, the bracket at the cursor's position will be highlighted"
     }
   },
   "plugin": {

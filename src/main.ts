@@ -18,7 +18,8 @@ const DEFAULT_SETTINGS: CbeSettings = {
     linenumHoverMode: LineHoverMode.None,
     linenumClickMode: LineClickMode.None,
     enableLinenumContextMenu: true,
-    enableLinkPasteModal: true
+    enableLinkPasteModal: true,
+    enableBracketMatching: true
 };
 export default class CodeBlockEnhancerPlugin extends Plugin {
     settings: CbeSettings;
@@ -225,6 +226,12 @@ class CbeSettingsTab extends PluginSettingTab {
             i18n.t('settings.enableLinkPasteModal.desc')
         );
 
+        this.createSimpleToggle(
+            containerEl,
+            'enableBracketMatching',
+            i18n.t('settings.enableBracketMatching.name'),
+            i18n.t('settings.enableBracketMatching.desc')
+        );
         new Setting(containerEl).addButton((cb) => {
             cb.setButtonText(i18n.t('settings.reloadApp'))
                 .onClick(() => {

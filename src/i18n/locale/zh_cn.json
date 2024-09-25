@@ -71,6 +71,10 @@
     "enableLinenumContextMenu": {
       "name": "行号右键菜单",
       "desc": "右键行号时显示右键菜单"
+    },
+    "enableBracketMatching": {
+      "name": "启用括号匹配",
+      "desc": "在编辑模式下，光标所处位置的括号将被突出显示"
     }
   },
   "plugin": {
