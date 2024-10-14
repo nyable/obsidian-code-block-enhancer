@@ -5,7 +5,7 @@ import * as zh_cn from './locale/zh_cn.json';
 i18next.init({
     lng: 'en', // if you're using a language detector, do not define the lng option
     fallbackLng: 'en',
-    debug: true,
+    debug: false,
     resources: {
         en: {
             translation: en
