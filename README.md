@@ -17,7 +17,9 @@ Enhancer the markdown code block in preview mode.
 -   ......
 
 ## Screenshot
+
 ### Preview Mode
+
 ![PreviewMode](https://github.com/nyable/obsidian-code-block-enhancer/blob/master/screenshot/Preview_Mode.gif?raw=true)
 
 ### Default Dark theme
@@ -34,8 +36,16 @@ Enhancer the markdown code block in preview mode.
 
 # How to use
 
+## Install
 
-## Source Code
+### BRAT
+
+-   [Install the BRAT Plugin](https://obsidian.md/plugins?id=obsidian42-brat)
+-   Execute command `Obsidian42 - BRAT: Add a beta plugin for testing`
+-   Paste the URL of this repository and confirm
+-   Enable plugin in Obsidian setting.
+
+### Source Code
 
 -   Clone this repo.
 -   `npm i` or `yarn` to install dependencies
@@ -43,11 +53,8 @@ Enhancer the markdown code block in preview mode.
 -   Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/obsidian-code-block-enhancer/`.
 -   Enable plugin in Obsidian setting.
 
-
-
-## Releases
+### Releases
 
 -   Download `main.js`, `styles.css`, `manifest.json` in the [latest release](https://github.com/nyable/obsidian-code-block-enhancer/releases/latest)
 -   Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/obsidian-code-block-enhancer/`.
 -   Enable plugin in Obsidian setting.
-
