@@ -1,11 +1,4 @@
-import {
-    debounce,
-    getIcon,
-    MarkdownPostProcessorContext,
-    MarkdownView,
-    Menu,
-    Notice
-} from 'obsidian';
+import { getIcon, MarkdownPostProcessorContext, MarkdownView, Menu, Notice } from 'obsidian';
 import CodeBlockEnhancer from './main';
 import domToImage from 'dom-to-image-more';
 import { v4 as uuidv4 } from 'uuid';
@@ -316,7 +309,7 @@ export class CoreCodeBlockPostProcessor {
      */
     updateLineNumber() {
         BASE_LINE_INFO.updated = false;
-        const codeBlocks = queryVisibleElement(`div.${CLS.HAS_LINENUMBER}>pre>code`);
+        const codeBlocks = queryVisibleElement(`.${CLS.HAS_LINENUMBER}>code`);
 
         codeBlocks.forEach(async (code: HTMLElement, index: number) => {
             if (index == 0) {
@@ -364,7 +357,7 @@ export class CoreCodeBlockPostProcessor {
                         BASE_LINE_INFO.updated = true;
                     }
                     BASE_LINE_INFO.tabSize = parseInt(getComputedStyle(target).tabSize) || 4;
-                    console.debug(BASE_LINE_INFO, 'over!');
+                    // console.debug(BASE_LINE_INFO, 'over!');
                 }
                 resolve(null);
             }, 200);
