@@ -469,58 +469,46 @@ export class CoreCodeBlockPostProcessor {
 
         this.metaCache.set(cbeId, cbMeta);
 
-        const mutationOb = new MutationObserver(
-            debounce((mutations) => {
-                Array.from({ length: lineSize }, (v, k) => k).forEach((i) => {
-                    const line = createEl('div', {
-                        cls: [CLS.LN_LINE],
-                        attr: { [ATTR.LINENUM]: i + 1 }
-                    });
-                    if (linenumHoverMode === LinenumHoverMode.Highlight) {
-                        line.classList.add(CLS.LN_ON_HOVER);
+        Array.from({ length: lineSize }, (v, k) => k).forEach((i) => {
+            const line = createEl('div', {
+                cls: [CLS.LN_LINE],
+                attr: { [ATTR.LINENUM]: i + 1 }
+            });
+            if (linenumHoverMode === LinenumHoverMode.Highlight) {
+                line.classList.add(CLS.LN_ON_HOVER);
+            }
+            const linunum = createEl('div', {
+                cls: [CLS.LN_NUM],
+                attr: { [ATTR.LINENUM]: i + 1 }
+            });
+
+            line.append(linunum);
+            wrap.append(line);
+        });
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(async (entry) => {
+                if (entry.isIntersecting) {
+                    const code = entry.target;
+                    if (BASE_LINE_INFO.updated == false) {
+                        await this.updateBaseLineInfo(code);
                     }
-                    const linunum = createEl('div', {
-                        cls: [CLS.LN_NUM],
-                        attr: { [ATTR.LINENUM]: i + 1 }
+                    const lines = wrap.children;
+                    const firstLine =
+                        this.plugin.app.workspace
+                            .getActiveViewOfType(MarkdownView)
+                            ?.editor.getLine(ctx.getSectionInfo(cbMeta.el)?.lineStart || 0) || '';
+                    const highlightLines = parseLineRange(firstLine);
+                    Array.from(lines).forEach((line: HTMLElement, i) => {
+                        line.classList.toggle(CLS.LN_HIGHLIGHT, highlightLines.includes(i + 1));
+                        this.setLineNumStyle(line, cbMeta, i);
                     });
+                }
+            });
+        });
+        observer.observe(code);
 
-                    line.append(linunum);
-                    wrap.append(line);
-                });
-
-                const observer = new IntersectionObserver((entries, observer) => {
-                    entries.forEach(async (entry) => {
-                        if (entry.isIntersecting) {
-                            const code = entry.target;
-                            if (BASE_LINE_INFO.updated == false) {
-                                await this.updateBaseLineInfo(code);
-                            }
-                            const lines = wrap.children;
-                            const firstLine =
-                                this.plugin.app.workspace
-                                    .getActiveViewOfType(MarkdownView)
-                                    ?.editor.getLine(
-                                        ctx.getSectionInfo(cbMeta.el)?.lineStart || 0
-                                    ) || '';
-                            const highlightLines = parseLineRange(firstLine);
-                            Array.from(lines).forEach((line: HTMLElement, i) => {
-                                line.classList.toggle(
-                                    CLS.LN_HIGHLIGHT,
-                                    highlightLines.includes(i + 1)
-                                );
-                                this.setLineNumStyle(line, cbMeta, i);
-                            });
-                        }
-                    });
-                });
-                observer.observe(code);
-
-                this.observerCache.push(observer);
-
-                mutationOb.disconnect();
-            }, 500)
-        );
-        mutationOb.observe(pre, { attributes: false, childList: true });
+        this.observerCache.push(observer);
     }
 
     clearObserverCache() {
