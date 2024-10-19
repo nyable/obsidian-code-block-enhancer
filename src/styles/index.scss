@@ -4,7 +4,6 @@ body {
     --cb-linenum-bg: inherit;
     --cb-linenum-border: #999 1px solid;
     --cb-linenum-color: var(--code-normal);
-    --cb-code-bg: var(--code-background);
     --cb-linenum-highlight-color: rgba(255, 255, 0, 0.1);
 }
 @mixin cbe-code-wrap {
@@ -95,13 +94,12 @@ body {
 .cbe.cbe-has-linenumber {
     @include cbe-code-wrap();
     padding-left: 4.5em !important;
-    background: var(--cb-code-bg) !important;
-    code[class*="language-"] {
+    background-color: var(--code-background);
+    code[class*='language-'] {
         @include cbe-code-wrap();
         width: 100%;
         padding: 0 !important;
         font-size: var(--cb-font-size) !important;
-        background: var(--cb-code-bg) !important;
     }
 }
 
