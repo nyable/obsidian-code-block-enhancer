@@ -21,7 +21,8 @@ body {
         }
     }
     .copy-code-button {
-        z-index: 200;
+        // z-index: 200;
+        display: none;
     }
     .cbe-header {
         position: absolute;
@@ -51,6 +52,7 @@ body {
         visibility: hidden;
         padding-left: 16px;
         pointer-events: auto;
+        flex: 1;
     }
     .cbe-linenum-wrap {
         position: absolute;
@@ -111,15 +113,6 @@ body {
     .cbe-linenum-wrap,
     code {
         visibility: hidden;
-    }
-}
-
-.cbe.cbe-has-copy-btn {
-    .cbe-toolbar {
-        flex: 1;
-    }
-    .copy-code-button {
-        display: none;
     }
 }
 

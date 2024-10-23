@@ -32,10 +32,6 @@ interface CbeSettings {
      */
     showCodeSnap: boolean;
     /**
-     * 启用复制按钮图标
-     */
-    enableCbeCopyBtn: boolean;
-    /**
      * 代码块字体大小 14px
      */
     codeFontSize: string;

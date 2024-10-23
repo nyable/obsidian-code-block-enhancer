@@ -162,8 +162,7 @@ export class CoreCodeBlockPostProcessor {
 
     private addHeader(ctx: MarkdownPostProcessorContext, cbMeta: CodeBlockMeta): void {
         const { langName, header, pre, code } = cbMeta;
-        const { showLangName, showCollapseBtn, enableCbeCopyBtn, showCodeSnap } =
-            this.plugin.settings;
+        const { showLangName, showCollapseBtn, showCodeSnap } = this.plugin.settings;
         if (showLangName) {
             header.append(createEl('div', { cls: CLS.H_LANG_NAME, text: langName }));
         }
@@ -279,29 +278,22 @@ export class CoreCodeBlockPostProcessor {
                                 }
                             });
                         }
-                        // navigator.clipboard
-                        //     .write([new ClipboardItem({ 'image/png': b })])
-                        //     .then(() => {
-                        //         new Notice(i18n.t('common.notice.copySuccess'));
-                        //     });
                     });
             });
             toolbar.append(snapBtn);
         }
 
-        if (enableCbeCopyBtn) {
-            pre.classList.add(CLS.HAS_COPYBTN);
-            const copyBtn = createSpan(
-                { cls: btCls, attr: { 'aria-label': i18n.t('btn.copy') } },
-                (el) => {
-                    el.append(getIcon('copy') as Node);
-                }
-            );
-            this.plugin.registerDomEvent(copyBtn, 'click', (e) => {
-                copyText(code.textContent);
-            });
-            toolbar.append(copyBtn);
-        }
+        pre.classList.add(CLS.HAS_COPYBTN);
+        const copyBtn = createSpan(
+            { cls: btCls, attr: { 'aria-label': i18n.t('btn.copy') } },
+            (el) => {
+                el.append(getIcon('copy') as Node);
+            }
+        );
+        this.plugin.registerDomEvent(copyBtn, 'click', (e) => {
+            copyText(code.textContent);
+        });
+        toolbar.append(copyBtn);
     }
 
     /**

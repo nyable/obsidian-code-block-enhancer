@@ -2,7 +2,6 @@ import { App, debounce, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import { CoreCodeBlockPostProcessor } from './core-processor';
 import { i18n } from './i18n';
 import { CbeCssVar, LineClickMode, LinenumHoverMode as LineHoverMode } from './constant';
-import { editorExtensionProvider } from './editor-extensions';
 
 const DEFAULT_SETTINGS: CbeSettings = {
     excludeLangs: ['todoist'],
@@ -13,7 +12,6 @@ const DEFAULT_SETTINGS: CbeSettings = {
     showLangName: true,
     showCollapseBtn: true,
     showCodeSnap: true,
-    enableCbeCopyBtn: true,
     codeFontSize: '16px',
     linenumHoverMode: LineHoverMode.None,
     linenumClickMode: LineClickMode.None
@@ -50,17 +48,18 @@ export default class CodeBlockEnhancerPlugin extends Plugin {
         this.addSettingTab(new CbeSettingsTab(this.app, this));
         this.setCssVar();
 
-        const cbp = new CoreCodeBlockPostProcessor(this);
-        this.registerMarkdownPostProcessor((el, ctx) => {
-            cbp.enhanceCodeBlock(el, ctx);
+        this.app.workspace.onLayoutReady(() => {
+            const cbp = new CoreCodeBlockPostProcessor(this);
+            this.registerMarkdownPostProcessor((el, ctx) => {
+                cbp.enhanceCodeBlock(el, ctx);
+            });
+            this.app.workspace.on(
+                'resize',
+                debounce(() => {
+                    cbp.updateLineNumber();
+                }, 200)
+            );
         });
-        this.app.workspace.on(
-            'resize',
-            debounce(() => {
-                cbp.updateLineNumber();
-            }, 200)
-        );
-        this.registerEditorExtension(editorExtensionProvider(this));
 
         console.log('Load Code Block Enhancer Plugin!');
     }
@@ -201,12 +200,6 @@ class CbeSettingsTab extends PluginSettingTab {
             'showCodeSnap',
             i18n.t('settings.showCodeSnap.name'),
             i18n.t('settings.showCodeSnap.desc')
-        );
-        this.createSimpleToggle(
-            containerEl,
-            'enableCbeCopyBtn',
-            i18n.t('settings.enableCbeCopyBtn.name'),
-            i18n.t('settings.enableCbeCopyBtn.desc')
         );
 
         new Setting(containerEl).addButton((cb) => {
