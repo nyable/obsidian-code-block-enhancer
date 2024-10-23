@@ -58,7 +58,7 @@ export default class CodeBlockEnhancerPlugin extends Plugin {
             'resize',
             debounce(() => {
                 cbp.updateLineNumber();
-            }, 350)
+            }, 200)
         );
         this.registerEditorExtension(editorExtensionProvider(this));
 

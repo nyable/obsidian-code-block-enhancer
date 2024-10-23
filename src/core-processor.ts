@@ -83,7 +83,9 @@ export class CoreCodeBlockPostProcessor {
             contentList,
             header: header,
             textSize: textSize,
-            highlightLines: []
+            highlightLines: [],
+            firstLine: '',
+            lineNumberWrapEl: null
         };
 
         const { showLineNumber, useContextMenu } = plugin.settings;
@@ -108,8 +110,6 @@ export class CoreCodeBlockPostProcessor {
             const selection = window.getSelection();
             if (['CODE', 'SPAN'].includes(target.tagName.toUpperCase())) {
                 const contextMenu = new Menu();
-                console.log(selection);
-
                 if (selection && selection.type === 'Range' && selection.rangeCount > 0) {
                     const selText = selection.toString();
                     const trimText = selText.trim();
@@ -308,25 +308,19 @@ export class CoreCodeBlockPostProcessor {
      * 更新行号信息
      */
     updateLineNumber() {
-        BASE_LINE_INFO.updated = false;
-        const codeBlocks = queryVisibleElement(`.${CLS.HAS_LINENUMBER}>code`);
-
-        codeBlocks.forEach(async (code: HTMLElement, index: number) => {
-            if (index == 0) {
-                await this.updateBaseLineInfo(code);
-            }
-            const uuid = code.getAttribute(ATTR.CBE_ID);
-            if (uuid) {
-                const cbMeta = this.metaCache.get(uuid);
-                if (cbMeta) {
-                    cbMeta.pre
-                        .querySelectorAll(`.${CLS.LN_LINE}`)
-                        .forEach((line: HTMLElement, i: number) => {
-                            this.setLineNumStyle(line, cbMeta, i);
-                        });
+        const codeBlocks = queryVisibleElement(`.${CLS.HAS_LINENUMBER}`);
+        if (codeBlocks.length > 0) {
+            BASE_LINE_INFO.updated = false;
+            codeBlocks.forEach((el) => {
+                const uuid = el.getAttribute(ATTR.CBE_ID);
+                if (uuid) {
+                    const cbMeta = this.metaCache.get(uuid);
+                    if (cbMeta) {
+                        this.freshLineNumber(cbMeta);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     /**
@@ -360,7 +354,7 @@ export class CoreCodeBlockPostProcessor {
                     // console.debug(BASE_LINE_INFO, 'over!');
                 }
                 resolve(null);
-            }, 200);
+            }, 50);
         });
     }
     private setLineNumStyle(line: HTMLElement, cbMeta: CodeBlockMeta, i: number) {
@@ -453,6 +447,7 @@ export class CoreCodeBlockPostProcessor {
         }
 
         pre.append(wrap);
+        cbMeta.lineNumberWrapEl = wrap;
 
         // pre.classList.add(CLS.HAS_LINENUMBER);
         // code.classList.add(CLS.HAS_LINENUMBER);
@@ -479,29 +474,42 @@ export class CoreCodeBlockPostProcessor {
             wrap.append(line);
         });
 
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(async (entry) => {
-                if (entry.isIntersecting) {
-                    const code = entry.target;
-                    if (BASE_LINE_INFO.updated == false) {
-                        await this.updateBaseLineInfo(code);
+        const observer = new IntersectionObserver(async (entries, observer) => {
+            for (const entry of entries) {
+                const target = entry.target as HTMLElement;
+                if (entry.isIntersecting && target.classList.contains('is-loaded')) {
+                    const sectionInfo = ctx.getSectionInfo(cbMeta.el);
+
+                    if (sectionInfo) {
+                        cbMeta.firstLine =
+                            this.plugin.app.workspace
+                                .getActiveViewOfType(MarkdownView)
+                                ?.editor.getLine(sectionInfo.lineStart) || '';
                     }
-                    const lines = wrap.children;
-                    const firstLine =
-                        this.plugin.app.workspace
-                            .getActiveViewOfType(MarkdownView)
-                            ?.editor.getLine(ctx.getSectionInfo(cbMeta.el)?.lineStart || 0) || '';
-                    const highlightLines = parseLineRange(firstLine);
-                    Array.from(lines).forEach((line: HTMLElement, i) => {
-                        line.classList.toggle(CLS.LN_HIGHLIGHT, highlightLines.includes(i + 1));
-                        this.setLineNumStyle(line, cbMeta, i);
-                    });
+                    this.freshLineNumber(cbMeta);
                 }
-            });
+            }
         });
         observer.observe(code);
 
         this.observerCache.push(observer);
+    }
+
+    async freshLineNumber(cbMeta: CodeBlockMeta) {
+        const targetCode = cbMeta.code;
+        if (BASE_LINE_INFO.updated == false) {
+            await this.updateBaseLineInfo(targetCode);
+        }
+        const wrap = cbMeta.lineNumberWrapEl;
+        if (wrap) {
+            const lines = wrap.children;
+            const highlightLines = parseLineRange(cbMeta.firstLine);
+
+            Array.from(lines).forEach((line: HTMLElement, i) => {
+                line.classList.toggle(CLS.LN_HIGHLIGHT, highlightLines.includes(i + 1));
+                this.setLineNumStyle(line, cbMeta, i);
+            });
+        }
     }
 
     clearObserverCache() {

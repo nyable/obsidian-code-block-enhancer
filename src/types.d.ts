@@ -90,6 +90,8 @@ interface CodeBlockMeta {
      * 应该高亮的行
      */
     highlightLines: number[];
+    firstLine: string;
+    lineNumberWrapEl: HTMLElement | null;
 }
 
 interface BaseLineInfo {
