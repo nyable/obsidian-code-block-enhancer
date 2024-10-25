@@ -72,7 +72,7 @@ body {
             height: 100%;
             border-right: var(--cb-linenum-border);
             &::before {
-                content: attr(linenum);
+                content: attr(data-linenum);
             }
         }
         .cbe-line-highlight {
@@ -82,9 +82,6 @@ body {
             &:hover {
                 background-color: rgba(138, 92, 245, 0.15);
             }
-        }
-        .cbe-line-highlight2 {
-            background-color: rgba(138, 92, 245, 0.15);
         }
     }
 

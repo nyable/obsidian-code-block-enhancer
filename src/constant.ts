@@ -85,12 +85,8 @@ export enum CLS {
      * 启用折叠按钮后在最外层加的类
      */
     HAS_COLLAPSED = 'cbe-collapsed',
-    DEFAULT_LANG = 'language-text',
-    LN_ON_HOVER = 'cbe-line-hover',
-    LN_HIGHLIGHT2 = 'cbe-line-highlight2'
-}
-
-export enum ATTR {
-    CBE_ID = 'cbe-id',
-    LINENUM = 'linenum'
+    /**
+     * 鼠标悬浮在行号时的类
+     */
+    LN_ON_HOVER = 'cbe-line-hover'
 }

@@ -1,3 +1,7 @@
+import { Notice } from 'obsidian';
+import { i18n } from './i18n';
+import { CLS } from './constant';
+import domToImage from 'dom-to-image-more';
 /**
  * 判断字符的宽度是否是英文字母宽度的
  * @param code charCode
@@ -74,4 +78,96 @@ export function parseLineRange(input: string) {
     });
 
     return result;
+}
+
+export function snapshot(pre: HTMLElement) {
+    domToImage
+        //@ts-ignore
+        .toCanvas(pre, {
+            style: {
+                margin: '0px'
+            },
+            // @ts-ignore
+            adjustClonedNode: (node: HTMLElement, clone: HTMLElement, after: any) => {
+                if (!after) {
+                    const classList = clone.classList;
+                    if (classList) {
+                        if (classList.contains(CLS.H_TOOLBAR)) {
+                            clone.style.display = 'none';
+                        }
+                        if (classList.contains(CLS.HEADER)) {
+                            clone.style.borderRadius = '4px';
+                            const size = '1em';
+                            const btnGroup = createDiv();
+                            btnGroup.style.display = 'flex';
+                            btnGroup.style.width = '6em';
+                            btnGroup.style.alignSelf = 'center';
+                            btnGroup.style.padding = '0 1em';
+                            btnGroup.style.gap = '8px';
+                            const bgColors = ['#ff5f57', '#ffbd2e', '#28c940'];
+                            bgColors.forEach((color) => {
+                                const btn = document.createElement('div');
+                                btn.style.width = size;
+                                btn.style.height = size;
+                                btn.style.borderRadius = '50%';
+                                btn.style.backgroundColor = color;
+                                btnGroup.append(btn);
+                            });
+                            clone.append(btnGroup);
+                        }
+                        if (classList.contains(CLS.H_LANG_NAME)) {
+                            clone.style.flex = '1';
+                            clone.style.textAlign = 'right';
+                            clone.style.paddingRight = '1em';
+                            clone.style.fontSize = '1em';
+                            clone.style.fontWeight = 'bold';
+                        }
+                    }
+                }
+                return clone;
+            }
+        })
+        .then((b: HTMLCanvasElement) => {
+            const nCanvas = document.createElement('canvas');
+            const nCtx = nCanvas.getContext('2d');
+            const mw = 32;
+            const mh = 32;
+
+            nCanvas.width = b.width + mw;
+            nCanvas.height = b.height + mh;
+            if (nCtx) {
+                const gradient = nCtx.createLinearGradient(0, 0, nCanvas.width, nCanvas.height);
+                ['#ffafbd', '#ffc3a0', '#ffccbc', '#d1c4e9', '#c5e1a5'].forEach(
+                    (color, index, arr) => {
+                        gradient.addColorStop(index / (arr.length - 1), color);
+                    }
+                );
+                nCtx.fillStyle = gradient;
+                nCtx.fillRect(0, 0, nCanvas.width, nCanvas.height);
+                // 设置阴影属性
+                nCtx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+                nCtx.shadowBlur = 10;
+                nCtx.shadowOffsetX = -5;
+                nCtx.shadowOffsetY = 5;
+
+                nCtx.drawImage(b, mw / 2, mh / 2, b.width, b.height);
+                nCanvas.toBlob((nblob) => {
+                    if (nblob) {
+                        navigator.clipboard
+                            .write([new ClipboardItem({ 'image/png': nblob })])
+                            .then(() => {
+                                new Notice(i18n.t('common.notice.copySuccess'));
+                            });
+                    }
+                });
+            }
+        });
+}
+
+export function copyText(text: string | null) {
+    if (text) {
+        navigator.clipboard.writeText(text).then(() => {
+            new Notice(i18n.t('common.notice.copySuccess'));
+        });
+    }
 }

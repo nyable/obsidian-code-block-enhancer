@@ -1,3 +1,39 @@
+declare module 'dom-to-image-more' {
+    import domToImage = require('dom-to-image');
+    export = domToImage;
+}
+
+interface CbeInfo {
+    /**
+     * 代码块的语言名称
+     */
+    language: string;
+    /**
+     * 代码行数,不包括开头和结尾的```
+     */
+    lineCount: number;
+    /**
+     * 总字数
+     */
+    textSize: number;
+    /**
+     * 原始参数中的el
+     */
+    el: HTMLElement;
+    /**
+     * 代码块中的pre标签,从el中获取
+     */
+    pre: HTMLElement;
+    /**
+     *  代码块中的code标签,从el中获取
+     */
+    code: HTMLElement;
+    /**
+     * 每一行的内容数组,可能会比lineCount多一行最后的空白
+     */
+    lineTextList: string[];
+}
+
 interface CbeSettings {
     /**
      * 排除的语言
@@ -99,7 +135,9 @@ interface BaseLineInfo {
     tabSize: number;
 }
 
-declare module 'dom-to-image-more' {
-    import domToImage = require('dom-to-image');
-    export = domToImage;
+interface BoxSize {
+    width: number;
+    height: number;
+    oldWidth: number;
+    oldHeight: number;
 }

@@ -1,7 +1,8 @@
-import { App, debounce, Plugin, PluginSettingTab, Setting } from 'obsidian';
-import { CoreCodeBlockPostProcessor } from './core-processor';
+import { App, debounce, Plugin, PluginSettingTab, Setting, TFile } from 'obsidian';
+import { unmountCallbackCache, CoreCodeBlockPostProcessor } from './core-processor';
 import { i18n } from './i18n';
 import { CbeCssVar, LineClickMode, LinenumHoverMode as LineHoverMode } from './constant';
+import { boxSizeStore } from './store';
 
 const DEFAULT_SETTINGS: CbeSettings = {
     excludeLangs: ['todoist'],
@@ -17,7 +18,7 @@ const DEFAULT_SETTINGS: CbeSettings = {
     linenumClickMode: LineClickMode.None
 };
 export default class CodeBlockEnhancerPlugin extends Plugin {
-    settings: CbeSettings;
+    settings!: CbeSettings;
 
     async setCssVar() {
         const settings = this.settings;
@@ -53,18 +54,42 @@ export default class CodeBlockEnhancerPlugin extends Plugin {
             this.registerMarkdownPostProcessor((el, ctx) => {
                 cbp.enhanceCodeBlock(el, ctx);
             });
-            this.app.workspace.on(
-                'resize',
-                debounce(() => {
-                    cbp.updateLineNumber();
-                }, 200)
-            );
+            this.app.workspace.on('resize', this.resizeHandler);
+            this.app.workspace.on('layout-change', this.layoutHandler);
         });
 
         console.log('Load Code Block Enhancer Plugin!');
     }
 
+    layoutHandler = () => {
+        const markdownLeaves = this.app.workspace.getLeavesOfType('markdown');
+        const openMarkdownPaths = markdownLeaves.map((leaf) => {
+            return ((leaf.view as any).file as TFile).path;
+        });
+        for (const [key, value] of unmountCallbackCache) {
+            if (!openMarkdownPaths.contains(key)) {
+                value.forEach((cb) => cb());
+                unmountCallbackCache.delete(key);
+            }
+        }
+    };
+    resizeHandler = debounce(
+        () => {
+            boxSizeStore.update((boxSize) => {
+                boxSize.oldHeight = boxSize.height;
+                boxSize.oldWidth = boxSize.width;
+                boxSize.height = window.innerHeight;
+                boxSize.width = window.innerWidth;
+                return boxSize;
+            });
+        },
+        250,
+        true
+    );
     onunload() {
+        this.app.workspace.off('resize', this.resizeHandler);
+        this.app.workspace.off('layout-change', this.layoutHandler);
+        unmountCallbackCache.forEach((callbackList) => callbackList.forEach((cb) => cb()));
         console.log('Unloading Code Block Enhancer Plugin');
     }
 
