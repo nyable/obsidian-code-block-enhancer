@@ -22,19 +22,18 @@
     };
 </script>
 
-<!-- svelte-ignore event_directive_deprecated -->
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="cbe-header">
     <div class="cbe-language-name">{settings.showLangName ? cbeInfo.language : ''}</div>
     <div class="cbe-toolbar">
         {#if settings.showCollapseBtn}
-            <div class={iconClass} on:click={toggleCodeBlock}><ChevronDown size={iconSize} /></div>
+            <div class={iconClass} onclick={toggleCodeBlock}><ChevronDown size={iconSize} /></div>
         {/if}
         {#if settings.showCodeSnap}
-            <div class={iconClass} on:click={takeCodeSnap}><Camera size={iconSize} /></div>
+            <div class={iconClass} onclick={takeCodeSnap}><Camera size={iconSize} /></div>
         {/if}
-        <div class={iconClass} on:click={copyBlockText}>
+        <div class={iconClass} onclick={copyBlockText}>
             <Copy size={iconSize} />
         </div>
     </div>
