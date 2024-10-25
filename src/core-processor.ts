@@ -75,13 +75,13 @@ export class CoreCodeBlockPostProcessor {
         callbackList.push(callbackFn);
         unmountCallbackCache.set(path, callbackList);
         // add context menu
-        // if (useContextMenu) {
-        //     this.addContextMenu(ctx, cbMeta);
-        // }
+        if (plugin.settings.useContextMenu) {
+            this.addContextMenu(ctx, cbeInfo);
+        }
     }
 
-    addContextMenu(ctx: MarkdownPostProcessorContext, cbMeta: CodeBlockMeta) {
-        const { pre, code } = cbMeta;
+    addContextMenu(ctx: MarkdownPostProcessorContext, cbeInfo: CbeInfo) {
+        const { pre, code } = cbeInfo;
         this.plugin.registerDomEvent(code, 'contextmenu', (event) => {
             event.preventDefault();
             const target = event.target as HTMLElement;
@@ -117,7 +117,7 @@ export class CoreCodeBlockPostProcessor {
                             copyText(code.textContent);
                         });
                 });
-                if (cbMeta.lineSize > 25) {
+                if (pre.getBoundingClientRect().height > window.innerHeight * 0.8) {
                     contextMenu.addItem((item) => {
                         item.setTitle(i18n.t('contextMenu.label.ToTop'))
                             .setIcon('arrow-up-to-line')
