@@ -43,6 +43,12 @@ export class CoreCodeBlockPostProcessor {
         // 给代码块增加一个插件特定的类
         const pre = code.parentElement as HTMLElement;
         pre.classList.add(CLS.ROOT);
+        // 如果代码块中没有language-则增加一个默认的,为了统一样式,不然没设置语言的时候会有问题
+        if (!code.classList.toString().includes('language-')) {
+            pre.classList.add('language-none');
+            code.classList.add('language-none');
+        }
+
         const textContent = code.textContent || '';
         const lineTextList: string[] = textContent.split(LINE_SPLIT_MARK);
         const lineCount = lineTextList.length - 1;
