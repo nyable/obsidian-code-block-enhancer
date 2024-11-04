@@ -48,47 +48,55 @@ export default class CodeBlockEnhancerPlugin extends Plugin {
         await this.loadSettings();
         this.addSettingTab(new CbeSettingsTab(this.app, this));
         this.setCssVar();
-
-        this.app.workspace.onLayoutReady(() => {
+        const workspace = this.app.workspace;
+        workspace.onLayoutReady(() => {
             const cbp = new CoreCodeBlockPostProcessor(this);
             this.registerMarkdownPostProcessor((el, ctx) => {
                 cbp.enhanceCodeBlock(el, ctx);
             });
-            this.app.workspace.on('resize', this.resizeHandler);
-            this.app.workspace.on('layout-change', this.layoutHandler);
+            this.registerEvent(
+                workspace.on(
+                    'resize',
+                    debounce(
+                        () => {
+                            boxSizeStore.update((boxSize) => {
+                                boxSize.oldHeight = boxSize.height;
+                                boxSize.oldWidth = boxSize.width;
+                                boxSize.height = window.innerHeight;
+                                boxSize.width = window.innerWidth;
+                                return boxSize;
+                            });
+                        },
+                        250,
+                        true
+                    )
+                )
+            );
+
+            this.registerEvent(
+                workspace.on('layout-change', () => {
+                    const markdownLeaves = this.app.workspace.getLeavesOfType('markdown');
+                    const openMarkdownPaths = markdownLeaves
+                        .map((leaf) => {
+                            const view = leaf.view as any;
+                            return (view?.file as TFile)?.path;
+                        })
+                        .filter((path) => !!path);
+
+                    for (const [key, value] of unmountCallbackCache) {
+                        if (!openMarkdownPaths.contains(key)) {
+                            value.forEach((cb) => cb());
+                            unmountCallbackCache.delete(key);
+                        }
+                    }
+                })
+            );
         });
 
         console.log('Load Code Block Enhancer Plugin!');
     }
 
-    layoutHandler = () => {
-        const markdownLeaves = this.app.workspace.getLeavesOfType('markdown');
-        const openMarkdownPaths = markdownLeaves.map((leaf) => {
-            return ((leaf.view as any).file as TFile).path;
-        });
-        for (const [key, value] of unmountCallbackCache) {
-            if (!openMarkdownPaths.contains(key)) {
-                value.forEach((cb) => cb());
-                unmountCallbackCache.delete(key);
-            }
-        }
-    };
-    resizeHandler = debounce(
-        () => {
-            boxSizeStore.update((boxSize) => {
-                boxSize.oldHeight = boxSize.height;
-                boxSize.oldWidth = boxSize.width;
-                boxSize.height = window.innerHeight;
-                boxSize.width = window.innerWidth;
-                return boxSize;
-            });
-        },
-        250,
-        true
-    );
     onunload() {
-        this.app.workspace.off('resize', this.resizeHandler);
-        this.app.workspace.off('layout-change', this.layoutHandler);
         unmountCallbackCache.forEach((callbackList) => callbackList.forEach((cb) => cb()));
         console.log('Unloading Code Block Enhancer Plugin');
     }
