@@ -2,6 +2,7 @@
 <script lang="ts">
     import { ChevronDown, Camera, Copy } from 'lucide-svelte';
     import { CLS } from 'src/constant';
+    import { i18n } from 'src/i18n';
     import { copyText, snapshot } from 'src/util';
     interface Props {
         settings: CbeSettings;
@@ -28,12 +29,16 @@
     <div class="cbe-language-name">{settings.showLangName ? cbeInfo.language : ''}</div>
     <div class="cbe-toolbar">
         {#if settings.showCollapseBtn}
-            <div class={iconClass} onclick={toggleCodeBlock}><ChevronDown size={iconSize} /></div>
+            <div aria-label={i18n.t('btn.collapse')} class={iconClass} onclick={toggleCodeBlock}>
+                <ChevronDown size={iconSize} />
+            </div>
         {/if}
         {#if settings.showCodeSnap}
-            <div class={iconClass} onclick={takeCodeSnap}><Camera size={iconSize} /></div>
+            <div aria-label={i18n.t('btn.codeSnap')} class={iconClass} onclick={takeCodeSnap}>
+                <Camera size={iconSize} />
+            </div>
         {/if}
-        <div class={iconClass} onclick={copyBlockText}>
+        <div aria-label={i18n.t('btn.copy')} class={iconClass} onclick={copyBlockText}>
             <Copy size={iconSize} />
         </div>
     </div>
