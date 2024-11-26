@@ -165,7 +165,7 @@ export function snapshot(pre: HTMLElement) {
 }
 
 export function copyText(text: string | null) {
-    if (text) {
+    if (text != null) {
         navigator.clipboard.writeText(text).then(() => {
             new Notice(i18n.t('common.notice.copySuccess'));
         });
