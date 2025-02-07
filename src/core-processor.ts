@@ -1,11 +1,11 @@
-import { Menu, type MarkdownPostProcessorContext } from 'obsidian';
+import { MarkdownView, Menu, type MarkdownPostProcessorContext } from 'obsidian';
 import CodeBlockEnhancer from './main';
 import { i18n } from './i18n';
 import { CLS } from './constant';
 import { mount, unmount } from 'svelte';
 import CbeHeader from 'src/ui/CbeHeader.svelte';
 import CbeLineNumber from 'src/ui/CbeLineNumber.svelte';
-import { copyText } from './util';
+import { copyText, parseLineRange } from './util';
 // import { v4 as uuidv4 } from 'uuid';
 
 const DEFAULT_LANG = '';
@@ -53,6 +53,7 @@ export class CoreCodeBlockPostProcessor {
         const lineTextList: string[] = textContent.split(LINE_SPLIT_MARK);
         const lineCount = lineTextList.length - 1;
         const textSize = textContent.length;
+
         const cbeInfo: CbeInfo = {
             el: el,
             pre: pre,
@@ -70,7 +71,17 @@ export class CoreCodeBlockPostProcessor {
         // 行号
         const lineNumber = mount(CbeLineNumber, {
             target: pre,
-            props: { settings: plugin.settings, cbeInfo: cbeInfo }
+            props: {
+                settings: plugin.settings,
+                cbeInfo: cbeInfo,
+                getHighLightLines: () => {
+                    const firstLine =
+                        this.plugin.app.workspace
+                            .getActiveViewOfType(MarkdownView)
+                            ?.editor?.getLine(ctx.getSectionInfo(el)?.lineStart || 0) || '';
+                    return parseLineRange(firstLine);
+                }
+            }
         });
         const path = ctx.sourcePath;
         const callbackList = unmountCallbackCache.get(path) || [];

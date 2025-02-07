@@ -5,10 +5,22 @@
     import { copyText, isMonoSpaceUnicode } from 'src/util';
     import { onMount } from 'svelte';
     interface Props {
+        /**
+         * 设置
+         */
         settings: CbeSettings;
+        /**
+         * 代码块的基本信息
+         */
         cbeInfo: CbeInfo;
+        /**
+         * 获取高亮行的回调函数
+         */
+        getHighLightLines: () => number[];
     }
-    let { settings, cbeInfo }: Props = $props();
+
+    let { settings, cbeInfo, getHighLightLines }: Props = $props();
+
     let baseLineInfo = $state({
         minWidth: 0,
         maxWidth: 0,
@@ -16,6 +28,8 @@
         codeWidth: 0,
         tabSize: 4
     });
+    let defaultHighLightLines: number[] = $state.raw([]);
+
     let cachedBoxSize: BoxSize;
     const lineRefs: HTMLElement[] = [];
     onMount(() => {
@@ -35,6 +49,7 @@
                     const target = entry.target as HTMLElement;
                     if (entry.isIntersecting) {
                         updateBaseLineInfo(target);
+                        defaultHighLightLines = getHighLightLines();
                     }
                 }
             });
@@ -113,8 +128,9 @@
             <div
                 bind:this={lineRefs[index]}
                 onclick={() => clickLine(index)}
-                class="cbe-line"
+                class:cbe-line={true}
                 class:cbe-line-hover={settings.linenumHoverMode == LinenumHoverMode.Highlight}
+                class:cbe-line-highlight={defaultHighLightLines.includes(index + 1)}
                 style="height: {computeHeight(cbeInfo, index)}px;"
                 data-linenum={index + 1}
             >
