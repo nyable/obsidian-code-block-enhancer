@@ -37,6 +37,7 @@ body {
         display: flex;
         background-color: var(--code-background);
         pointer-events: none;
+        font-family: var(--font-monospace);
     }
     .cbe-language-name {
         min-width: 4rem;
@@ -60,6 +61,7 @@ body {
         left: 0px;
         width: 100%;
         font-size: var(--cb-font-size);
+        font-family: var(--font-monospace);
         text-align: center;
         user-select: none;
         pointer-events: none;
@@ -94,7 +96,7 @@ body {
     @include cbe-code-wrap();
     padding-left: 4.5em !important;
     background-color: var(--code-background);
-    code[class*='language-'] {
+    code[class*="language-"] {
         @include cbe-code-wrap();
         width: 100%;
         padding: 0 !important;
