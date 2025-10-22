@@ -1,7 +1,7 @@
 {
     "id": "obsidian-code-block-enhancer",
     "name": "Code Block Enhancer",
-    "version": "2.0.4",
+    "version": "2.0.5",
     "minAppVersion": "0.15.0",
     "description": "Enhance obsidian markdown code block.",
     "author": "hafuhafu",
