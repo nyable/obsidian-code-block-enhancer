@@ -157,10 +157,20 @@ export function snapshot(pre: HTMLElement) {
                             .write([new ClipboardItem({ 'image/png': nblob })])
                             .then(() => {
                                 new Notice(i18n.t('common.notice.copySuccess'));
+                            })
+                            .catch((error: Error) => {
+                                console.error('Clipboard write failed:', error);
+                                new Notice('截图复制到剪贴板失败');
                             });
+                    } else {
+                        new Notice('截图生成失败');
                     }
                 });
             }
+        })
+        .catch((error: Error) => {
+            console.error('Screenshot generation failed:', error);
+            new Notice('代码截图失败');
         });
 }
 

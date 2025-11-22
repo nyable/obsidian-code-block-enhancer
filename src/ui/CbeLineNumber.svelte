@@ -44,7 +44,7 @@
                 }
             });
 
-            const blockObs = new IntersectionObserver(async (entries, observer) => {
+            const blockObs = new IntersectionObserver((entries, observer) => {
                 for (const entry of entries) {
                     const target = entry.target as HTMLElement;
                     if (entry.isIntersecting) {
@@ -57,6 +57,7 @@
             return () => {
                 unSubscribe();
                 blockObs.unobserve(code);
+                blockObs.disconnect(); // 🔧 完全销毁 Observer，防止内存泄漏
             };
         }
     });
@@ -115,7 +116,10 @@
         if (settings.linenumClickMode === LineClickMode.Copy) {
             copyText(cbeInfo.lineTextList[index]);
         } else if (settings.linenumClickMode === LineClickMode.Highlight) {
-            lineRefs[index].classList.toggle(CLS.LN_HIGHLIGHT);
+            const lineElement = lineRefs[index];
+            if (lineElement) {
+                lineElement.classList.toggle(CLS.LN_HIGHLIGHT);
+            }
         }
     };
 </script>
