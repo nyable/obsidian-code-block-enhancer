@@ -11,6 +11,7 @@ const DEFAULT_SETTINGS: CbeSettings = {
     linenumFontColor: 'var(--code-normal)',
     linenumHighlightColor: 'rgba(255, 255, 0, 0.1)',
     linenumHighlightColorTemp: 'rgba(64, 224, 208, 0.2)',
+    linenumHighlightColorHover: 'rgba(138, 92, 245, 0.15)',
     showLangName: true,
     showCollapseBtn: true,
     showCodeSnap: true,
@@ -24,7 +25,7 @@ export default class CodeBlockEnhancerPlugin extends Plugin {
     async setCssVar() {
         const settings = this.settings;
 
-        const { linenumFontColor, linenumHighlightColor, linenumHighlightColorTemp, codeFontSize } = settings;
+        const { linenumFontColor, linenumHighlightColor, linenumHighlightColorTemp, linenumHighlightColorHover, codeFontSize } = settings;
 
         type CbeStringKeys = {
             [K in keyof CbeSettings]: CbeSettings[K] extends string ? K : never;
@@ -33,7 +34,8 @@ export default class CodeBlockEnhancerPlugin extends Plugin {
             'codeFontSize',
             'linenumFontColor',
             'linenumHighlightColor',
-            'linenumHighlightColorTemp'
+            'linenumHighlightColorTemp',
+            'linenumHighlightColorHover'
         ];
 
         blankToDefaultKeys.forEach((key) => {
@@ -44,6 +46,7 @@ export default class CodeBlockEnhancerPlugin extends Plugin {
         document.body.style.setProperty(CbeCssVar.linenumColor, linenumFontColor);
         document.body.style.setProperty(CbeCssVar.linenumHighlightColor, linenumHighlightColor);
         document.body.style.setProperty(CbeCssVar.linenumHighlightColorTemp, linenumHighlightColorTemp);
+        document.body.style.setProperty(CbeCssVar.linenumHighlightColorHover, linenumHighlightColorHover);
         document.body.style.setProperty(CbeCssVar.codeFontSize, codeFontSize);
         await this.saveSettings();
     }
@@ -190,6 +193,15 @@ class CbeSettingsTab extends PluginSettingTab {
             .addText((cb) => {
                 cb.setValue(pluginSetting.linenumHighlightColorTemp).onChange(async (value) => {
                     pluginSetting.linenumHighlightColorTemp = value;
+                    await this.plugin.setCssVar();
+                });
+            });
+        new Setting(containerEl)
+            .setName(i18n.t('settings.linenumHighlightColorHover.name'))
+            .setDesc(i18n.t('settings.linenumHighlightColorHover.desc'))
+            .addText((cb) => {
+                cb.setValue(pluginSetting.linenumHighlightColorHover).onChange(async (value) => {
+                    pluginSetting.linenumHighlightColorHover = value;
                     await this.plugin.setCssVar();
                 });
             });

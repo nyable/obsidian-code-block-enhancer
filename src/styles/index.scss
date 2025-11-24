@@ -6,6 +6,7 @@ body {
     --cb-linenum-color: var(--code-normal);
     --cb-linenum-highlight-color: rgba(255, 255, 0, 0.1);
     --cb-linenum-highlight-color-temp: rgba(64, 224, 208, 0.2);
+    --cb-linenum-highlight-color-hover: rgba(138, 92, 245, 0.15);
 }
 
 @mixin cbe-code-wrap {
@@ -99,7 +100,7 @@ body {
 
         .cbe-line-hover {
             &:hover {
-                background-color: rgba(138, 92, 245, 0.15);
+                background-color: var(--cb-linenum-highlight-color-hover);
             }
         }
     }

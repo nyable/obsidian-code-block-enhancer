@@ -30,7 +30,8 @@ export enum CbeCssVar {
     linenumBorder = '--cb-linenum-border',
     linenumColor = '--cb-linenum-color',
     linenumHighlightColor = '--cb-linenum-highlight-color',
-    linenumHighlightColorTemp = '--cb-linenum-highlight-color-temp'
+    linenumHighlightColorTemp = '--cb-linenum-highlight-color-temp',
+    linenumHighlightColorHover = '--cb-linenum-highlight-color-hover'
 }
 
 export enum CLS {

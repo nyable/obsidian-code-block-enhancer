@@ -60,6 +60,10 @@ interface CbeSettings {
      */
     linenumHighlightColorTemp: string;
     /**
+     * 鼠标悬浮在行号上时的高亮颜色
+     */
+    linenumHighlightColorHover: string;
+    /**
      * 是否展示语言名称
      */
     showLangName: boolean;

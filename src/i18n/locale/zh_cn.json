@@ -31,6 +31,10 @@
       "name": "临时行号高亮颜色",
       "desc": "设置临时行高亮颜色，例如 #40E0D033/rgba(64, 224, 208, 0.2)"
     },
+    "linenumHighlightColorHover": {
+      "name": "悬浮时行号高亮颜色",
+      "desc": "设置鼠标悬浮在行号上时的高亮颜色,例如 #8A5CF526/rgba(138, 92, 245, 0.15)"
+    },
     "headerBar": "头部栏",
     "showLangName": {
       "name": "显示语言名称",

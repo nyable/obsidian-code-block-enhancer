@@ -31,6 +31,10 @@
       "name": "Temporary line highlight color",
       "desc": "Set the temporary line highlight color, like `#40E0D033/rgba(64, 224, 208, 0.2)`"
     },
+    "linenumHighlightColorHover": {
+      "name": "Hover line highlight color",
+      "desc": "Set the highlight color when hovering over line numbers, like `#8A5CF526/rgba(138, 92, 245, 0.15)`"
+    },
     "headerBar": "Header Bar",
     "showLangName": {
       "name": "Display language names",
