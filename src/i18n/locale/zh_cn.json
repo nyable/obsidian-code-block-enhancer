@@ -27,6 +27,10 @@
       "name": "行号高亮颜色",
       "desc": "设置行高亮颜色，例如 #FFFF001A/rgba(255, 255, 0, 0.1)。"
     },
+    "linenumHighlightColorTemp": {
+      "name": "临时行号高亮颜色",
+      "desc": "设置临时行高亮颜色，例如 #40E0D033/rgba(64, 224, 208, 0.2)"
+    },
     "headerBar": "头部栏",
     "showLangName": {
       "name": "显示语言名称",
@@ -76,14 +80,25 @@
       "Link": "打开链接"
     }
   },
+  "menu": {
+    "copyTempHighlights": "复制临时高亮行"
+  },
   "common": {
     "notice": {
-      "copySuccess": "复制完毕!"
+      "copySuccess": "复制完毕!",
+      "saveHighlightsSuccess": "已保存高亮状态",
+      "saveHighlightsFailed": "保存失败: {{error}}",
+      "resetHighlightsSuccess": "已重置高亮状态"
     }
   },
   "btn": {
     "copy": "复制",
     "codeSnap": "快照",
-    "collapse": "折叠"
+    "collapse": "折叠",
+    "copyHighlights": "复制高亮行",
+    "copyHighlightsTemp": "复制临时高亮行",
+    "moreAction": "更多操作",
+    "resetHighlights": "重置高亮行",
+    "saveHighlights": "保存高亮行"
   }
 }

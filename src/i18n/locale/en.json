@@ -27,6 +27,10 @@
       "name": "Line highlight color",
       "desc": "Set the line highlight color, like `#FFFF001A/rgba(255, 255, 0, 0.1)`"
     },
+    "linenumHighlightColorTemp": {
+      "name": "Temporary line highlight color",
+      "desc": "Set the temporary line highlight color, like `#40E0D033/rgba(64, 224, 208, 0.2)`"
+    },
     "headerBar": "Header Bar",
     "showLangName": {
       "name": "Display language names",
@@ -78,12 +82,20 @@
   },
   "common": {
     "notice": {
-      "copySuccess": "Copied!"
+      "copySuccess": "Copied!",
+      "saveHighlightsSuccess": "Highlights Saved",
+      "saveHighlightsFailed": "Save Failed: {{error}}",
+      "resetHighlightsSuccess": "Highlights Reset"
     }
   },
   "btn": {
     "copy": "Copy",
     "codeSnap": "Code Snap",
-    "collapse": "Collapse"
+    "collapse": "Collapse",
+    "moreAction": "More",
+    "resetHighlights": "Reset Highlights",
+    "saveHighlights": "Save Highlights",
+    "copyHighlightsTemp": "Copy Temp Highlights",
+    "copyHighlights": "Copy Highlights"
   }
 }

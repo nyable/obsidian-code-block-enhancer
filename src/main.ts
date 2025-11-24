@@ -185,8 +185,8 @@ class CbeSettingsTab extends PluginSettingTab {
                 });
             });
         new Setting(containerEl)
-            .setName(i18n.t('settings.linenumHighlightColorTemp.name') || 'Temporary Highlight Color')
-            .setDesc(i18n.t('settings.linenumHighlightColorTemp.desc') || 'Color for temporary highlights')
+            .setName(i18n.t('settings.linenumHighlightColorTemp.name'))
+            .setDesc(i18n.t('settings.linenumHighlightColorTemp.desc'))
             .addText((cb) => {
                 cb.setValue(pluginSetting.linenumHighlightColorTemp).onChange(async (value) => {
                     pluginSetting.linenumHighlightColorTemp = value;

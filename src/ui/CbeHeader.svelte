@@ -3,8 +3,7 @@
     import { CLS } from 'src/constant';
     import { i18n } from 'src/i18n';
     import { copyText, snapshot, formatLineRange } from 'src/util';
-    import { Menu, Notice, MarkdownView, TFile, type MarkdownPostProcessorContext } from 'obsidian';
-    import type CbeLineNumber from './CbeLineNumber.svelte';
+    import { Menu, Notice, TFile, type MarkdownPostProcessorContext } from 'obsidian';
 
     interface Props {
         settings: CbeSettings;
@@ -32,19 +31,19 @@
 
         // 选项 1: 重置高亮
         menu.addItem((item) => {
-            item.setTitle('重置高亮')
+            item.setTitle(i18n.t('btn.resetHighlights'))
                 .setIcon('rotate-ccw')
                 .onClick(() => {
                     if (lineNumberComponent && 'resetHighlight' in lineNumberComponent) {
                         (lineNumberComponent as any).resetHighlight();
-                        new Notice('已重置高亮状态');
+                        new Notice(i18n.t('common.notice.resetHighlightsSuccess'));
                     }
                 });
         });
 
         // 选项 2: 保存高亮
         menu.addItem((item) => {
-            item.setTitle('保存高亮')
+            item.setTitle(i18n.t('btn.saveHighlights'))
                 .setIcon('save')
                 .onClick(async () => {
                     if (
@@ -94,64 +93,53 @@
                                     return data;
                                 });
 
-                                new Notice('已保存高亮状态');
+                                new Notice(i18n.t('common.notice.saveHighlightsSuccess'));
                                 // 保存到组件状态
                                 if ('saveHighlight' in lineNumberComponent) {
                                     (lineNumberComponent as any).saveHighlight();
                                 }
                             } catch (error) {
                                 console.error('保存高亮失败:', error);
-                                new Notice('保存失败: ' + error);
+                                new Notice(i18n.t('common.notice.saveHighlightsFailed') + error);
                             }
                         } else {
-                            new Notice('无法找到源文件，保存失败');
+                            new Notice(i18n.t('common.notice.saveHighlightsFailed'));
                         }
                     } else {
-                        new Notice('组件未就绪，无法保存');
+                        new Notice(i18n.t('common.notice.saveHighlightsFailed'));
                     }
                 });
         });
 
         menu.addSeparator();
-
         // 选项 3: 复制高亮行
         menu.addItem((item) => {
-            item.setTitle('复制高亮行')
+            item.setTitle(i18n.t('btn.copyHighlights'))
                 .setIcon('copy')
                 .onClick(() => {
                     if (lineNumberComponent && 'getCurrentHighlightLines' in lineNumberComponent) {
                         const highlightLines = (
                             lineNumberComponent as any
                         ).getCurrentHighlightLines();
-                        if (highlightLines.length > 0) {
-                            const lines = highlightLines.map(
-                                (lineNum: number) => cbeInfo.lineTextList[lineNum - 1]
-                            );
-                            copyText(lines.join('\n'));
-                            new Notice(`已复制 ${highlightLines.length} 行高亮代码`);
-                        } else {
-                            new Notice('当前没有高亮行');
-                        }
+                        const lines = highlightLines.map(
+                            (lineNum: number) => cbeInfo.lineTextList[lineNum - 1]
+                        );
+                        copyText(lines.join('\n'));
                     }
                 });
         });
 
         // 选项 4: 复制临时高亮行
         menu.addItem((item) => {
-            item.setTitle('复制临时高亮行')
+            item.setTitle(i18n.t('btn.copyHighlightsTemp'))
                 .setIcon('copy')
                 .onClick(() => {
                     if (lineNumberComponent && 'getTempHighlightLines' in lineNumberComponent) {
                         const highlightLines = (lineNumberComponent as any).getTempHighlightLines();
-                        if (highlightLines.length > 0) {
-                            const lines = highlightLines.map(
-                                (lineNum: number) => cbeInfo.lineTextList[lineNum - 1]
-                            );
-                            copyText(lines.join('\n'));
-                            new Notice(`已复制 ${highlightLines.length} 行临时高亮代码`);
-                        } else {
-                            new Notice('当前没有临时高亮行');
-                        }
+                        const lines = highlightLines.map(
+                            (lineNum: number) => cbeInfo.lineTextList[lineNum - 1]
+                        );
+                        copyText(lines.join('\n'));
                     }
                 });
         });
@@ -179,7 +167,7 @@
             <Copy size={iconSize} />
         </div>
         <!-- 菜单按钮 -->
-        <div aria-label="更多选项" class={iconClass} onclick={handleMenuClick}>
+        <div aria-label={i18n.t('btn.moreAction')} class={iconClass} onclick={handleMenuClick}>
             <MoreVertical size={iconSize} />
         </div>
     </div>
