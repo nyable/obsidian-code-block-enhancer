@@ -5,6 +5,7 @@ body {
     --cb-linenum-border: #999 1px solid;
     --cb-linenum-color: var(--code-normal);
     --cb-linenum-highlight-color: rgba(255, 255, 0, 0.1);
+    --cb-linenum-highlight-color-temp: rgba(64, 224, 208, 0.2);
 }
 
 @mixin cbe-code-wrap {

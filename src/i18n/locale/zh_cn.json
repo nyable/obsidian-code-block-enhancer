@@ -44,10 +44,6 @@
       "name": "显示代码快照按钮",
       "desc": "启用后，可以对代码块进行截图"
     },
-    "enableCbeCopyBtn": {
-      "name": "使用图标复制按钮",
-      "desc": "替换原来的复制按钮"
-    },
     "desc": "部分设置在重新打开页面或重新打开Obsidian后才会生效",
     "linenumHoverMode": {
       "name": "悬浮时",
@@ -80,9 +76,7 @@
       "Link": "打开链接"
     }
   },
-  "menu": {
-    "copyTempHighlights": "复制临时高亮行"
-  },
+  "menu": {},
   "common": {
     "notice": {
       "copySuccess": "复制完毕!",
