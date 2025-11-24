@@ -1,4 +1,4 @@
-import { Notice } from 'obsidian';
+import { setIcon } from 'obsidian';
 
 /**
  * 颜色选择器配置选项
@@ -16,22 +16,26 @@ export interface ColorPickerOptions {
 
 /**
  * 解析颜色值并返回 hex 和 alpha
+ * 支持所有 CSS 颜色格式：CSS变量、颜色名称、RGBA、RGB、HEX等
  */
 export function parseColor(color: string): { hex: string; alpha: number } {
     let actualColor = color.trim();
 
-    // 如果是 CSS 变量,需要获取计算后的值
-    if (actualColor.startsWith('var(')) {
-        // 创建一个临时元素来获取计算后的颜色
-        const tempEl = document.createElement('div');
-        tempEl.style.color = actualColor;
-        document.body.appendChild(tempEl);
-        actualColor = getComputedStyle(tempEl).color;
-        document.body.removeChild(tempEl);
+    // 创建一个临时元素来获取计算后的颜色值
+    // 这个方法可以处理所有 CSS 颜色格式：var(), 颜色名称, rgba(), rgb(), hex 等
+    const tempEl = document.createElement('div');
+    tempEl.style.color = actualColor;
+    document.body.appendChild(tempEl);
+    const computedColor = getComputedStyle(tempEl).color;
+    document.body.removeChild(tempEl);
+
+    // 如果无法计算颜色(无效的颜色值),返回默认值
+    if (!computedColor || computedColor === 'rgba(0, 0, 0, 0)') {
+        return { hex: '#8a5cf5', alpha: 0.15 };
     }
 
-    // 尝试解析 rgba(r, g, b, a) 或 rgb(r, g, b) 格式
-    const rgbaMatch = actualColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+    // 解析计算后的颜色 (浏览器总是返回 rgb() 或 rgba() 格式)
+    const rgbaMatch = computedColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
     if (rgbaMatch) {
         const r = parseInt(rgbaMatch[1]);
         const g = parseInt(rgbaMatch[2]);
@@ -41,15 +45,7 @@ export function parseColor(color: string): { hex: string; alpha: number } {
         return { hex, alpha: a };
     }
 
-    // 尝试解析 hex 格式 (#RRGGBB 或 #RRGGBBAA)
-    const hexMatch = actualColor.match(/^#([0-9a-fA-F]{6})([0-9a-fA-F]{2})?$/);
-    if (hexMatch) {
-        const hex = '#' + hexMatch[1];
-        const alpha = hexMatch[2] ? parseInt(hexMatch[2], 16) / 255 : 1;
-        return { hex, alpha };
-    }
-
-    // 默认返回
+    // 备用：如果还是无法解析,返回默认值
     return { hex: '#8a5cf5', alpha: 0.15 };
 }
 
@@ -65,7 +61,7 @@ export class ColorPicker {
     // UI 元素
     private colorInput!: HTMLInputElement;
     private previewBox!: HTMLDivElement;
-    private resetBtn?: HTMLButtonElement;
+    private resetBtn?: HTMLElement;
     private alphaSlider!: HTMLInputElement;
     private alphaValue!: HTMLSpanElement;
     private colorInput2!: HTMLInputElement;
@@ -117,11 +113,11 @@ export class ColorPicker {
 
         // 重置按钮
         if (this.options.showReset && this.options.defaultValue) {
-            this.resetBtn = colorRow.createEl('button', { text: '重置' });
-            this.resetBtn.style.padding = '4px 12px';
-            this.resetBtn.style.fontSize = '12px';
-            this.resetBtn.style.cursor = 'pointer';
-            this.resetBtn.title = '恢复默认值';
+            this.resetBtn = colorRow.createEl('div');
+            this.resetBtn.addClass('clickable-icon', 'extra-setting-button');
+            this.resetBtn.title = 'Restore default value';
+            // 使用 Obsidian 的图标 API
+            setIcon(this.resetBtn, 'rotate-ccw');
             this.resetBtn.addEventListener('click', () => this.reset());
         }
 
@@ -131,7 +127,7 @@ export class ColorPicker {
         alphaRow.style.alignItems = 'center';
         alphaRow.style.gap = '8px';
 
-        const alphaLabel = alphaRow.createSpan({ text: '透明度:' });
+        const alphaLabel = alphaRow.createSpan({ text: 'Opacity:' });
         alphaLabel.style.fontSize = '12px';
         alphaLabel.style.minWidth = '60px';
 
