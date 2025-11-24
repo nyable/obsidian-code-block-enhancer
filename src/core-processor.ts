@@ -63,12 +63,8 @@ export class CoreCodeBlockPostProcessor {
             textSize: textSize,
             lineTextList: lineTextList
         };
-        // 增加一个顶部的元素
-        const header = mount(CbeHeader, {
-            target: pre,
-            props: { settings: plugin.settings, cbeInfo: cbeInfo }
-        });
-        // 行号
+
+        // 行号组件必须先挂载，这样才能获取到组件实例
         const lineNumber = mount(CbeLineNumber, {
             target: pre,
             props: {
@@ -83,6 +79,18 @@ export class CoreCodeBlockPostProcessor {
                 }
             }
         });
+
+        // 增加一个顶部的元素，将 lineNumber 组件实例传递给 Header
+        const header = mount(CbeHeader, {
+            target: pre,
+            props: {
+                settings: plugin.settings,
+                cbeInfo: cbeInfo,
+                lineNumberComponent: lineNumber,
+                ctx: ctx
+            }
+        });
+
         const path = ctx.sourcePath;
         const callbackList = unmountCallbackCache.get(path) || [];
         const callbackFn = () => {

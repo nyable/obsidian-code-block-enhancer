@@ -80,6 +80,46 @@ export function parseLineRange(input: string) {
     return result;
 }
 
+/**
+ * 将行号数组转换为高亮标识字符串格式
+ * 例如: [1,2,3,5,7,8,9] => "{1-3,5,7-9}"
+ * @param lines 行号数组
+ * @returns 格式化的字符串
+ */
+export function formatLineRange(lines: number[]): string {
+    if (!lines || lines.length === 0) {
+        return '';
+    }
+
+    const sortedLines = [...lines].sort((a, b) => a - b);
+    const ranges: string[] = [];
+    let start = sortedLines[0];
+    let end = sortedLines[0];
+
+    for (let i = 1; i < sortedLines.length; i++) {
+        if (sortedLines[i] === end + 1) {
+            end = sortedLines[i];
+        } else {
+            if (start === end) {
+                ranges.push(start.toString());
+            } else {
+                ranges.push(`${start}-${end}`);
+            }
+            start = sortedLines[i];
+            end = sortedLines[i];
+        }
+    }
+
+    // 处理最后一个范围
+    if (start === end) {
+        ranges.push(start.toString());
+    } else {
+        ranges.push(`${start}-${end}`);
+    }
+
+    return `{${ranges.join(',')}}`;
+}
+
 export function snapshot(pre: HTMLElement) {
     domToImage
         //@ts-ignore

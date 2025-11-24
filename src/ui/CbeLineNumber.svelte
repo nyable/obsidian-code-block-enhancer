@@ -122,6 +122,45 @@
             }
         }
     };
+
+    /**
+     * 重置高亮：清除所有临时高亮，恢复到永久高亮状态
+     */
+    export const resetHighlight = () => {
+        // 清除所有行的高亮状态
+        lineRefs.forEach((lineElement) => {
+            if (lineElement) {
+                lineElement.classList.remove(CLS.LN_HIGHLIGHT);
+            }
+        });
+        // 重新应用永久高亮
+        defaultHighLightLines.forEach((lineNum) => {
+            const index = lineNum - 1;
+            if (lineRefs[index]) {
+                lineRefs[index].classList.add(CLS.LN_HIGHLIGHT);
+            }
+        });
+    };
+
+    /**
+     * 获取当前所有高亮的行号（包括永久和临时）
+     */
+    export const getCurrentHighlightLines = (): number[] => {
+        const highlightLines: number[] = [];
+        lineRefs.forEach((lineElement, index) => {
+            if (lineElement && lineElement.classList.contains(CLS.LN_HIGHLIGHT)) {
+                highlightLines.push(index + 1);
+            }
+        });
+        return highlightLines.sort((a, b) => a - b);
+    };
+
+    /**
+     * 保存高亮：将当前高亮状态同步到永久高亮
+     */
+    export const saveHighlight = () => {
+        defaultHighLightLines = getCurrentHighlightLines();
+    };
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
