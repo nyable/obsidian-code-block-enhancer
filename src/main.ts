@@ -3,6 +3,7 @@ import { unmountCallbackCache, CoreCodeBlockPostProcessor } from './core-process
 import { i18n } from './i18n';
 import { CbeCssVar, LineClickMode, LinenumHoverMode as LineHoverMode } from './constant';
 import { boxSizeStore } from './store';
+import { ColorPicker } from './ui/ColorPicker';
 
 const DEFAULT_SETTINGS: CbeSettings = {
     excludeLangs: ['todoist'],
@@ -169,42 +170,30 @@ class CbeSettingsTab extends PluginSettingTab {
             i18n.t('settings.showLineNumber.name'),
             i18n.t('settings.showLineNumber.desc')
         );
-        new Setting(containerEl)
-            .setName(i18n.t('settings.linenumFontColor.name'))
-            .setDesc(i18n.t('settings.linenumFontColor.desc'))
-            .addText((cb) => {
-                cb.setValue(pluginSetting.linenumFontColor).onChange(async (value) => {
-                    pluginSetting.linenumFontColor = value;
-                    await this.plugin.setCssVar();
-                });
-            });
-        new Setting(containerEl)
-            .setName(i18n.t('settings.linenumHighlightColor.name'))
-            .setDesc(i18n.t('settings.linenumHighlightColor.desc'))
-            .addText((cb) => {
-                cb.setValue(pluginSetting.linenumHighlightColor).onChange(async (value) => {
-                    pluginSetting.linenumHighlightColor = value;
-                    await this.plugin.setCssVar();
-                });
-            });
-        new Setting(containerEl)
-            .setName(i18n.t('settings.linenumHighlightColorTemp.name'))
-            .setDesc(i18n.t('settings.linenumHighlightColorTemp.desc'))
-            .addText((cb) => {
-                cb.setValue(pluginSetting.linenumHighlightColorTemp).onChange(async (value) => {
-                    pluginSetting.linenumHighlightColorTemp = value;
-                    await this.plugin.setCssVar();
-                });
-            });
-        new Setting(containerEl)
-            .setName(i18n.t('settings.linenumHighlightColorHover.name'))
-            .setDesc(i18n.t('settings.linenumHighlightColorHover.desc'))
-            .addText((cb) => {
-                cb.setValue(pluginSetting.linenumHighlightColorHover).onChange(async (value) => {
-                    pluginSetting.linenumHighlightColorHover = value;
-                    await this.plugin.setCssVar();
-                });
-            });
+        this.createColorPickerSetting(
+            containerEl,
+            'linenumFontColor',
+            i18n.t('settings.linenumFontColor.name'),
+            i18n.t('settings.linenumFontColor.desc')
+        );
+        this.createColorPickerSetting(
+            containerEl,
+            'linenumHighlightColor',
+            i18n.t('settings.linenumHighlightColor.name'),
+            i18n.t('settings.linenumHighlightColor.desc')
+        );
+        this.createColorPickerSetting(
+            containerEl,
+            'linenumHighlightColorTemp',
+            i18n.t('settings.linenumHighlightColorTemp.name'),
+            i18n.t('settings.linenumHighlightColorTemp.desc')
+        );
+        this.createColorPickerSetting(
+            containerEl,
+            'linenumHighlightColorHover',
+            i18n.t('settings.linenumHighlightColorHover.name'),
+            i18n.t('settings.linenumHighlightColorHover.desc')
+        );
 
         new Setting(containerEl)
             .setName(i18n.t('settings.linenumHoverMode.name'))
@@ -291,5 +280,36 @@ class CbeSettingsTab extends PluginSettingTab {
                     await this.plugin.saveSettings();
                 });
             });
+    }
+
+    /**
+     * 创建带颜色选择器和透明度滑块的设置项
+     * @param containerEl el
+     * @param key  keyof CbeSettings
+     * @param name name
+     * @param desc desc
+     */
+    private createColorPickerSetting<K extends keyof CbeSettings>(
+        containerEl: HTMLElement,
+        key: K,
+        name: string | DocumentFragment,
+        desc: string | DocumentFragment
+    ) {
+        const pluginSetting = this.plugin.settings;
+        const currentValue = pluginSetting[key] as string;
+        const defaultValue = DEFAULT_SETTINGS[key] as string;
+
+        const setting = new Setting(containerEl).setName(name).setDesc(desc);
+
+        // 使用 ColorPicker 组件
+        new ColorPicker(setting.controlEl, {
+            initialValue: currentValue,
+            defaultValue: defaultValue,
+            showReset: true,
+            onChange: async (color) => {
+                pluginSetting[key] = color as any;
+                await this.plugin.setCssVar();
+            }
+        });
     }
 }
