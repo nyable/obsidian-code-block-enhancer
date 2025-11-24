@@ -12,6 +12,12 @@ export interface ColorPickerOptions {
     onChange?: (color: string) => void | Promise<void>;
     /** 是否显示重置按钮 */
     showReset?: boolean;
+    /** 颜色选择器和预览框的宽度，默认 '30px' */
+    width?: string;
+    /** 颜色选择器和预览框的高度，默认 '30px' */
+    height?: string;
+    /** 是否允许编辑输入框，默认 true */
+    allowEdit?: boolean;
 }
 
 /**
@@ -70,6 +76,9 @@ export class ColorPicker {
         this.container = container;
         this.options = {
             showReset: true,
+            width: '30px',
+            height: '30px',
+            allowEdit: true,
             ...options
         };
         this.currentValue = options.initialValue;
@@ -81,6 +90,8 @@ export class ColorPicker {
      * 渲染颜色选择器
      */
     private render() {
+        const width = this.options.width!;
+        const height = this.options.height!;
         const { hex, alpha } = parseColor(this.currentValue);
 
         const wrapper = this.container.createDiv({ cls: 'color-picker-wrapper' });
@@ -99,14 +110,14 @@ export class ColorPicker {
             type: 'color',
             value: hex
         });
-        this.colorInput.style.width = '60px';
-        this.colorInput.style.height = '30px';
+        this.colorInput.style.width = width;
+        this.colorInput.style.height = height;
         this.colorInput.style.cursor = 'pointer';
 
         // 颜色预览框
         this.previewBox = colorRow.createDiv({ cls: 'color-preview-box' });
-        this.previewBox.style.width = '60px';
-        this.previewBox.style.height = '30px';
+        this.previewBox.style.width = width;
+        this.previewBox.style.height = height;
         this.previewBox.style.border = '1px solid var(--background-modifier-border)';
         this.previewBox.style.borderRadius = '4px';
         this.previewBox.style.backgroundColor = this.currentValue;
@@ -115,7 +126,7 @@ export class ColorPicker {
         if (this.options.showReset && this.options.defaultValue) {
             this.resetBtn = colorRow.createEl('div');
             this.resetBtn.addClass('clickable-icon', 'extra-setting-button');
-            this.resetBtn.title = 'Restore default value';
+            this.resetBtn.title = 'Reset';
             // 使用 Obsidian 的图标 API
             setIcon(this.resetBtn, 'rotate-ccw');
             this.resetBtn.addEventListener('click', () => this.reset());
@@ -159,7 +170,14 @@ export class ColorPicker {
         this.colorInput2.style.fontFamily = 'var(--font-monospace)';
         this.colorInput2.style.flex = '1';
         this.colorInput2.style.padding = '4px 8px';
-        this.colorInput2.placeholder = '如: rgba(255,0,0,0.5) 或 var(--code-normal)';
+        this.colorInput2.placeholder = 'e.g. rgba(255,0,0,0.5) or var(--code-normal)';
+
+        // 根据配置设置是否可编辑
+        if (!this.options.allowEdit) {
+            this.colorInput2.readOnly = true;
+            this.colorInput2.style.cursor = 'default';
+            this.colorInput2.style.backgroundColor = 'var(--background-secondary)';
+        }
 
         // 绑定事件
         this.bindEvents();
@@ -175,15 +193,18 @@ export class ColorPicker {
         // 监听透明度滑块变化
         this.alphaSlider.addEventListener('input', () => this.updateFromPicker());
 
-        // 监听输入框变化(失焦时触发)
-        this.colorInput2.addEventListener('blur', () => this.updateFromInput());
+        // 只在允许编辑时绑定输入框事件
+        if (this.options.allowEdit) {
+            // 监听输入框变化(失焦时触发)
+            this.colorInput2.addEventListener('blur', () => this.updateFromInput());
 
-        // 监听输入框回车键
-        this.colorInput2.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                this.updateFromInput();
-            }
-        });
+            // 监听输入框回车键
+            this.colorInput2.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    this.updateFromInput();
+                }
+            });
+        }
     }
 
     /**
