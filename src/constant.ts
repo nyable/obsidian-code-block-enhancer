@@ -29,7 +29,8 @@ export enum CbeCssVar {
     linenumBg = '--cb-linenum-bg',
     linenumBorder = '--cb-linenum-border',
     linenumColor = '--cb-linenum-color',
-    linenumHighlightColor = '--cb-linenum-highlight-color'
+    linenumHighlightColor = '--cb-linenum-highlight-color',
+    linenumHighlightColorTemp = '--cb-linenum-highlight-color-temp'
 }
 
 export enum CLS {
@@ -69,6 +70,10 @@ export enum CLS {
      * 行高亮
      */
     LN_HIGHLIGHT = 'cbe-line-highlight',
+    /**
+     * 临时行高亮
+     */
+    LN_HIGHLIGHT_TEMP = 'cbe-line-highlight-temp',
     /**
      * obsidian自带的类 可点击的按钮
      */

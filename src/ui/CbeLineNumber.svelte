@@ -118,7 +118,13 @@
         } else if (settings.linenumClickMode === LineClickMode.Highlight) {
             const lineElement = lineRefs[index];
             if (lineElement) {
-                lineElement.classList.toggle(CLS.LN_HIGHLIGHT);
+                if (lineElement.classList.contains(CLS.LN_HIGHLIGHT)) {
+                    lineElement.classList.remove(CLS.LN_HIGHLIGHT);
+                } else if (lineElement.classList.contains(CLS.LN_HIGHLIGHT_TEMP)) {
+                    lineElement.classList.remove(CLS.LN_HIGHLIGHT_TEMP);
+                } else {
+                    lineElement.classList.add(CLS.LN_HIGHLIGHT_TEMP);
+                }
             }
         }
     };
@@ -131,6 +137,7 @@
         lineRefs.forEach((lineElement) => {
             if (lineElement) {
                 lineElement.classList.remove(CLS.LN_HIGHLIGHT);
+                lineElement.classList.remove(CLS.LN_HIGHLIGHT_TEMP);
             }
         });
         // 重新应用永久高亮
@@ -148,7 +155,11 @@
     export const getCurrentHighlightLines = (): number[] => {
         const highlightLines: number[] = [];
         lineRefs.forEach((lineElement, index) => {
-            if (lineElement && lineElement.classList.contains(CLS.LN_HIGHLIGHT)) {
+            if (
+                lineElement &&
+                (lineElement.classList.contains(CLS.LN_HIGHLIGHT) ||
+                    lineElement.classList.contains(CLS.LN_HIGHLIGHT_TEMP))
+            ) {
                 highlightLines.push(index + 1);
             }
         });
@@ -160,6 +171,19 @@
      */
     export const saveHighlight = () => {
         defaultHighLightLines = getCurrentHighlightLines();
+    };
+
+    /**
+     * 获取当前所有临时高亮的行号
+     */
+    export const getTempHighlightLines = (): number[] => {
+        const highlightLines: number[] = [];
+        lineRefs.forEach((lineElement, index) => {
+            if (lineElement && lineElement.classList.contains(CLS.LN_HIGHLIGHT_TEMP)) {
+                highlightLines.push(index + 1);
+            }
+        });
+        return highlightLines.sort((a, b) => a - b);
     };
 </script>
 

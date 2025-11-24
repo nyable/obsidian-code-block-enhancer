@@ -6,24 +6,29 @@ body {
     --cb-linenum-color: var(--code-normal);
     --cb-linenum-highlight-color: rgba(255, 255, 0, 0.1);
 }
+
 @mixin cbe-code-wrap {
     overflow: hidden !important;
     word-break: break-all !important;
     white-space: pre-wrap !important;
     word-wrap: unset !important;
 }
+
 .cbe {
     position: relative;
     padding-top: var(--cb-header-height) !important;
+
     &:hover {
         .cbe-toolbar {
             visibility: visible;
         }
     }
+
     .copy-code-button {
         // z-index: 200;
         display: none;
     }
+
     .cbe-header {
         position: absolute;
         top: 0px;
@@ -39,12 +44,14 @@ body {
         pointer-events: none;
         font-family: var(--font-monospace);
     }
+
     .cbe-language-name {
         min-width: 4rem;
         text-align: center;
         padding-left: 4px;
         font-size: 14px;
     }
+
     .cbe-toolbar {
         display: flex;
         flex-direction: row;
@@ -55,6 +62,7 @@ body {
         pointer-events: auto;
         flex: 1;
     }
+
     .cbe-linenum-wrap {
         position: absolute;
         top: var(--cb-header-height);
@@ -67,19 +75,27 @@ body {
         pointer-events: none;
         background-color: var(--cb-linenum-bg);
         color: var(--cb-linenum-color);
+
         .cbe-linenum {
             width: 4em;
             display: block;
             pointer-events: auto;
             height: 100%;
             border-right: var(--cb-linenum-border);
+
             &::before {
                 content: attr(data-linenum);
             }
         }
+
         .cbe-line-highlight {
             background-color: var(--cb-linenum-highlight-color);
         }
+
+        .cbe-line-highlight-temp {
+            background-color: var(--cb-linenum-highlight-color-temp);
+        }
+
         .cbe-line-hover {
             &:hover {
                 background-color: rgba(138, 92, 245, 0.15);
@@ -96,6 +112,7 @@ body {
     @include cbe-code-wrap();
     padding-left: 4.5em !important;
     background-color: var(--code-background);
+
     code[class*="language-"] {
         @include cbe-code-wrap();
         width: 100%;
@@ -110,6 +127,7 @@ body {
     height: var(--cb-header-height);
     padding: 0 !important;
     margin: 20px 0 !important;
+
     .cbe-linenum-wrap,
     code {
         visibility: hidden;

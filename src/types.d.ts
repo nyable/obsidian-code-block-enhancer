@@ -56,6 +56,10 @@ interface CbeSettings {
      */
     linenumHighlightColor: string;
     /**
+     * 临时行号高亮的颜色
+     */
+    linenumHighlightColorTemp: string;
+    /**
      * 是否展示语言名称
      */
     showLangName: boolean;

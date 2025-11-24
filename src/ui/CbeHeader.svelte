@@ -136,6 +136,26 @@
                 });
         });
 
+        // 选项 4: 复制临时高亮行
+        menu.addItem((item) => {
+            item.setTitle('复制临时高亮行')
+                .setIcon('copy')
+                .onClick(() => {
+                    if (lineNumberComponent && 'getTempHighlightLines' in lineNumberComponent) {
+                        const highlightLines = (lineNumberComponent as any).getTempHighlightLines();
+                        if (highlightLines.length > 0) {
+                            const lines = highlightLines.map(
+                                (lineNum: number) => cbeInfo.lineTextList[lineNum - 1]
+                            );
+                            copyText(lines.join('\n'));
+                            new Notice(`已复制 ${highlightLines.length} 行临时高亮代码`);
+                        } else {
+                            new Notice('当前没有临时高亮行');
+                        }
+                    }
+                });
+        });
+
         menu.showAtMouseEvent(event);
     };
 </script>
