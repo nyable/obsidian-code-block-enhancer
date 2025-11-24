@@ -171,10 +171,18 @@
      */
     export const saveHighlight = () => {
         defaultHighLightLines = getCurrentHighlightLines();
-        // 清除所有临时高亮样式，因为它们现在已经是永久高亮了
+        // 清除所有高亮样式
         lineRefs.forEach((lineElement) => {
             if (lineElement) {
+                lineElement.classList.remove(CLS.LN_HIGHLIGHT);
                 lineElement.classList.remove(CLS.LN_HIGHLIGHT_TEMP);
+            }
+        });
+        // 重新应用永久高亮
+        defaultHighLightLines.forEach((lineNum) => {
+            const index = lineNum - 1;
+            if (lineRefs[index]) {
+                lineRefs[index].classList.add(CLS.LN_HIGHLIGHT);
             }
         });
     };
