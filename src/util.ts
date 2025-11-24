@@ -120,6 +120,31 @@ export function formatLineRange(lines: number[]): string {
     return `{${ranges.join(',')}}`;
 }
 
+/**
+ * 高效获取大字符串中的指定行
+ * 避免使用 split 分割整个字符串，减少内存开销
+ * @param text 完整文本
+ * @param lineIndex 目标行索引（0-based）
+ * @returns 目标行的内容
+ */
+export function getLineAtIndex(text: string, lineIndex: number): string {
+    if (!text || lineIndex < 0) return '';
+
+    let startIndex = 0;
+
+    // 快速定位到目标行
+    for (let i = 0; i < lineIndex; i++) {
+        const nextIndex = text.indexOf('\n', startIndex);
+        if (nextIndex === -1) return ''; // 找不到行
+        startIndex = nextIndex + 1;
+    }
+
+    const endIndex = text.indexOf('\n', startIndex);
+    return endIndex === -1
+        ? text.slice(startIndex)
+        : text.slice(startIndex, endIndex);
+}
+
 export function snapshot(pre: HTMLElement) {
     domToImage
         //@ts-ignore

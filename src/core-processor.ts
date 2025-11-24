@@ -5,11 +5,11 @@ import { CLS } from './constant';
 import { mount, unmount } from 'svelte';
 import CbeHeader from 'src/ui/CbeHeader.svelte';
 import CbeLineNumber from 'src/ui/CbeLineNumber.svelte';
-import { copyText, parseLineRange } from './util';
+import { copyText, parseLineRange, getLineAtIndex } from './util';
 // import { v4 as uuidv4 } from 'uuid';
 
 const DEFAULT_LANG = '';
-const LANG_REG = /^language-/;
+const LANG_REG = /^language-(?!\{)/;
 const LINE_SPLIT_MARK = '\n';
 
 export const unmountCallbackCache = new Map<string, (() => void)[]>();
@@ -71,11 +71,12 @@ export class CoreCodeBlockPostProcessor {
                 settings: plugin.settings,
                 cbeInfo: cbeInfo,
                 getHighLightLines: () => {
-                    const firstLine =
-                        this.plugin.app.workspace
-                            .getActiveViewOfType(MarkdownView)
-                            ?.editor?.getLine(ctx.getSectionInfo(el)?.lineStart || 0) || '';
-                    return parseLineRange(firstLine);
+                    const sectionInfo = ctx.getSectionInfo(el);
+                    if (sectionInfo && sectionInfo.text) {
+                        const firstLine = getLineAtIndex(sectionInfo.text, sectionInfo.lineStart);
+                        return parseLineRange(firstLine);
+                    }
+                    return [];
                 }
             }
         });
