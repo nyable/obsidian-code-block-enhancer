@@ -18,7 +18,7 @@ const DEFAULT_SETTINGS: CbeSettings = {
     showCodeSnap: true,
     codeFontSize: '16px',
     linenumHoverMode: LineHoverMode.None,
-    linenumClickMode: LineClickMode.None
+    linenumClickMode: LineClickMode.Highlight
 };
 export default class CodeBlockEnhancerPlugin extends Plugin {
     settings!: CbeSettings;
