@@ -9,11 +9,11 @@ Inspired by [obsidian-code-block-copy](https://github.com/jdbrice/obsidian-code-
 
 Enhancer the markdown code block in preview mode.
 
--   Provide line number
--   Show language name
--   Code snap
--   Custom exclusion language
--   Enhance contextmenu in code block
+-   Line Numbers (Support line break)
+-   Line Highlighting
+-   Language Label
+-   Code Snapshot (Export to Image)
+-   Enhanced Context Menu
 -   ......
 
 ## Screenshot
