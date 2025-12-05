@@ -66,7 +66,11 @@
         "Highlight": "高亮"
       }
     },
-    "reloadApp": "重载应用"
+    "reloadApp": "重载应用",
+    "linenumRightClickMode": {
+      "name": "右击时",
+      "desc": "右击行号时的行为"
+    }
   },
   "plugin": {
     "name": "代码块增强器"

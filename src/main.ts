@@ -18,7 +18,8 @@ const DEFAULT_SETTINGS: CbeSettings = {
     showCodeSnap: true,
     codeFontSize: '16px',
     linenumHoverMode: LineHoverMode.None,
-    linenumClickMode: LineClickMode.Highlight
+    linenumClickMode: LineClickMode.Highlight,
+    linenumRightClickMode: LineClickMode.Copy
 };
 export default class CodeBlockEnhancerPlugin extends Plugin {
     settings!: CbeSettings;
@@ -133,8 +134,9 @@ class CbeSettingsTab extends PluginSettingTab {
             text: `${i18n.t('plugin.name')} ${this.plugin.manifest.version}`
         });
         new Setting(containerEl).setDesc(i18n.t('settings.desc'));
-        // general settings
+        // 常规设置标题
         new Setting(containerEl).setName(i18n.t('settings.general')).setHeading();
+        // 排除语言列表
         new Setting(containerEl)
             .setName(i18n.t('settings.excludeLangs.name'))
             .setDesc(i18n.t('settings.excludeLangs.desc'))
@@ -146,6 +148,7 @@ class CbeSettingsTab extends PluginSettingTab {
                         await this.plugin.saveSettings();
                     });
             });
+        // 代码块字体大小
         new Setting(containerEl)
             .setName(i18n.t('settings.codeFontSize.name'))
             .setDesc(i18n.t('settings.codeFontSize.desc'))
@@ -156,45 +159,51 @@ class CbeSettingsTab extends PluginSettingTab {
                 });
             });
 
+        // 是否启用右键菜单
         this.createSimpleToggle(
             containerEl,
             'useContextMenu',
             i18n.t('settings.useContextMenu.name'),
             i18n.t('settings.useContextMenu.desc')
         );
-        // line number settings
+        // 行号相关设置
         new Setting(containerEl).setName(i18n.t('settings.lineNumber')).setHeading();
+        // 是否显示行号
         this.createSimpleToggle(
             containerEl,
             'showLineNumber',
             i18n.t('settings.showLineNumber.name'),
             i18n.t('settings.showLineNumber.desc')
         );
+        // 行号字体颜色
         this.createColorPickerSetting(
             containerEl,
             'linenumFontColor',
             i18n.t('settings.linenumFontColor.name'),
             i18n.t('settings.linenumFontColor.desc')
         );
+        // 行号高亮颜色
         this.createColorPickerSetting(
             containerEl,
             'linenumHighlightColor',
             i18n.t('settings.linenumHighlightColor.name'),
             i18n.t('settings.linenumHighlightColor.desc')
         );
+        // 行号临时高亮颜色
         this.createColorPickerSetting(
             containerEl,
             'linenumHighlightColorTemp',
             i18n.t('settings.linenumHighlightColorTemp.name'),
             i18n.t('settings.linenumHighlightColorTemp.desc')
         );
+        // 悬浮时行号高亮颜色
         this.createColorPickerSetting(
             containerEl,
             'linenumHighlightColorHover',
             i18n.t('settings.linenumHighlightColorHover.name'),
             i18n.t('settings.linenumHighlightColorHover.desc')
         );
-
+        // 鼠标悬浮在行号时的行为
         new Setting(containerEl)
             .setName(i18n.t('settings.linenumHoverMode.name'))
             .setDesc(i18n.t('settings.linenumHoverMode.desc'))
@@ -209,6 +218,7 @@ class CbeSettingsTab extends PluginSettingTab {
                         await this.plugin.saveSettings();
                     });
             });
+        // 鼠标左键单击行号时的行为
         new Setting(containerEl)
             .setName(i18n.t('settings.linenumClickMode.name'))
             .setDesc(i18n.t('settings.linenumClickMode.desc'))
@@ -224,30 +234,46 @@ class CbeSettingsTab extends PluginSettingTab {
                         await this.plugin.saveSettings();
                     });
             });
-        // header settings
+        // 鼠标右键单击行号时的行为
+        new Setting(containerEl)
+            .setName(i18n.t('settings.linenumRightClickMode.name'))
+            .setDesc(i18n.t('settings.linenumRightClickMode.desc'))
+            .addDropdown((cb) => {
+                cb.addOptions({
+                    [LineClickMode.None]: i18n.t('settings.linenumClickMode.opt.None'),
+                    [LineClickMode.Copy]: i18n.t('settings.linenumClickMode.opt.Copy'),
+                    [LineClickMode.Highlight]: i18n.t('settings.linenumClickMode.opt.Highlight')
+                })
+                    .setValue(pluginSetting.linenumRightClickMode)
+                    .onChange(async (value) => {
+                        pluginSetting.linenumRightClickMode = value;
+                        await this.plugin.saveSettings();
+                    });
+            });
+        // 代码块头部栏的相关设置
         new Setting(containerEl).setName(i18n.t('settings.headerBar')).setHeading();
-
+        // 是否显示语言名称
         this.createSimpleToggle(
             containerEl,
             'showLangName',
             i18n.t('settings.showLangName.name'),
             i18n.t('settings.showLangName.desc')
         );
-
+        // 是否显示折叠按钮
         this.createSimpleToggle(
             containerEl,
             'showCollapseBtn',
             i18n.t('settings.showCollapseBtn.name'),
             i18n.t('settings.showCollapseBtn.desc')
         );
-
+        // 是否显示代码快照按钮
         this.createSimpleToggle(
             containerEl,
             'showCodeSnap',
             i18n.t('settings.showCodeSnap.name'),
             i18n.t('settings.showCodeSnap.desc')
         );
-
+        // 重新加载app按钮
         new Setting(containerEl).addButton((cb) => {
             cb.setButtonText(i18n.t('settings.reloadApp'))
                 .onClick(() => {

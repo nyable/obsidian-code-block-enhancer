@@ -87,6 +87,11 @@ interface CbeSettings {
      * 单击行号时的行为
      */
     linenumClickMode: string;
+
+    /**
+     * 右键单击行号时的行为
+     */
+    linenumRightClickMode: string;
 }
 
 interface CodeBlockMeta {

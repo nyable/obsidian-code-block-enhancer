@@ -66,7 +66,11 @@
         "Highlight": "Highlight"
       }
     },
-    "reloadApp": "Reload Obsidian"
+    "reloadApp": "Reload Obsidian",
+    "linenumRightClickMode": {
+      "name": "On Right Click",
+      "desc": "Behavior when right clicking the line number"
+    }
   },
   "plugin": {
     "name": "Code Block Enhancer"
