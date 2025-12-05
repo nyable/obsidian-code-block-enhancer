@@ -1,6 +1,6 @@
 {
     "name": "obsidian-code-block-enhancer",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "description": "Enhance obsidian markdown code block",
     "main": "main.js",
     "scripts": {
