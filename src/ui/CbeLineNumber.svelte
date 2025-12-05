@@ -112,10 +112,25 @@
         return h;
     };
 
+    /**
+     * 单击行号时的行为
+     * @param index 行号
+     */
     const clickLine = (index: number): void => {
-        if (settings.linenumClickMode === LineClickMode.Copy) {
+        lineEventModeHandler(settings.linenumClickMode, index);
+    };
+    /**
+     * 右键行号时的行为
+     * @param index 行号
+     */
+    const rightClickLine = (index: number): void => {
+        lineEventModeHandler(settings.linenumRightClickMode, index);
+    };
+
+    const lineEventModeHandler = (mode: string, index: number) => {
+        if (mode === LineClickMode.Copy) {
             copyText(cbeInfo.lineTextList[index]);
-        } else if (settings.linenumClickMode === LineClickMode.Highlight) {
+        } else if (mode === LineClickMode.Highlight) {
             const lineElement = lineRefs[index];
             if (lineElement) {
                 if (lineElement.classList.contains(CLS.LN_HIGHLIGHT)) {
@@ -208,7 +223,14 @@
         {#each Array(cbeInfo.lineCount) as _, index}
             <div
                 bind:this={lineRefs[index]}
-                onclick={() => clickLine(index)}
+                onclick={(e) => {
+                    e.preventDefault();
+                    clickLine(index);
+                }}
+                oncontextmenu={(e) => {
+                    e.preventDefault();
+                    rightClickLine(index);
+                }}
                 class:cbe-line={true}
                 class:cbe-line-hover={settings.linenumHoverMode == LinenumHoverMode.Highlight}
                 class:cbe-line-highlight={defaultHighLightLines.includes(index + 1)}

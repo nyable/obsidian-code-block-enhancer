@@ -21,7 +21,11 @@ export const LineClickMode = {
     /**
      * 临时高亮
      */
-    Highlight: 'Highlight'
+    Highlight: 'Highlight',
+    /**
+     * 上下文菜单
+     */
+    ContextMenu: 'ContextMenu'
 };
 export enum CbeCssVar {
     codeFontSize = '--cb-font-size',
