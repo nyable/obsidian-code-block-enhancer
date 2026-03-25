@@ -89,6 +89,14 @@
         }
     };
 
+    /**
+     * 字符宽度缓存
+     * 虽然用了canvas计算本身性能也还可以，但是如果单行长度比较多的话，还是会调用很多次；
+     * 所以这里缓存一下，减少`measureText`的调用。
+     * 这里先简单处理一下，后续再观察一下
+     */
+    const charWidthCache = new Map<string, number>();
+
     const computeHeight = (cbeInfo: CbeInfo, index: number) => {
         const { codeWidth, maxWidth, minWidth, lineHeight, tabSize } = baseLineInfo;
 
@@ -106,7 +114,14 @@
                 if (char == 9) {
                     charWidth = minWidth * tabSize;
                 } else if (measureCtx) {
-                    charWidth = measureCtx.measureText(text[i]).width;
+                    const ch = text[i];
+                    const cached = charWidthCache.get(ch);
+                    if (cached != null) {
+                        charWidth = cached;
+                    } else {
+                        charWidth = measureCtx.measureText(ch).width;
+                        charWidthCache.set(ch, charWidth);
+                    }
                 } else {
                     charWidth = isMonoSpaceUnicode(char) ? minWidth : maxWidth;
                 }
