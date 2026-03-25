@@ -35,6 +35,15 @@
         .createElement('canvas')
         .getContext('2d');
     const lineRefs: HTMLElement[] = [];
+
+    /**
+     * 字符宽度缓存
+     * 虽然用了canvas计算本身性能也还可以，但是如果单行长度比较多的话，还是会调用很多次；
+     * 所以这里缓存一下，减少`measureText`的调用。
+     * 这里先简单处理一下，后续再观察一下
+     */
+    const charWidthCache = new Map<string, number>();
+
     onMount(() => {
         if (settings.showLineNumber) {
             cbeInfo.pre.classList.add(CLS.HAS_LINENUMBER);
@@ -81,21 +90,17 @@
         baseLineInfo.codeWidth = target.getBoundingClientRect().width;
 
         tempSpan.remove();
-        baseLineInfo.tabSize = parseInt(getComputedStyle(target).tabSize) || 4;
+        const computedStyle = getComputedStyle(target);
+        baseLineInfo.tabSize = parseInt(computedStyle.tabSize) || 4;
 
         // 更新 canvas context 的字体以匹配代码元素
         if (measureCtx) {
-            measureCtx.font = getComputedStyle(target).font;
+            measureCtx.font = computedStyle.font;
+            // 这里考虑到切换字体之类的情况可能会导致`charWidthCache`缓存的值与实际宽度对不上
+            // 因此试过比对新旧字体然后清除缓存，但是发现单纯比较`font`的字符串值没啥意义，大概率是不同一样的。
+            // 大多数代码块用的字体都比较正常，基本上没有影响所以暂时不用管
         }
     };
-
-    /**
-     * 字符宽度缓存
-     * 虽然用了canvas计算本身性能也还可以，但是如果单行长度比较多的话，还是会调用很多次；
-     * 所以这里缓存一下，减少`measureText`的调用。
-     * 这里先简单处理一下，后续再观察一下
-     */
-    const charWidthCache = new Map<string, number>();
 
     const computeHeight = (cbeInfo: CbeInfo, index: number) => {
         const { codeWidth, maxWidth, minWidth, lineHeight, tabSize } = baseLineInfo;
