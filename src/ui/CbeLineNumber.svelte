@@ -31,6 +31,9 @@
     let defaultHighLightLines: number[] = $state.raw([]);
 
     let cachedBoxSize: BoxSize;
+    let measureCtx: CanvasRenderingContext2D | null = document
+        .createElement('canvas')
+        .getContext('2d');
     const lineRefs: HTMLElement[] = [];
     onMount(() => {
         if (settings.showLineNumber) {
@@ -79,6 +82,11 @@
 
         tempSpan.remove();
         baseLineInfo.tabSize = parseInt(getComputedStyle(target).tabSize) || 4;
+
+        // 更新 canvas context 的字体以匹配代码元素
+        if (measureCtx) {
+            measureCtx.font = getComputedStyle(target).font;
+        }
     };
 
     const computeHeight = (cbeInfo: CbeInfo, index: number) => {
@@ -97,6 +105,8 @@
                 let charWidth = 0;
                 if (char == 9) {
                     charWidth = minWidth * tabSize;
+                } else if (measureCtx) {
+                    charWidth = measureCtx.measureText(text[i]).width;
                 } else {
                     charWidth = isMonoSpaceUnicode(char) ? minWidth : maxWidth;
                 }
